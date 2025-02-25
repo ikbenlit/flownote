@@ -1,0 +1,110 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+yarn.lock
+package-lock.json
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Testing
+/coverage
+
+# Production
+/build
+/dist
+/out
+
+# Development
+.DS_Store
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# TypeScript
+*.tsbuildinfo
+
+# Vite
+.vite/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Backend
+backend/dist/
+backend/build/
+backend/node_modules/
+
+# Frontend
+frontend-web/dist/
+frontend-web/build/
+frontend-web/node_modules/
+
+# Database
+database/*.sqlite
+database/*.sqlite3
+database/data/
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Debug
+debug/
+.debug/
+
+# Logs
+logs/
+*.log
+
+# Local development
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Cursor-specific
+.cursor/
+.cursor.json
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Audio files (temporary recordings)
+*.wav
+*.mp3
+*.ogg
+*.m4a
+*.webm
+
+# Generated transcriptions
+transcriptions/ 
