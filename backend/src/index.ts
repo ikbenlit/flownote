@@ -6,6 +6,7 @@ import { Server } from 'ws';
 import { createServer } from 'http';
 import WebSocket from 'ws';
 import { createClient, LiveTranscriptionEvents } from '@deepgram/sdk';
+import openaiRoutes from './routes/openai-routes';
 
 // Define interfaces for type safety
 interface StopMessage {
@@ -27,6 +28,9 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Enable CORS
 app.use(cors());
 app.use(express.json());
+
+// Register routes
+app.use('/api/openai', openaiRoutes);
 
 // WebSocket connection handler
 wss.on('connection', (ws: WebSocket) => {

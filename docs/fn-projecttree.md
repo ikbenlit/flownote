@@ -3,13 +3,17 @@ FlowNote/
 │   ├── src/
 │   │   ├── controllers/         # Logic for API routes
 │   │   ├── routes/              # API routes
+│   │   │   ├── openai-routes.ts # OpenAI API routes
+│   │   │   ├── transcription-routes.ts # Transcription API routes
 │   │   ├── models/              # Database models (PostgreSQL)
-│   │   ├── services/            # Integration with Deepgram & OpenAI
+│   │   ├── services/            # Integration with external services
+│   │   │   ├── openai-service.ts # OpenAI API integration
+│   │   │   ├── deepgram-service.ts # Deepgram API integration
 │   │   ├── middlewares/         # Authentication & validation
 │   │   ├── utils/               # Helper functions
 │   │   ├── config/              # Configuration (dotenv, database connection)
-│   │   ├── index.js             # Main server file
-│   │   ├── db.js                # Database connection
+│   │   ├── index.ts             # Main server file
+│   │   ├── db.ts                # Database connection
 │   ├── .env                     # API keys and environment variables
 │   ├── package.json             # Dependencies & scripts
 │   ├── README.md                # Backend documentation
@@ -23,6 +27,8 @@ FlowNote/
 │   │   │   ├── NotesList.tsx    # Component for displaying notes in a grid
 │   │   │   ├── NoteEditor.tsx   # Component for creating and editing notes
 │   │   │   ├── NoteDetail.tsx   # Component for viewing a single note
+│   │   │   ├── AIAssistant.tsx  # AI text generation assistant component
+│   │   │   ├── OpenAIGenerator.tsx # Standalone OpenAI text generation component
 │   │   ├── pages/               # Page components
 │   │   │   ├── Home.tsx         # Homepage with login functionality
 │   │   │   ├── LoginPage.tsx    # Dedicated login page with Google authentication
@@ -32,12 +38,16 @@ FlowNote/
 │   │   │   ├── NoteEditPage.tsx # Page for editing an existing note
 │   │   │   ├── NewNotePage.tsx  # Page for creating a new note
 │   │   │   ├── NewNoteFromTranscriptionPage.tsx # Page for creating a note from transcription
+│   │   │   ├── AIGeneratorPage.tsx # Page for standalone AI text generation
 │   │   ├── hooks/               # Custom React hooks
+│   │   │   ├── useOpenAI.ts     # Hook for OpenAI text generation
 │   │   ├── context/             # State management (React Context API)
 │   │   │   ├── AuthContext.tsx  # Context provider for authentication
 │   │   │   ├── NoteContext.tsx  # Context provider for notes functionality
-│   │   ├── services/            # API requests (axios)
+│   │   │   ├── AIContext.tsx    # Context provider for AI functionality
+│   │   ├── services/            # API requests and services
 │   │   │   ├── firebase.ts      # Firebase configuration file
+│   │   │   ├── openai-service.ts # OpenAI API service
 │   │   ├── styles/              # Styling files
 │   │   │   ├── globals.css      # Global CSS for Tailwind
 │   │   ├── App.tsx              # Main React component with routes and providers
