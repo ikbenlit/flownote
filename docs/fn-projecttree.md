@@ -18,12 +18,14 @@ FlowNote/
 │   ├── src/
 │   │   ├── components/          # Reusable UI components
 │   │   │   ├── AuthButton.tsx   # Firebase authentication button (Login/Logout)
+│   │   │   ├── PrivateRoute.tsx # Route protection for authenticated users
 │   │   │   ├── audio-recorder.tsx # Audio recording and transcription component
 │   │   │   ├── NotesList.tsx    # Component for displaying notes in a grid
 │   │   │   ├── NoteEditor.tsx   # Component for creating and editing notes
 │   │   │   ├── NoteDetail.tsx   # Component for viewing a single note
 │   │   ├── pages/               # Page components
 │   │   │   ├── Home.tsx         # Homepage with login functionality
+│   │   │   ├── LoginPage.tsx    # Dedicated login page with Google authentication
 │   │   │   ├── transcription-page.tsx # Page for audio transcription
 │   │   │   ├── NotesPage.tsx    # Page for viewing and searching notes
 │   │   │   ├── NoteDetailPage.tsx # Page for viewing a single note
@@ -32,6 +34,7 @@ FlowNote/
 │   │   │   ├── NewNoteFromTranscriptionPage.tsx # Page for creating a note from transcription
 │   │   ├── hooks/               # Custom React hooks
 │   │   ├── context/             # State management (React Context API)
+│   │   │   ├── AuthContext.tsx  # Context provider for authentication
 │   │   │   ├── NoteContext.tsx  # Context provider for notes functionality
 │   │   ├── services/            # API requests (axios)
 │   │   │   ├── firebase.ts      # Firebase configuration file
