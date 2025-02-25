@@ -99,6 +99,7 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const user = auth.currentUser;
       if (!user) {
+        setError('You must be logged in to add a note');
         throw new Error('You must be logged in to add a note');
       }
 
@@ -110,7 +111,31 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatedAt: now,
       };
 
-      const docRef = await addDoc(collection(db, 'notes'), newNote);
+      // Add retry logic for Firestore operations
+      let attempts = 0;
+      const maxAttempts = 3;
+      let docRef;
+
+      while (attempts < maxAttempts) {
+        try {
+          docRef = await addDoc(collection(db, 'notes'), newNote);
+          break; // Success, exit the retry loop
+        } catch (err) {
+          attempts++;
+          console.error(`Error adding note (attempt ${attempts}/${maxAttempts}):`, err);
+          
+          if (attempts >= maxAttempts) {
+            throw err; // Rethrow after max attempts
+          }
+          
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempts)));
+        }
+      }
+      
+      if (!docRef) {
+        throw new Error('Failed to add note after multiple attempts');
+      }
       
       // Update the local state
       setNotes((prevNotes) => [
@@ -134,6 +159,7 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const user = auth.currentUser;
       if (!user) {
+        setError('You must be logged in to update a note');
         throw new Error('You must be logged in to update a note');
       }
 
@@ -143,7 +169,26 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updatedAt: Timestamp.now(),
       };
 
-      await updateDoc(noteRef, updateData);
+      // Add retry logic for Firestore operations
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      while (attempts < maxAttempts) {
+        try {
+          await updateDoc(noteRef, updateData);
+          break; // Success, exit the retry loop
+        } catch (err) {
+          attempts++;
+          console.error(`Error updating note (attempt ${attempts}/${maxAttempts}):`, err);
+          
+          if (attempts >= maxAttempts) {
+            throw err; // Rethrow after max attempts
+          }
+          
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempts)));
+        }
+      }
 
       // Update the local state
       setNotes((prevNotes) =>
@@ -165,10 +210,32 @@ export const NoteProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const user = auth.currentUser;
       if (!user) {
+        setError('You must be logged in to delete a note');
         throw new Error('You must be logged in to delete a note');
       }
 
-      await deleteDoc(doc(db, 'notes', id));
+      const noteRef = doc(db, 'notes', id);
+      
+      // Add retry logic for Firestore operations
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      while (attempts < maxAttempts) {
+        try {
+          await deleteDoc(noteRef);
+          break; // Success, exit the retry loop
+        } catch (err) {
+          attempts++;
+          console.error(`Error deleting note (attempt ${attempts}/${maxAttempts}):`, err);
+          
+          if (attempts >= maxAttempts) {
+            throw err; // Rethrow after max attempts
+          }
+          
+          // Wait before retrying (exponential backoff)
+          await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, attempts)));
+        }
+      }
 
       // Update the local state
       setNotes((prevNotes) => prevNotes.filter((note) => note.id !== id));
