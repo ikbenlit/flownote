@@ -1,0 +1,46 @@
+---
+description: 
+globs: 
+---
+Cursor Rules for FlowNote
+1. General Guidelines
+✅ Stick to the MVP – Focus only on the core features: speech-to-text (Deepgram), AI content generation (OpenAI), and user authentication (Firebase). Avoid feature creep.
+✅ Separation of Concerns (SoC) – Keep frontend, backend, and database modular and independent.
+✅ Don't Repeat Yourself (DRY) – Use reusable components, hooks, and services to minimize redundancy.
+✅ Follow the documentation – The docs (fn-projecttree.md & fn-techstack.md) should guide architectural decisions. Update them when making significant changes.
+
+2. Project Structure & Key Files
+📌 Frontend: React + Vite + TypeScript
+📌 Backend: Node.js + Express
+📌 Database: PostgreSQL
+📌 Authentication: Firebase
+📌 AI Integration: Deepgram (speech-to-text) & OpenAI (AI generation)
+
+Frontend (Web)
+✅ Components in /src/components/ must be reusable and self-contained.
+✅ State management should be handled via React Context API – Avoid excessive prop-drilling.
+✅ Use custom hooks (/src/hooks/) for shared logic (e.g., API calls, data fetching).
+✅ Use Tailwind CSS for styling – Avoid inline styles and !important.
+✅ Manage Firebase authentication only inside AuthContext.tsx – Do not handle auth logic inside components.
+
+Backend (API Server)
+✅ Keep AI integration services (/services/) separate from controllers.
+✅ Use middlewares (/middlewares/) for authentication and validation.
+✅ Database queries must be inside /models/ – Do not write SQL queries in controllers.
+✅ Keep API routes organized in /routes/ based on functionality.
+✅ Use environment variables (.env) for sensitive data – Never hardcode API keys.
+
+Database (PostgreSQL)
+✅ Use migrations for database changes – Do not manually edit schema.sql.
+✅ Seed data (seed.sql) should only be used for testing, not in production.
+
+3. Code Style & Best Practices
+✅ Use ESLint and Prettier for consistent formatting (configured in package.json).
+✅ Use clear and descriptive naming for files and functions – Avoid names like tmpFunc().
+✅ Wrap asynchronous functions in try/catch to prevent crashes.
+✅ Optimize React components with useMemo and useCallback to avoid unnecessary re-renders.
+
+4. Performance & Optimization
+✅ Use lazy loading (React.lazy()) for components where possible.
+✅ Leverage caching mechanisms (e.g., store AI-generated content in Firestore).
+✅ Minimize API calls – Only fetch data when necessary.
