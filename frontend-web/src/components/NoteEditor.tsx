@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Note } from '../context/NoteContext';
+import AIAssistant from './AIAssistant';
 
 interface NoteEditorProps {
   initialNote?: Partial<Note>;
@@ -67,6 +68,11 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
+  // Handle AI generated text
+  const handleApplyAIText = (generatedText: string) => {
+    setContent(generatedText);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
@@ -87,9 +93,12 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       </div>
 
       <div>
-        <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
-          Content
-        </label>
+        <div className="flex justify-between items-center mb-1">
+          <label htmlFor="content" className="block text-sm font-medium text-gray-700">
+            Content
+          </label>
+          <AIAssistant content={content} onApplyText={handleApplyAIText} />
+        </div>
         <textarea
           id="content"
           value={content}
