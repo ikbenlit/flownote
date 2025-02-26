@@ -352,4 +352,10 @@ export const translations: Translations = {
     nl: 'Wat gebruikers zeggen',
     en: 'What users are saying',
   },
+
+  // User Menu
+  'user.menu': {
+    nl: 'Gebruikersmenu',
+    en: 'User menu',
+  },
 }; 
