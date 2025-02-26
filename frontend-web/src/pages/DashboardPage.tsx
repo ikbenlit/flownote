@@ -29,6 +29,13 @@ export const DashboardPage: React.FC = () => {
     return new Date(timestamp).toLocaleDateString();
   };
 
+  // Function to strip HTML tags for preview
+  const stripHtml = (html: string) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || '';
+  };
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -112,7 +119,8 @@ export const DashboardPage: React.FC = () => {
                   {note.title}
                 </h3>
                 <p className="font-patrick-hand text-gray-600 dark:text-dark-text-secondary line-clamp-3">
-                  {note.content}
+                  {stripHtml(note.content).substring(0, 150)}
+                  {stripHtml(note.content).length > 150 && '...'}
                 </p>
                 <p className="font-patrick-hand text-sm text-gray-500 dark:text-dark-text-tertiary mt-4">
                   {t('notes.updated')} {formatDate(note.updatedAt)}

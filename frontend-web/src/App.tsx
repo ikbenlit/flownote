@@ -8,6 +8,7 @@ import { NewNoteFromTranscriptionPage } from './pages/NewNoteFromTranscriptionPa
 import AIGeneratorPage from './pages/AIGeneratorPage';
 import { LandingPage } from './pages/LandingPage';
 import { DashboardPage } from './pages/DashboardPage';
+import { TestEditorPage } from './pages/TestEditorPage';
 import { NoteProvider } from './context/NoteContext';
 import { AuthProvider } from './context/AuthContext';
 import { AIProvider } from './context/AIContext';
@@ -41,6 +42,7 @@ function App() {
                       <Route path="/notes/new" element={<NewNotePage />} />
                       <Route path="/notes/new-from-transcription" element={<NewNoteFromTranscriptionPage />} />
                       <Route path="/ai-generator" element={<AIGeneratorPage />} />
+                      <Route path="/test-editor" element={<TestEditorPage />} />
                     </Route>
                   </Route>
                 </Routes>

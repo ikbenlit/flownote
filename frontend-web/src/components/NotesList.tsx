@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash, FaTags, FaEye } from 'react-icons/fa';
 import { Note } from '../context/NoteContext';
 import { useI18n } from '../context/I18nContext';
+import TipTapContent from './TipTapContent';
 
 interface NotesListProps {
   notes: Note[];
@@ -30,6 +31,13 @@ export const NotesList: React.FC<NotesListProps> = ({ notes, onDelete }) => {
       month: 'long',
       day: 'numeric',
     }).format(date);
+  };
+
+  // Function to strip HTML tags for preview
+  const stripHtml = (html: string) => {
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || '';
   };
 
   return (
@@ -64,9 +72,10 @@ export const NotesList: React.FC<NotesListProps> = ({ notes, onDelete }) => {
             
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-blue-50 dark:from-dark-bg-tertiary dark:to-dark-border-primary opacity-30 rounded-lg"></div>
-              <p className="font-kalam text-gray-700 dark:text-dark-text-secondary mb-4 line-clamp-3 relative p-3 rounded-lg">
-                {note.content}
-              </p>
+              <div className="font-kalam text-gray-700 dark:text-dark-text-secondary mb-4 line-clamp-3 relative p-3 rounded-lg">
+                {stripHtml(note.content).substring(0, 150)}
+                {stripHtml(note.content).length > 150 && '...'}
+              </div>
             </div>
             
             {note.tags && note.tags.length > 0 && (

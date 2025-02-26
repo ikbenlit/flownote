@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Note } from '../context/NoteContext';
 import AIAssistant from './AIAssistant';
+import TipTapEditor from './TipTapEditor';
 
 interface NoteEditorProps {
   initialNote?: Partial<Note>;
@@ -98,14 +99,9 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           </label>
           <AIAssistant content={content} onApplyText={handleApplyAIText} />
         </div>
-        <textarea
-          id="content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={8}
-          className="w-full px-4 py-3 font-kalam text-lg border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary placeholder-gray-400 dark:placeholder-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200"
-          placeholder="Begin hier met schrijven..."
-          required
+        <TipTapEditor 
+          content={content} 
+          onChange={setContent} 
         />
         {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content}</p>}
       </div>

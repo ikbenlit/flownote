@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Note } from '../context/NoteContext';
 import { FaEdit, FaTrash, FaArrowLeft, FaTags } from 'react-icons/fa';
+import TipTapContent from './TipTapContent';
 
 interface NoteDetailProps {
   note: Note;
@@ -22,17 +23,17 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="bg-white dark:bg-dark-bg-secondary rounded-lg shadow-md overflow-hidden">
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
-          <Link to="/notes" className="text-blue-600 hover:text-blue-800 flex items-center">
+          <Link to="/notes" className="text-blue-600 dark:text-dark-accent-blue hover:text-blue-800 dark:hover:text-dark-accent-blue-light flex items-center">
             <FaArrowLeft className="mr-1" />
             <span>Back to Notes</span>
           </Link>
           <div className="flex space-x-3">
             <Link
               to={`/notes/edit/${note.id}`}
-              className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 dark:bg-dark-accent-blue hover:bg-blue-700 dark:hover:bg-dark-accent-blue-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue"
             >
               <FaEdit className="mr-1.5" />
               Edit
@@ -47,9 +48,9 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">{note.title}</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-dark-text-primary mb-2">{note.title}</h1>
         
-        <div className="text-sm text-gray-500 mb-6">
+        <div className="text-sm text-gray-500 dark:text-dark-text-secondary mb-6">
           {note.createdAt && (
             <p>Created: {formatDate(note.createdAt)}</p>
           )}
@@ -60,11 +61,11 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
 
         {note.tags && note.tags.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mb-4">
-            <FaTags className="text-gray-400 mt-1 mr-1" />
+            <FaTags className="text-gray-400 dark:text-dark-text-secondary mt-1 mr-1" />
             {note.tags.map((tag, index) => (
               <span
                 key={index}
-                className="bg-blue-100 text-blue-800 text-xs px-2.5 py-1 rounded-full"
+                className="bg-blue-100 dark:bg-dark-bg-tertiary text-blue-800 dark:text-dark-accent-blue text-xs px-2.5 py-1 rounded-full"
               >
                 {tag}
               </span>
@@ -72,8 +73,8 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
           </div>
         )}
 
-        <div className="prose max-w-none">
-          <p className="whitespace-pre-wrap">{note.content}</p>
+        <div className="prose dark:prose-invert max-w-none">
+          <TipTapContent content={note.content} />
         </div>
       </div>
     </div>
