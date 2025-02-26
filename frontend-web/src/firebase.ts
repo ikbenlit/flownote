@@ -1,6 +1,10 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
+import { 
+  getFirestore, 
+  connectFirestoreEmulator,
+  enableMultiTabIndexedDbPersistence
+} from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
@@ -28,21 +32,24 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const storage = getStorage(app);
 
-// Enable offline persistence for Firestore
-try {
-  enableIndexedDbPersistence(db)
-    .then(() => {
-      console.log("Firestore persistence enabled");
-    })
-    .catch((err) => {
-      if (err.code === 'failed-precondition') {
-        console.warn("Firestore persistence could not be enabled because multiple tabs are open");
-      } else if (err.code === 'unimplemented') {
-        console.warn("Firestore persistence is not available in this browser");
-      } else {
-        console.error("Error enabling Firestore persistence:", err);
-      }
-    });
-} catch (error) {
-  console.error("Error setting up Firestore persistence:", error);
-}
+// Enable multi-tab persistence for Firestore
+// This is the recommended approach for most applications
+// Note: This must be called before any other Firestore calls
+(async () => {
+  try {
+    await enableMultiTabIndexedDbPersistence(db);
+    console.log("Firestore multi-tab persistence enabled successfully");
+  } catch (err: any) {
+    if (err.code === 'failed-precondition') {
+      // Multiple tabs open, persistence can only be enabled
+      // in one tab at a time.
+      console.warn("Firestore persistence could not be enabled because multiple tabs are open. Only one tab can initialize persistence at a time.");
+    } else if (err.code === 'unimplemented') {
+      // The current browser does not support all of the
+      // features required to enable persistence
+      console.warn("Firestore persistence is not available in this browser");
+    } else {
+      console.error("Error enabling Firestore persistence:", err);
+    }
+  }
+})();

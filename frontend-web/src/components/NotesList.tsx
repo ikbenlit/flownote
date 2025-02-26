@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaEdit, FaTrash, FaTags, FaEye } from 'react-icons/fa';
 import { Note } from '../context/NoteContext';
+import { useI18n } from '../context/I18nContext';
 
 interface NotesListProps {
   notes: Note[];
@@ -9,11 +10,13 @@ interface NotesListProps {
 }
 
 export const NotesList: React.FC<NotesListProps> = ({ notes, onDelete }) => {
+  const { t, language } = useI18n();
+  
   if (notes.length === 0) {
     return (
       <div className="text-center py-16">
         <p className="font-patrick-hand text-xl text-gray-500">
-          Nog geen notities gevonden. Begin met het maken van je eerste notitie!
+          {t('notes.empty.state')}
         </p>
       </div>
     );
@@ -22,7 +25,7 @@ export const NotesList: React.FC<NotesListProps> = ({ notes, onDelete }) => {
   const formatDate = (timestamp: any) => {
     if (!timestamp) return '';
     const date = timestamp.toDate();
-    return new Intl.DateTimeFormat('nl-NL', {
+    return new Intl.DateTimeFormat(language === 'nl' ? 'nl-NL' : 'en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -45,14 +48,14 @@ export const NotesList: React.FC<NotesListProps> = ({ notes, onDelete }) => {
                 <Link
                   to={`/notes/edit/${note.id}`}
                   className="text-green-500 dark:text-dark-accent-green hover:text-green-600 dark:hover:text-dark-accent-green-light transform hover:scale-110 transition-all duration-200"
-                  title="Bewerk notitie"
+                  title={t('notes.edit.title')}
                 >
                   <FaEdit className="text-xl" />
                 </Link>
                 <button
                   onClick={() => onDelete(note.id!)}
                   className="text-red-500 hover:text-red-600 transform hover:scale-110 transition-all duration-200"
-                  title="Verwijder notitie"
+                  title={t('notes.delete.title')}
                 >
                   <FaTrash className="text-xl" />
                 </button>
@@ -82,7 +85,7 @@ export const NotesList: React.FC<NotesListProps> = ({ notes, onDelete }) => {
             
             <div className="font-patrick-hand text-sm text-gray-500 mb-4">
               {note.updatedAt && (
-                <span>Bijgewerkt op: {formatDate(note.updatedAt)}</span>
+                <span>{t('notes.updated')} {formatDate(note.updatedAt)}</span>
               )}
             </div>
 
@@ -91,7 +94,7 @@ export const NotesList: React.FC<NotesListProps> = ({ notes, onDelete }) => {
               className="inline-flex items-center justify-center w-full px-4 py-2 font-patrick-hand text-lg text-green-600 bg-green-50 hover:bg-green-100 rounded-lg transition-colors duration-200"
             >
               <FaEye className="mr-2" />
-              Bekijk Notitie
+              {t('notes.view')}
             </Link>
           </div>
         </div>
