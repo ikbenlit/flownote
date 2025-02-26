@@ -11,13 +11,19 @@ import { NoteProvider } from './context/NoteContext';
 import { AuthProvider } from './context/AuthContext';
 import { AIProvider } from './context/AIContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { I18nProvider } from './context/I18nContext';
 import PrivateRoute from './components/PrivateRoute';
 import LoginPage from './pages/LoginPage';
 import { ThemeToggle } from './components/ThemeToggle';
+import { LanguageSelector } from './components/LanguageSelector';
 import { FaMicrophone, FaStickyNote, FaRobot } from 'react-icons/fa';
 import AuthButton from './components/AuthButton';
+import { useI18n } from './context/I18nContext';
 
-function App() {
+// Wrapper component to use translations in App
+const AppContent = () => {
+  const { t } = useI18n();
+  
   return (
     <ThemeProvider>
       <AuthProvider>
@@ -37,30 +43,33 @@ function App() {
                         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
                           <div className="flex items-center space-x-6">
                             <Link to="/app" className="font-architects-daughter text-xl font-bold text-gray-900 dark:text-dark-text-primary">
-                              FlowNote
+                              {t('app.name')}
                             </Link>
                             <Link to="/transcribe" className="font-patrick-hand text-gray-600 dark:text-dark-text-secondary hover:text-blue-500 dark:hover:text-dark-text-accent flex items-center">
                               <FaMicrophone className="mr-1.5" />
-                              Transcribe
+                              {t('nav.transcribe')}
                             </Link>
                             <Link to="/notes" className="font-patrick-hand text-gray-600 dark:text-dark-text-secondary hover:text-blue-500 dark:hover:text-dark-text-accent flex items-center">
                               <FaStickyNote className="mr-1.5" />
-                              Notes
+                              {t('nav.notes')}
                             </Link>
                             <Link to="/ai-generator" className="font-patrick-hand text-gray-600 dark:text-dark-text-secondary hover:text-blue-500 dark:hover:text-dark-text-accent flex items-center">
                               <FaRobot className="mr-1.5" />
-                              AI Generator
+                              {t('nav.ai-generator')}
                             </Link>
                           </div>
                           <div className="flex items-center space-x-4">
-                            <ThemeToggle />
+                            <div className="flex items-center space-x-2 border-r pr-4 dark:border-gray-700">
+                              <ThemeToggle />
+                              <LanguageSelector />
+                            </div>
                             <AuthButton />
                           </div>
                         </div>
                       </nav>
                       <div className="container mx-auto px-4 py-8">
-                        <h1 className="font-architects-daughter text-3xl font-bold">Welcome to Your Workspace</h1>
-                        <p className="font-patrick-hand mt-2">Start creating with AI-powered assistance.</p>
+                        <h1 className="font-architects-daughter text-3xl font-bold">{t('app.welcome')}</h1>
+                        <p className="font-patrick-hand mt-2">{t('app.subtitle')}</p>
                       </div>
                     </div>
                   } />
@@ -78,6 +87,14 @@ function App() {
         </NoteProvider>
       </AuthProvider>
     </ThemeProvider>
+  );
+};
+
+function App() {
+  return (
+    <I18nProvider>
+      <AppContent />
+    </I18nProvider>
   );
 }
 

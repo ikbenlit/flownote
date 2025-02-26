@@ -2,9 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaPencilAlt, FaMicrophone, FaRobot } from 'react-icons/fa';
 import { ThemeToggle } from '../components/ThemeToggle';
+import { LanguageSelector } from '../components/LanguageSelector';
 import { SEO } from '../components/SEO';
+import { useI18n } from '../context/I18nContext';
 
 export const LandingPage: React.FC = () => {
+  const { t } = useI18n();
+  
   return (
     <>
       <SEO 
@@ -23,7 +27,8 @@ export const LandingPage: React.FC = () => {
       />
       
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-dark-bg-primary dark:to-dark-bg-secondary transition-colors duration-200">
-        <div className="absolute top-4 right-4">
+        <div className="absolute top-4 right-4 flex items-center space-x-2">
+          <LanguageSelector />
           <ThemeToggle />
         </div>
         
@@ -32,10 +37,10 @@ export const LandingPage: React.FC = () => {
           <div className="relative max-w-4xl mx-auto text-center">
             <div className="animate-fade-in-up">
               <h1 className="font-architects-daughter text-5xl md:text-6xl text-gray-900 dark:text-dark-text-primary mb-6">
-                Welkom bij FlowNote
+                {t('landing.hero.title')}
               </h1>
               <p className="text-xl text-gray-600 dark:text-dark-text-secondary mb-4">
-                Transformeer je gedachten in georganiseerde notities
+                {t('landing.hero.subtitle')}
               </p>
               <div className="flex justify-center gap-4">
                 <Link
@@ -43,13 +48,13 @@ export const LandingPage: React.FC = () => {
                   className="inline-block font-caveat text-xl px-8 py-4 bg-blue-500 dark:bg-dark-accent-blue hover:bg-blue-600 dark:hover:bg-dark-accent-blue-light text-white rounded-lg transform hover:scale-105 transition-all duration-200 shadow-lg"
                   itemProp="mainEntityOfPage"
                 >
-                  Start met Schrijven
+                  {t('landing.cta.start')}
                 </Link>
                 <Link
                   to="/demo"
                   className="inline-block font-caveat text-xl px-8 py-4 bg-green-500 dark:bg-dark-accent-green hover:bg-green-600 dark:hover:bg-dark-accent-green-light text-white rounded-lg transform hover:scale-105 transition-all duration-200 shadow-lg"
                 >
-                  Bekijk Demo
+                  {t('landing.cta.demo')}
                 </Link>
               </div>
             </div>
@@ -65,10 +70,10 @@ export const LandingPage: React.FC = () => {
                 <FaPencilAlt className="text-green-600 dark:text-dark-accent-green text-2xl" />
               </div>
               <h2 className="font-caveat text-2xl text-gray-900 dark:text-dark-text-primary mb-4 text-center">
-                Natuurlijk Schrijven
+                {t('landing.feature.writing.title')}
               </h2>
               <p className="font-inter text-gray-700 dark:text-dark-text-secondary text-center">
-                Een rustgevende omgeving voor het vastleggen van je gedachten, met een handgeschreven gevoel.
+                {t('landing.feature.writing.description')}
               </p>
             </article>
 
@@ -78,10 +83,10 @@ export const LandingPage: React.FC = () => {
                 <FaMicrophone className="text-blue-600 dark:text-dark-accent-blue text-2xl" />
               </div>
               <h2 className="font-caveat text-2xl text-gray-900 dark:text-dark-text-primary mb-4 text-center">
-                Spraak naar Tekst
+                {t('landing.feature.speech.title')}
               </h2>
               <p className="font-inter text-gray-700 dark:text-dark-text-secondary text-center">
-                Spreek je gedachten uit en zie ze direct omgezet worden in tekst met onze geavanceerde spraakherkenning.
+                {t('landing.feature.speech.description')}
               </p>
             </article>
 
@@ -91,10 +96,10 @@ export const LandingPage: React.FC = () => {
                 <FaRobot className="text-green-600 dark:text-dark-accent-green text-2xl" />
               </div>
               <h2 className="font-caveat text-2xl text-gray-900 dark:text-dark-text-primary mb-4 text-center">
-                AI Assistent
+                {t('landing.feature.ai.title')}
               </h2>
               <p className="font-inter text-gray-700 dark:text-dark-text-secondary text-center">
-                Laat onze AI je helpen met het structureren, samenvatten en verbeteren van je notities.
+                {t('landing.feature.ai.description')}
               </p>
             </article>
           </div>
@@ -104,16 +109,16 @@ export const LandingPage: React.FC = () => {
         <section className="container mx-auto px-4 py-16 mb-16" aria-label="Registratie">
           <div className="max-w-4xl mx-auto bg-gradient-to-r from-green-500 to-blue-500 dark:from-dark-accent-green dark:to-dark-accent-blue rounded-2xl p-12 text-center text-white shadow-xl">
             <h2 className="font-architects-daughter text-4xl mb-6">
-              Begin Vandaag met FlowNote
+              {t('landing.cta.section.title')}
             </h2>
             <p className="font-patrick-hand text-xl mb-8">
-              Ontdek hoe FlowNote je helpt bij het organiseren van je gedachten en ideeën
+              {t('landing.cta.section.subtitle')}
             </p>
             <Link
               to="/register"
               className="inline-block font-caveat text-xl px-8 py-4 bg-white text-blue-600 dark:text-dark-accent-blue rounded-lg transform hover:scale-105 transition-all duration-200 shadow-lg"
             >
-              Gratis Aanmelden
+              {t('landing.cta.register')}
             </Link>
           </div>
         </section>
@@ -121,7 +126,7 @@ export const LandingPage: React.FC = () => {
         {/* Social Proof Section */}
         <section className="bg-white py-16">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl text-center mb-12">Wat gebruikers zeggen</h2>
+            <h2 className="text-3xl text-center mb-12">{t('landing.social.title')}</h2>
             <div className="grid md:grid-cols-3 gap-8">
               {/* Testimonial cards */}
               <div className="bg-gray-50 p-6 rounded-lg">
@@ -136,7 +141,7 @@ export const LandingPage: React.FC = () => {
         <footer className="bg-gray-100 dark:bg-dark-bg-secondary py-8 transition-colors duration-200" role="contentinfo">
           <div className="container mx-auto px-4 text-center">
             <p className="font-inter text-gray-600 dark:text-dark-text-secondary">
-              © {new Date().getFullYear()} FlowNote. Alle rechten voorbehouden.
+              © {new Date().getFullYear()} FlowNote. {t('app.copyright')}
             </p>
           </div>
         </footer>

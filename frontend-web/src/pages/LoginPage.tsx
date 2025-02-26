@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../context/I18nContext';
 import { FaGoogle } from 'react-icons/fa';
 import { ThemeToggle } from '../components/ThemeToggle';
 
@@ -12,6 +13,7 @@ interface LocationState {
 
 const LoginPage: React.FC = () => {
   const { currentUser, loading, signInWithGoogle, error } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
   const location = useLocation();
   const state = location.state as LocationState;
@@ -40,10 +42,10 @@ const LoginPage: React.FC = () => {
       </div>
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <h2 className="mt-6 text-center text-3xl font-architects-daughter font-bold text-gray-900 dark:text-dark-text-primary">
-          Welkom bij FlowNote
+          {t('auth.welcome.message')}
         </h2>
         <p className="mt-2 text-center text-sm font-patrick-hand text-gray-600 dark:text-dark-text-secondary">
-          Meld je aan om je notities en transcripties te beheren
+          {t('auth.login.subtitle')}
         </p>
       </div>
 
@@ -71,12 +73,12 @@ const LoginPage: React.FC = () => {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                  Laden...
+                  {t('app.loading')}
                 </span>
               ) : (
                 <span className="flex items-center">
                   <FaGoogle className="mr-2" />
-                  Aanmelden met Google
+                  {t('auth.login.with.google')}
                 </span>
               )}
             </button>
