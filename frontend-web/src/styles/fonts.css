@@ -1,0 +1,31 @@
+/* Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Caveat:wght@400;700&family=Indie+Flower&family=Patrick+Hand&family=Kalam:wght@300;400;700&family=Shadows+Into+Light&family=Inter:wght@400;500;600;700&display=swap');
+
+/* Font Classes */
+.font-architects-daughter {
+  font-family: 'Architects Daughter', cursive;
+}
+
+.font-caveat {
+  font-family: 'Caveat', cursive;
+}
+
+.font-indie-flower {
+  font-family: 'Indie Flower', cursive;
+}
+
+.font-patrick-hand {
+  font-family: 'Patrick Hand', cursive;
+}
+
+.font-kalam {
+  font-family: 'Kalam', cursive;
+}
+
+.font-shadows-into-light {
+  font-family: 'Shadows Into Light', cursive;
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+} 

@@ -371,10 +371,10 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
     <div className="flex flex-col items-center gap-4">
       <button
         onClick={isRecording ? stopRecording : startRecording}
-        className={`p-4 rounded-full ${
+        className={`p-6 rounded-full text-2xl ${
           isRecording 
             ? 'bg-red-500 hover:bg-red-600' 
-            : 'bg-blue-500 hover:bg-blue-600'
+            : 'bg-green-500 hover:bg-green-600'
         } text-white transition-colors`}
         disabled={isProcessing}
       >
