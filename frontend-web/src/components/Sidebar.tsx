@@ -1,10 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FaMicrophone, FaStickyNote, FaRobot, FaHome, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import { ThemeToggle } from './ThemeToggle';
-import { LanguageSelector } from './LanguageSelector';
-import AuthButton from './AuthButton';
 import { useI18n } from '../context/I18nContext';
+import { UserMenu } from './UserMenu';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -47,7 +45,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) 
       className={`fixed left-0 top-0 h-full bg-white dark:bg-dark-bg-secondary shadow-md transition-all duration-300 z-10 flex flex-col
         ${isCollapsed ? 'w-16' : 'w-64'}`}
     >
-      {/* Logo */}
+      {/* Logo and Toggle */}
       <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-dark-border-primary">
         <Link to="/app" className="font-architects-daughter font-bold text-gray-900 dark:text-dark-text-primary flex items-center">
           {!isCollapsed && (
@@ -64,6 +62,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) 
         >
           {isCollapsed ? <FaChevronRight /> : <FaChevronLeft />}
         </button>
+      </div>
+
+      {/* User Menu */}
+      <div className={`flex ${isCollapsed ? 'justify-center' : 'justify-start px-4'} py-3 border-b border-gray-200 dark:border-dark-border-primary relative`}>
+        <UserMenu isCollapsed={isCollapsed} />
       </div>
 
       {/* Navigation Items */}
@@ -86,15 +89,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) 
           ))}
         </ul>
       </nav>
-
-      {/* Bottom Actions */}
-      <div className={`p-4 border-t border-gray-200 dark:border-dark-border-primary ${isCollapsed ? 'items-center' : ''}`}>
-        <div className={`flex ${isCollapsed ? 'flex-col items-center space-y-4' : 'items-center space-x-4'}`}>
-          <ThemeToggle />
-          {!isCollapsed && <LanguageSelector />}
-          <AuthButton />
-        </div>
-      </div>
     </div>
   );
 }; 
