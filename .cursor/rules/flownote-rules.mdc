@@ -1,12 +1,14 @@
 ---
 description: 
 globs: 
+alwaysApply: false
 ---
 Cursor Rules for FlowNote
 1. General Guidelines
 ✅ Stick to the MVP – Focus only on the core features: speech-to-text (Deepgram), AI content generation (OpenAI), and user authentication (Firebase). Avoid feature creep.
 ✅ Separation of Concerns (SoC) – Keep frontend, backend, and database modular and independent.
 ✅ Don't Repeat Yourself (DRY) – Use reusable components, hooks, and services to minimize redundancy.
+✅ Maintain a 'mobile first' approach
 ✅ Follow the documentation – The docs (fn-projecttree.md & fn-techstack.md) should guide architectural decisions. Update them when making significant changes.
 
 2. Project Structure & Key Files

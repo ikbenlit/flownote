@@ -70,20 +70,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) 
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 py-6">
-        <ul className="space-y-2">
+      <nav className="flex-1 py-4">
+        <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.path}>
               <Link
                 to={item.path}
-                className={`flex items-center px-4 py-3 text-base transition-colors duration-200
+                className={`flex items-center px-3 py-2 text-sm transition-colors duration-200
                   ${isActive(item.path)
                     ? 'text-blue-500 dark:text-dark-accent-blue bg-blue-50 dark:bg-dark-bg-tertiary border-r-4 border-blue-500 dark:border-dark-accent-blue'
                     : 'text-gray-600 dark:text-dark-text-secondary hover:text-blue-500 dark:hover:text-dark-text-accent hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary'
                   }`}
               >
-                <span className="text-xl">{item.icon}</span>
-                {!isCollapsed && <span className="ml-4 font-patrick-hand">{item.label}</span>}
+                <span className="text-base">{item.icon}</span>
+                {!isCollapsed && <span className="ml-3 font-patrick-hand">{item.label}</span>}
               </Link>
             </li>
           ))}
