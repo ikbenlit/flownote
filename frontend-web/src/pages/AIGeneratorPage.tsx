@@ -2,8 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import OpenAIGenerator from '../components/OpenAIGenerator';
 import { useNotes } from '../context/NoteContext';
+import { FaRobot, FaArrowRight } from 'react-icons/fa';
+import { useI18n } from '../context/I18nContext';
 
 const AIGeneratorPage: React.FC = () => {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const { addNote } = useNotes();
   const [savedNoteId, setSavedNoteId] = useState<string | null>(null);
@@ -12,7 +15,7 @@ const AIGeneratorPage: React.FC = () => {
     try {
       // Extract a title from the first line or use a default
       const lines = text.split('\n').filter(line => line.trim());
-      const title = lines.length > 0 ? lines[0].substring(0, 50) : 'Gegenereerde tekst';
+      const title = lines.length > 0 ? lines[0].substring(0, 50) : t('ai.default_title');
       
       // Create a new note with the generated text
       const noteId = await addNote({
@@ -38,49 +41,49 @@ const AIGeneratorPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold">AI Tekstgenerator</h1>
+    <div className="space-y-8">
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 dark:bg-purple-900/20 rounded-full mb-4">
+          <FaRobot className="text-purple-600 dark:text-purple-400 text-3xl" />
+        </div>
+        <h1 className="font-architects-daughter text-4xl text-gray-900 dark:text-dark-text-primary mb-3">
+          {t('ai.title')}
+        </h1>
+        <p className="font-patrick-hand text-xl text-gray-600 dark:text-dark-text-secondary">
+          {t('ai.subtitle')}
+        </p>
+      </div>
+      
+      {savedNoteId && (
+        <div className="bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800/30 rounded-xl p-6 mb-6">
+          <p className="text-green-800 dark:text-green-400 font-medium font-patrick-hand text-lg">
+            {t('ai.save_success')}
+          </p>
           <button
-            onClick={() => navigate('/notes')}
-            className="text-indigo-600 hover:text-indigo-800"
+            onClick={handleViewNote}
+            className="mt-3 inline-flex items-center font-patrick-hand text-blue-500 dark:text-dark-accent-blue hover:text-blue-600 dark:hover:text-dark-accent-blue-light"
           >
-            Terug naar notities
+            {t('ai.view_note')}
+            <FaArrowRight className="ml-1 text-sm" />
           </button>
         </div>
-        
-        <p className="mb-6 text-gray-600">
-          Gebruik AI om verschillende soorten teksten te genereren. Kies een type tekst, 
-          voer een prompt in en laat de AI een tekst voor je schrijven.
-        </p>
-        
-        {savedNoteId && (
-          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
-            <p className="text-green-800 font-medium">
-              Tekst succesvol opgeslagen als notitie!
-            </p>
-            <button
-              onClick={handleViewNote}
-              className="mt-2 text-sm text-indigo-600 hover:text-indigo-800"
-            >
-              Bekijk notitie
-            </button>
-          </div>
-        )}
-        
+      )}
+      
+      <div className="bg-white dark:bg-dark-bg-secondary rounded-xl shadow-lg p-8 border border-gray-100 dark:border-dark-border-primary">
         <OpenAIGenerator onTextGenerated={handleSaveAsNote} />
-        
-        <div className="mt-8 p-4 bg-gray-50 rounded-md border border-gray-200">
-          <h3 className="text-lg font-medium mb-2">Tips voor effectieve prompts:</h3>
-          <ul className="list-disc pl-5 space-y-1 text-gray-700">
-            <li>Wees specifiek over het onderwerp en doel van de tekst</li>
-            <li>Geef aan voor welk publiek de tekst bedoeld is</li>
-            <li>Specificeer de gewenste toon (formeel, informeel, etc.)</li>
-            <li>Vermeld belangrijke punten die in de tekst moeten worden opgenomen</li>
-            <li>Gebruik bestaande tekst als context voor verbeteringen of uitbreidingen</li>
-          </ul>
-        </div>
+      </div>
+      
+      <div className="bg-gray-50 dark:bg-dark-bg-tertiary rounded-xl p-6 border border-gray-200 dark:border-dark-border-primary">
+        <h3 className="font-architects-daughter text-xl font-bold text-gray-900 dark:text-dark-text-primary mb-4">
+          {t('ai.tips_title')}
+        </h3>
+        <ul className="space-y-2 font-patrick-hand text-gray-700 dark:text-dark-text-secondary list-disc pl-5">
+          <li>{t('ai.tip_1')}</li>
+          <li>{t('ai.tip_2')}</li>
+          <li>{t('ai.tip_3')}</li>
+          <li>{t('ai.tip_4')}</li>
+          <li>{t('ai.tip_5')}</li>
+        </ul>
       </div>
     </div>
   );
