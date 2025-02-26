@@ -30,6 +30,10 @@ export const translations: Translations = {
   },
 
   // Navigation
+  'nav.dashboard': {
+    nl: 'Dashboard',
+    en: 'Dashboard',
+  },
   'nav.transcribe': {
     nl: 'Transcriberen',
     en: 'Transcribe',
@@ -41,6 +45,54 @@ export const translations: Translations = {
   'nav.ai-generator': {
     nl: 'AI Generator',
     en: 'AI Generator',
+  },
+
+  // Sidebar
+  'sidebar.collapse': {
+    nl: 'Zijbalk inklappen',
+    en: 'Collapse Sidebar',
+  },
+  'sidebar.expand': {
+    nl: 'Zijbalk uitklappen',
+    en: 'Expand Sidebar',
+  },
+
+  // Dashboard
+  'dashboard.welcome': {
+    nl: 'Welkom terug',
+    en: 'Welcome back',
+  },
+  'dashboard.subtitle': {
+    nl: 'Hier is een overzicht van je recente activiteiten',
+    en: 'Here\'s an overview of your recent activities',
+  },
+  'dashboard.quick_actions': {
+    nl: 'Snelle acties',
+    en: 'Quick actions',
+  },
+  'dashboard.create_note': {
+    nl: 'Nieuwe notitie maken',
+    en: 'Create new note',
+  },
+  'dashboard.start_recording': {
+    nl: 'Opname starten',
+    en: 'Start recording',
+  },
+  'dashboard.generate_ai': {
+    nl: 'AI-inhoud genereren',
+    en: 'Generate AI content',
+  },
+  'dashboard.recent_notes': {
+    nl: 'Recente notities',
+    en: 'Recent notes',
+  },
+  'dashboard.view_all': {
+    nl: 'Alles bekijken',
+    en: 'View all',
+  },
+  'dashboard.no_recent_notes': {
+    nl: 'Geen recente notities gevonden',
+    en: 'No recent notes found',
   },
 
   // Auth
@@ -74,6 +126,22 @@ export const translations: Translations = {
   },
 
   // Notes
+  'notes.title': {
+    nl: 'Mijn Notities',
+    en: 'My Notes',
+  },
+  'notes.subtitle': {
+    nl: 'Al je gedachten en ideeën op één plek',
+    en: 'All your thoughts and ideas in one place',
+  },
+  'notes.search_placeholder': {
+    nl: 'Zoek in je notities...',
+    en: 'Search your notes...',
+  },
+  'notes.delete.confirmation': {
+    nl: 'Weet je zeker dat je deze notitie wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.',
+    en: 'Are you sure you want to delete this note? This action cannot be undone.',
+  },
   'notes.create': {
     nl: 'Nieuwe Notitie',
     en: 'New Note',
@@ -116,6 +184,22 @@ export const translations: Translations = {
   },
 
   // Transcription
+  'transcription.title': {
+    nl: 'Spraak naar Tekst',
+    en: 'Speech to Text',
+  },
+  'transcription.subtitle': {
+    nl: 'Spreek je gedachten uit en zie ze direct omgezet worden in tekst',
+    en: 'Speak your thoughts and see them instantly converted to text',
+  },
+  'transcription.result': {
+    nl: 'Je Transcriptie',
+    en: 'Your Transcription',
+  },
+  'transcription.edit_save': {
+    nl: 'Bewerken & Opslaan',
+    en: 'Edit & Save',
+  },
   'transcription.start': {
     nl: 'Start Opname',
     en: 'Start Recording',
@@ -125,11 +209,55 @@ export const translations: Translations = {
     en: 'Stop Recording',
   },
   'transcription.save': {
-    nl: 'Transcriptie Opslaan',
-    en: 'Save Transcription',
+    nl: 'Opslaan als Notitie',
+    en: 'Save as Note',
   },
 
   // AI Generator
+  'ai.title': {
+    nl: 'AI Tekstgenerator',
+    en: 'AI Text Generator',
+  },
+  'ai.subtitle': {
+    nl: 'Gebruik AI om verschillende soorten teksten te genereren',
+    en: 'Use AI to generate different types of text',
+  },
+  'ai.default_title': {
+    nl: 'Gegenereerde tekst',
+    en: 'Generated text',
+  },
+  'ai.save_success': {
+    nl: 'Tekst succesvol opgeslagen als notitie!',
+    en: 'Text successfully saved as a note!',
+  },
+  'ai.view_note': {
+    nl: 'Bekijk notitie',
+    en: 'View note',
+  },
+  'ai.tips_title': {
+    nl: 'Tips voor effectieve prompts:',
+    en: 'Tips for effective prompts:',
+  },
+  'ai.tip_1': {
+    nl: 'Wees specifiek over het onderwerp en doel van de tekst',
+    en: 'Be specific about the subject and purpose of the text',
+  },
+  'ai.tip_2': {
+    nl: 'Geef aan voor welk publiek de tekst bedoeld is',
+    en: 'Indicate the intended audience for the text',
+  },
+  'ai.tip_3': {
+    nl: 'Specificeer de gewenste toon (formeel, informeel, etc.)',
+    en: 'Specify the desired tone (formal, informal, etc.)',
+  },
+  'ai.tip_4': {
+    nl: 'Vermeld belangrijke punten die in de tekst moeten worden opgenomen',
+    en: 'Mention important points that should be included in the text',
+  },
+  'ai.tip_5': {
+    nl: 'Gebruik bestaande tekst als context voor verbeteringen of uitbreidingen',
+    en: 'Use existing text as context for improvements or extensions',
+  },
   'ai.generate': {
     nl: 'Genereren',
     en: 'Generate',

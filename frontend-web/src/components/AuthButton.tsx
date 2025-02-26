@@ -3,7 +3,11 @@ import { useAuth } from "../context/AuthContext";
 import { useI18n } from "../context/I18nContext";
 import { FaGoogle, FaSignOutAlt, FaUser } from "react-icons/fa";
 
-const AuthButton: React.FC = () => {
+interface AuthButtonProps {
+  compact?: boolean;
+}
+
+const AuthButton: React.FC<AuthButtonProps> = ({ compact = false }) => {
   const { currentUser, loading, signInWithGoogle, signOut } = useAuth();
   const { t } = useI18n();
   const [photoError, setPhotoError] = useState<boolean>(false);
@@ -35,8 +39,8 @@ const AuthButton: React.FC = () => {
 
   if (loading) {
     return (
-      <button disabled className="px-4 py-2 bg-gray-300 text-gray-500 font-semibold rounded-lg shadow-md cursor-not-allowed">
-        <span className="inline-block animate-pulse">{t('app.loading')}</span>
+      <button disabled className={`${compact ? 'p-2' : 'px-4 py-2'} bg-gray-300 text-gray-500 font-semibold rounded-lg shadow-md cursor-not-allowed`}>
+        <span className="inline-block animate-pulse">{compact ? '...' : t('app.loading')}</span>
       </button>
     );
   }
@@ -44,6 +48,31 @@ const AuthButton: React.FC = () => {
   if (currentUser) {
     // For debugging
     console.log("User photo URL:", currentUser.photoURL);
+    
+    if (compact) {
+      return (
+        <div className="flex flex-col items-center">
+          {currentUser.photoURL && !photoError ? (
+            <img 
+              src={currentUser.photoURL} 
+              alt={t('auth.profile.image')}
+              onError={handleImageError}
+              className="w-8 h-8 rounded-full border border-gray-200"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <FaUser className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+          )}
+          <button 
+            onClick={handleSignOut}
+            className="mt-2 p-2 bg-gray-200 text-gray-700 rounded-full shadow-md hover:bg-gray-300 dark:bg-dark-bg-tertiary dark:text-dark-text-primary dark:hover:bg-dark-border-primary"
+            title={t('auth.logout')}
+          >
+            <FaSignOutAlt className="w-4 h-4" />
+          </button>
+        </div>
+      );
+    }
     
     return (
       <div className="flex items-center">
@@ -71,6 +100,18 @@ const AuthButton: React.FC = () => {
           {t('auth.logout')}
         </button>
       </div>
+    );
+  }
+
+  if (compact) {
+    return (
+      <button 
+        onClick={handleSignIn}
+        className="p-2 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700"
+        title={t('auth.login')}
+      >
+        <FaGoogle className="w-4 h-4" />
+      </button>
     );
   }
 
