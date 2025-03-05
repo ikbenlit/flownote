@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { FaMicrophone, FaStickyNote, FaRobot, FaHome, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaMicrophone, FaStickyNote, FaRobot, FaHome, FaChevronLeft, FaChevronRight, FaTasks } from 'react-icons/fa';
 import { useI18n } from '../context/I18nContext';
 import { UserMenu } from './UserMenu';
 
@@ -32,6 +32,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed, toggleSidebar }) 
       path: '/notes',
       icon: <FaStickyNote />,
       label: t('nav.notes'),
+    },
+    {
+      path: '/tasks',
+      icon: <FaTasks />,
+      label: t('tasks.title'),
     },
     {
       path: '/ai-generator',
