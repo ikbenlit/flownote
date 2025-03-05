@@ -1,7 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: 'class',
   theme: {
@@ -39,8 +40,23 @@ export default {
             'green-light': '#6EE7B7',
           },
         },
+        'dark-bg-primary': '#1a1b1e',
+        'dark-bg-secondary': '#25262b',
+        'dark-bg-tertiary': '#2c2e33',
+        'dark-text-primary': '#c1c2c5',
+        'dark-text-secondary': '#909296',
+        'dark-border-primary': '#373A40',
+        'dark-accent-blue': '#1971c2',
+        'dark-accent-blue-light': '#228be6',
+      },
+      fontFamily: {
+        'kalam': ['Kalam', 'cursive'],
+        'caveat': ['Caveat', 'cursive'],
+        'patrick-hand': ['Patrick Hand', 'cursive'],
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 } 

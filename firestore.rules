@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Functie om te controleren of de gebruiker is ingelogd
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Functie om te controleren of het document van de huidige gebruiker is
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+
+    // Notes collectie regels
+    match /notes/{noteId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update, delete: if isAuthenticated() && isOwner(resource.data.userId);
+    }
+
+    // Tasks collectie regels
+    match /tasks/{taskId} {
+      allow read: if isAuthenticated() && isOwner(resource.data.userId);
+      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
+      allow update, delete: if isAuthenticated() && isOwner(resource.data.userId);
+    }
+  }
+} 

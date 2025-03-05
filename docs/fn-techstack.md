@@ -43,6 +43,9 @@
 ✅ Cross-origin support for frontend integration
 ✅ Type-safe backend with TypeScript
 ✅ Hot-reloading development setup
+✅ Task marking in notes with TipTap editor
+✅ Task extraction from marked text
+✅ Task management system integration
 
 ## 🚀 Planned Features
 - [ ] Firebase authentication integration
@@ -52,3 +55,6 @@
 - [ ] Firestore data storage
 - [ ] Docker containerization
 - [ ] Database migrations
+- [ ] Kanban board for task visualization
+- [ ] Task prioritization and filtering
+- [ ] Task notifications and reminders
