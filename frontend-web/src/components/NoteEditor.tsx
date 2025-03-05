@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback, memo } from 'react';
-import { Note } from '../context/NoteContext';
+import { Note, TaskMarking } from '../context/NoteContext';
 import AIAssistant from './AIAssistant';
 import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
 import { TaskMarkExtension } from './tiptap/extensions/TaskMarkExtension';
+import './tiptap/extensions/TaskMark.css';
 import { useTask } from '../context/TaskContext';
 import { Editor } from '@tiptap/core';
 import { useI18n } from '../context/I18nContext';
+import { FaTasks, FaTrash } from 'react-icons/fa';
 
 interface EditorToolbarProps {
   editor: Editor | null;
@@ -110,7 +112,7 @@ EditorToolbar.displayName = 'EditorToolbar';
 
 interface NoteEditorProps {
   initialNote?: Partial<Note>;
-  onSave: (note: { title: string; content: string; tags: string[]; taskMarkings: any[] }) => void;
+  onSave: (note: { title: string; content: string; tags: string[]; taskMarkings: TaskMarking[] }) => void;
   onCancel: () => void;
 }
 
@@ -123,6 +125,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>(initialNote?.tags || []);
   const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
+  const [taskMarkings, setTaskMarkings] = useState<TaskMarking[]>(initialNote?.taskMarkings || []);
   const { addTask } = useTask();
   const { t } = useI18n();
 
@@ -142,16 +145,26 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       }),
       TaskMarkExtension.configure({
         HTMLAttributes: {
-          class: 'bg-yellow-200 dark:bg-yellow-700 cursor-pointer',
+          class: 'bg-yellow-200 dark:bg-yellow-700 cursor-pointer !important',
+          style: 'background-color: #fef08a; cursor: pointer;'
         },
         onTaskMarkClick: async (attrs) => {
           if (!editor) return;
           
-          const { startOffset, endOffset } = attrs;
-          const text = editor.state.doc.textBetween(startOffset || 0, endOffset || 0);
+          const { id, startOffset, endOffset, markedText } = attrs;
+          const text = markedText || editor.state.doc.textBetween(startOffset || 0, endOffset || 0);
+          
+          console.log('TaskMark aangeklikt!', { id, text });
           
           try {
-            await addTask({
+            console.log('Taak aanmaken met de volgende gegevens:', {
+              title: text,
+              status: 'todo',
+              sourceNoteId: initialNote?.id || '',
+              sourceNoteTitle: title
+            });
+            
+            const taskId = await addTask({
               title: text,
               status: 'todo',
               sourceNoteId: initialNote?.id || '',
@@ -160,10 +173,19 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
               position: 0,
               userId: '', // Dit wordt automatisch ingevuld door de TaskContext
             });
+            
+            console.log('Taak succesvol aangemaakt met ID:', taskId);
+            
+            // Melding aan de gebruiker tonen
+            alert(`Taak aangemaakt: "${text}"`);
           } catch (error) {
             console.error('Fout bij het maken van taak:', error);
+            alert('Fout bij het maken van taak: ' + error);
           }
         },
+        onTaskMarkRemove: (taskId) => {
+          setTaskMarkings(prev => prev.filter(mark => mark.id !== taskId));
+        }
       }),
     ],
     content: initialNote?.content || '',
@@ -180,18 +202,70 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
         return false;
       },
     },
-    onUpdate: () => {},
+    onUpdate: ({ editor }) => {
+      // Update taakmarkeringen bij wijzigingen
+      const marks = extractTaskMarkingsFromEditor(editor);
+      setTaskMarkings(marks);
+    },
     onCreate: ({ editor }) => {
       editor.commands.focus();
     },
     onDestroy: () => {},
   });
 
+  // Functie om taakmarkeringen uit de editor te extraheren
+  const extractTaskMarkingsFromEditor = (editor: Editor): TaskMarking[] => {
+    if (!editor) return [];
+    
+    const content = editor.getJSON();
+    const marks: TaskMarking[] = [];
+    
+    // Loop door alle nodes in de inhoud
+    if (content.content) {
+      content.content.forEach((node: any) => {
+        if (node.marks && Array.isArray(node.marks)) {
+          const taskMarks = node.marks.filter((mark: any) => 
+            mark && typeof mark === 'object' && mark.type === 'taskMark'
+          );
+          
+          taskMarks.forEach((mark: any) => {
+            if (mark.attrs && mark.attrs.id) {
+              const timestamp = mark.attrs.createdAt ? 
+                { seconds: Math.floor(mark.attrs.createdAt / 1000), nanoseconds: 0 } :
+                { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 };
+                
+              const taskMark: TaskMarking = {
+                id: mark.attrs.id,
+                startOffset: mark.attrs.startOffset || 0,
+                endOffset: mark.attrs.endOffset || 0,
+                markedText: mark.attrs.markedText || '',
+                createdAt: timestamp as any
+              };
+              marks.push(taskMark);
+            }
+          });
+        }
+      });
+    }
+    
+    return marks;
+  };
+
+  // Effect om taakmarkeringen te initialiseren na het mounten van de component
+  useEffect(() => {
+    if (editor) {
+      // Initialiseer taakmarkeringen na het mounten
+      const marks = extractTaskMarkingsFromEditor(editor);
+      setTaskMarkings(marks);
+    }
+  }, [editor]);
+
   useEffect(() => {
     if (initialNote && editor) {
       setTitle(initialNote.title || '');
       editor.commands.setContent(initialNote.content || '');
       setTags(initialNote.tags || []);
+      setTaskMarkings(initialNote.taskMarkings || []);
       editor.commands.focus();
     }
   }, [initialNote, editor]);
@@ -224,14 +298,21 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       setErrors(newErrors);
       return;
     }
-
-    const taskMarkings = editor?.getJSON().content?.reduce((marks: any[], node: any) => {
-      if (node.marks) {
-        const taskMarks = node.marks.filter((mark: any) => mark.type === 'taskMark');
-        return [...marks, ...taskMarks];
+    
+    // Ververs de taakmarkeringen voordat we opslaan
+    if (editor) {
+      const freshMarkings = extractTaskMarkingsFromEditor(editor);
+      setTaskMarkings(freshMarkings);
+      
+      console.log('Notitie opslaan met de volgende markeringen:', freshMarkings);
+      
+      // Maak taken van alle markeringen die nog geen taak hebben
+      const tasksToCreate = freshMarkings.filter(mark => !mark.extractedTaskId);
+      
+      if (tasksToCreate.length > 0) {
+        console.log(`${tasksToCreate.length} nieuwe taken worden aangemaakt...`);
       }
-      return marks;
-    }, []) || [];
+    }
     
     onSave({
       title,
@@ -267,9 +348,28 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   const handleMarkTask = useCallback(() => {
     if (!editor || editor.state.selection.empty) return;
     
+    const { from, to } = editor.state.selection;
+    const selectedText = editor.state.doc.textBetween(from, to);
+    
     editor.chain()
       .focus()
       .setTaskMark()
+      .run();
+      
+    // De taakmarkeringen worden automatisch bijgewerkt door de onUpdate handler
+    console.log(`Tekst gemarkeerd als taak: ${selectedText}`);
+    
+    // Direct feedback aan de gebruiker
+    const newTaskMarkings = extractTaskMarkingsFromEditor(editor);
+    setTaskMarkings(newTaskMarkings);
+  }, [editor]);
+
+  const handleRemoveTaskMark = useCallback((taskId: string) => {
+    if (!editor) return;
+    
+    editor.chain()
+      .focus()
+      .removeTaskMark(taskId)
       .run();
   }, [editor]);
 
@@ -320,16 +420,83 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
             {t('notes.content_label')}
           </label>
           <div className="flex items-center space-x-2">
-            <button
-              type="button"
-              onClick={handleMarkTask}
-              className="px-3 py-1 text-sm font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
-            >
-              {t('tasks.mark')}
-            </button>
             <AIAssistant content={editor?.getHTML()} onApplyText={handleApplyAIText} />
           </div>
         </div>
+        
+        {/* Informatie over taakmarkeringen */}
+        <div className="flex items-center mb-2 text-sm text-gray-600 dark:text-dark-text-secondary">
+          <FaTasks className="mr-1" />
+          <span>{t('tasks.marked_count', { count: taskMarkings.length })}</span>
+        </div>
+        
+        {/* Lijst van taakmarkeringen (indien er markeringen zijn) */}
+        {taskMarkings.length > 0 && (
+          <div className="mb-3 p-3 border border-yellow-300 dark:border-yellow-700 rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
+            <h3 className="text-sm font-medium mb-2 flex items-center">
+              <FaTasks className="mr-2 text-yellow-600 dark:text-yellow-400" />
+              {t('tasks.marked_texts')}
+            </h3>
+            <ul className="space-y-2 max-h-48 overflow-y-auto">
+              {taskMarkings.map((mark) => (
+                <li 
+                  key={mark.id} 
+                  className="flex items-center justify-between text-sm p-2 bg-white dark:bg-dark-bg-tertiary rounded border border-yellow-200 dark:border-yellow-800"
+                >
+                  <span className="truncate flex-1 font-medium">{mark.markedText || '(Geen tekst)'}</span>
+                  <div className="flex space-x-2 ml-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (editor) {
+                          // Zoek de markering in de editor en trigger de onTaskMarkClick
+                          const taskMark = editor.state.doc.descendants((node, pos) => {
+                            if (!node.isText) return false;
+                            const marks = node.marks.filter(m => 
+                              m.type.name === 'taskMark' && m.attrs.id === mark.id
+                            );
+                            if (marks.length > 0) {
+                              // Gebruik de positie om de exacte locatie van de markering te vinden
+                              editor.commands.setTextSelection(pos);
+                              return true;
+                            }
+                            return false;
+                          });
+                          
+                          // Maak een taak van deze markering
+                          addTask({
+                            title: mark.markedText,
+                            status: 'todo',
+                            sourceNoteId: initialNote?.id || '',
+                            sourceNoteTitle: title,
+                            extractedText: mark.markedText,
+                            position: 0,
+                            userId: '', // Dit wordt automatisch ingevuld door de TaskContext
+                          }).then(taskId => {
+                            alert(`Taak aangemaakt: "${mark.markedText}"`);
+                          });
+                        }
+                      }}
+                      className="p-1 rounded text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                      title={t('tasks.create_from_marking')}
+                    >
+                      + Taak maken
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveTaskMark(mark.id)}
+                      className="p-1 rounded text-red-500 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      title={t('tasks.remove_marking')}
+                    >
+                      <FaTrash size={12} />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        
         <EditorToolbar editor={editor} onFormatting={handleFormatting} />
         {editor && (
           <BubbleMenu
@@ -339,59 +506,11 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           >
             <button
               type="button"
-              onClick={() => editor.chain().focus().toggleBold().run()}
-              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
-                editor.isActive('bold') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
-              }`}
-              title={t('formatting.bold')}
-            >
-              <strong>B</strong>
-            </button>
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleItalic().run()}
-              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
-                editor.isActive('italic') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
-              }`}
-              title={t('formatting.italic')}
-            >
-              <em>I</em>
-            </button>
-            <button
-              type="button"
-              onClick={() => editor.chain().focus().toggleUnderline().run()}
-              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
-                editor.isActive('underline') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
-              }`}
-              title={t('formatting.underline')}
-            >
-              <u>U</u>
-            </button>
-            <div className="w-px h-4 my-auto bg-gray-300 dark:bg-dark-border-primary" />
-            <button
-              type="button"
-              onClick={() => {
-                const url = window.prompt(t('formatting.enter_url'));
-                if (url) {
-                  editor.chain().focus().setLink({ href: url }).run();
-                }
-              }}
-              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
-                editor.isActive('link') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
-              }`}
-              title={t('formatting.insert_link')}
-            >
-              🔗
-            </button>
-            <button
-              type="button"
               onClick={handleMarkTask}
-              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
-                editor.isActive('taskMark') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
-              }`}
+              className="p-1 px-2 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary text-sm font-medium"
               title={t('tasks.mark')}
             >
-              ✓
+              {t('tasks.mark')}
             </button>
           </BubbleMenu>
         )}
