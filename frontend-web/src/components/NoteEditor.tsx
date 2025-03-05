@@ -6,7 +6,6 @@ import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
 import Link from '@tiptap/extension-link';
 import { TaskMarkExtension } from './tiptap/extensions/TaskMarkExtension';
-import './tiptap/extensions/TaskMark.css';
 import { useTask } from '../context/TaskContext';
 import { Editor } from '@tiptap/core';
 import { useI18n } from '../context/I18nContext';
@@ -112,7 +111,7 @@ EditorToolbar.displayName = 'EditorToolbar';
 
 interface NoteEditorProps {
   initialNote?: Partial<Note>;
-  onSave: (note: { title: string; content: string; tags: string[]; taskMarkings: TaskMarking[] }) => void;
+  onSave: (note: { title: string; content: string; tags: string[]; taskMarkings: TaskMarking[] }) => Promise<string>;
   onCancel: () => void;
 }
 
@@ -147,41 +146,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
         HTMLAttributes: {
           class: 'bg-yellow-200 dark:bg-yellow-700 cursor-pointer !important',
           style: 'background-color: #fef08a; cursor: pointer;'
-        },
-        onTaskMarkClick: async (attrs) => {
-          if (!editor) return;
-          
-          const { id, startOffset, endOffset, markedText } = attrs;
-          const text = markedText || editor.state.doc.textBetween(startOffset || 0, endOffset || 0);
-          
-          console.log('TaskMark aangeklikt!', { id, text });
-          
-          try {
-            console.log('Taak aanmaken met de volgende gegevens:', {
-              title: text,
-              status: 'todo',
-              sourceNoteId: initialNote?.id || '',
-              sourceNoteTitle: title
-            });
-            
-            const taskId = await addTask({
-              title: text,
-              status: 'todo',
-              sourceNoteId: initialNote?.id || '',
-              sourceNoteTitle: title,
-              extractedText: text,
-              position: 0,
-              userId: '', // Dit wordt automatisch ingevuld door de TaskContext
-            });
-            
-            console.log('Taak succesvol aangemaakt met ID:', taskId);
-            
-            // Melding aan de gebruiker tonen
-            alert(`Taak aangemaakt: "${text}"`);
-          } catch (error) {
-            console.error('Fout bij het maken van taak:', error);
-            alert('Fout bij het maken van taak: ' + error);
-          }
         },
         onTaskMarkRemove: (taskId) => {
           setTaskMarkings(prev => prev.filter(mark => mark.id !== taskId));
@@ -220,32 +184,37 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     const content = editor.getJSON();
     const marks: TaskMarking[] = [];
     
-    // Loop door alle nodes in de inhoud
+    const processNode = (node: any) => {
+      if (node.marks && Array.isArray(node.marks)) {
+        const taskMarks = node.marks.filter((mark: any) => 
+          mark && typeof mark === 'object' && mark.type === 'taskMark'
+        );
+        
+        taskMarks.forEach((mark: any) => {
+          if (mark.attrs && mark.attrs.id) {
+            const timestamp = mark.attrs.createdAt ? 
+              { seconds: Math.floor(mark.attrs.createdAt / 1000), nanoseconds: 0 } :
+              { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 };
+              
+            const taskMark: TaskMarking = {
+              id: mark.attrs.id,
+              startOffset: mark.attrs.startOffset || 0,
+              endOffset: mark.attrs.endOffset || 0,
+              markedText: node.text || '',
+              createdAt: timestamp as any
+            };
+            marks.push(taskMark);
+          }
+        });
+      }
+      
+      if (node.content && Array.isArray(node.content)) {
+        node.content.forEach(processNode);
+      }
+    };
+    
     if (content.content) {
-      content.content.forEach((node: any) => {
-        if (node.marks && Array.isArray(node.marks)) {
-          const taskMarks = node.marks.filter((mark: any) => 
-            mark && typeof mark === 'object' && mark.type === 'taskMark'
-          );
-          
-          taskMarks.forEach((mark: any) => {
-            if (mark.attrs && mark.attrs.id) {
-              const timestamp = mark.attrs.createdAt ? 
-                { seconds: Math.floor(mark.attrs.createdAt / 1000), nanoseconds: 0 } :
-                { seconds: Math.floor(Date.now() / 1000), nanoseconds: 0 };
-                
-              const taskMark: TaskMarking = {
-                id: mark.attrs.id,
-                startOffset: mark.attrs.startOffset || 0,
-                endOffset: mark.attrs.endOffset || 0,
-                markedText: mark.attrs.markedText || '',
-                createdAt: timestamp as any
-              };
-              marks.push(taskMark);
-            }
-          });
-        }
-      });
+      content.content.forEach(processNode);
     }
     
     return marks;
@@ -280,7 +249,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     });
   }, [editor]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -299,27 +268,90 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       return;
     }
     
-    // Ververs de taakmarkeringen voordat we opslaan
-    if (editor) {
-      const freshMarkings = extractTaskMarkingsFromEditor(editor);
-      setTaskMarkings(freshMarkings);
+    try {
+      // Verzamel eerst alle markeringen
+      const freshMarkings = editor ? extractTaskMarkingsFromEditor(editor) : [];
       
-      console.log('Notitie opslaan met de volgende markeringen:', freshMarkings);
+      // Sla eerst de notitie op en wacht op het resultaat
+      const noteData = {
+        title: title.trim(),
+        content: editor?.getHTML() || '',
+        tags,
+        taskMarkings: freshMarkings, // Bewaar alle markeringen in de notitie
+      };
       
-      // Maak taken van alle markeringen die nog geen taak hebben
+      let savedNoteId: string;
+      try {
+        savedNoteId = await onSave(noteData);
+        if (!savedNoteId) {
+          throw new Error('Geen noteId ontvangen na opslaan');
+        }
+      } catch (error) {
+        console.error('Fout bij het opslaan van de notitie:', error);
+        alert(t('notes.error.save_failed'));
+        return;
+      }
+      
+      // Filter taken die nog gemaakt moeten worden
       const tasksToCreate = freshMarkings.filter(mark => !mark.extractedTaskId);
       
-      if (tasksToCreate.length > 0) {
-        console.log(`${tasksToCreate.length} nieuwe taken worden aangemaakt...`);
+      // Maak taken aan met de opgeslagen noteId
+      if (editor && tasksToCreate.length > 0) {
+        try {
+          const creationPromises = tasksToCreate.map(mark => 
+            addTask({
+              title: mark.markedText,
+              status: 'todo',
+              priority: 'medium',
+              sourceNoteId: savedNoteId,
+              sourceNoteTitle: title.trim(),
+              extractedText: mark.markedText,
+              position: 0,
+              userId: ''
+            }).catch(error => {
+              console.error(`Fout bij het maken van taak voor markering ${mark.id}:`, error);
+              return null;
+            })
+          );
+          
+          const results = await Promise.all(creationPromises);
+          const successfulTasks = results.filter(Boolean).length;
+          
+          if (successfulTasks > 0) {
+            alert(t('tasks.batch_created', { count: successfulTasks }));
+          }
+          
+          if (successfulTasks < tasksToCreate.length) {
+            console.warn(`${tasksToCreate.length - successfulTasks} taken konden niet worden gemaakt`);
+          }
+          
+          // Verwijder markeringen na succesvol aanmaken van taken
+          const { state } = editor;
+          const { tr } = state;
+          const markType = state.schema.marks.taskMark;
+          
+          if (markType) {
+            state.doc.descendants((node, pos) => {
+              if (!node.isText) return;
+              
+              const marks = node.marks.filter(m => m.type === markType);
+              if (marks.length > 0) {
+                tr.removeMark(pos, pos + node.nodeSize, markType);
+              }
+            });
+
+            editor.view.dispatch(tr);
+            editor.commands.focus();
+          }
+        } catch (error) {
+          console.error('Fout bij het maken van taken:', error);
+          alert(t('tasks.error.batch_creation_failed'));
+        }
       }
+    } catch (error) {
+      console.error('Onverwachte fout:', error);
+      alert(t('app.error.unexpected'));
     }
-    
-    onSave({
-      title,
-      content: editor?.getHTML() || '',
-      tags,
-      taskMarkings,
-    });
   };
 
   const handleAddTag = () => {
@@ -348,18 +380,11 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   const handleMarkTask = useCallback(() => {
     if (!editor || editor.state.selection.empty) return;
     
-    const { from, to } = editor.state.selection;
-    const selectedText = editor.state.doc.textBetween(from, to);
-    
     editor.chain()
       .focus()
       .setTaskMark()
       .run();
       
-    // De taakmarkeringen worden automatisch bijgewerkt door de onUpdate handler
-    console.log(`Tekst gemarkeerd als taak: ${selectedText}`);
-    
-    // Direct feedback aan de gebruiker
     const newTaskMarkings = extractTaskMarkingsFromEditor(editor);
     setTaskMarkings(newTaskMarkings);
   }, [editor]);
@@ -445,43 +470,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
                 >
                   <span className="truncate flex-1 font-medium">{mark.markedText || '(Geen tekst)'}</span>
                   <div className="flex space-x-2 ml-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (editor) {
-                          // Zoek de markering in de editor en trigger de onTaskMarkClick
-                          editor.state.doc.descendants((node, pos) => {
-                            if (!node.isText) return false;
-                            const marks = node.marks.filter(m => 
-                              m.type.name === 'taskMark' && m.attrs.id === mark.id
-                            );
-                            if (marks.length > 0) {
-                              // Gebruik de positie om de exacte locatie van de markering te vinden
-                              editor.commands.setTextSelection(pos);
-                              return true;
-                            }
-                            return false;
-                          });
-                          
-                          // Maak een taak van deze markering
-                          addTask({
-                            title: mark.markedText,
-                            status: 'todo',
-                            sourceNoteId: initialNote?.id || '',
-                            sourceNoteTitle: title,
-                            extractedText: mark.markedText,
-                            position: 0,
-                            userId: '', // Dit wordt automatisch ingevuld door de TaskContext
-                          }).then(() => {
-                            alert(`Taak aangemaakt: "${mark.markedText}"`);
-                          });
-                        }
-                      }}
-                      className="p-1 rounded text-blue-600 hover:text-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"
-                      title={t('tasks.create_from_marking')}
-                    >
-                      + Taak maken
-                    </button>
                     <button
                       type="button"
                       onClick={() => handleRemoveTaskMark(mark.id)}
