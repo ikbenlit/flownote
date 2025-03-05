@@ -450,7 +450,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
                       onClick={() => {
                         if (editor) {
                           // Zoek de markering in de editor en trigger de onTaskMarkClick
-                          const taskMark = editor.state.doc.descendants((node, pos) => {
+                          editor.state.doc.descendants((node, pos) => {
                             if (!node.isText) return false;
                             const marks = node.marks.filter(m => 
                               m.type.name === 'taskMark' && m.attrs.id === mark.id
@@ -472,7 +472,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
                             extractedText: mark.markedText,
                             position: 0,
                             userId: '', // Dit wordt automatisch ingevuld door de TaskContext
-                          }).then(taskId => {
+                          }).then(() => {
                             alert(`Taak aangemaakt: "${mark.markedText}"`);
                           });
                         }
