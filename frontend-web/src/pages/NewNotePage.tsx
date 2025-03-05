@@ -3,21 +3,25 @@ import { useNavigate } from 'react-router-dom';
 import { NoteEditor } from '../components/NoteEditor';
 import { useNotes } from '../context/NoteContext';
 import { FaArrowLeft } from 'react-icons/fa';
+import { TaskMarking } from '../context/NoteContext';
 
 export const NewNotePage: React.FC = () => {
   const navigate = useNavigate();
   const { addNote } = useNotes();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSave = async (noteData: { title: string; content: string; tags: string[] }) => {
+  const handleSave = async (noteData: { title: string; content: string; tags: string[]; taskMarkings: TaskMarking[] }): Promise<string> => {
     try {
       setIsLoading(true);
       const noteId = await addNote(noteData);
-      if (noteId) {
-        navigate(`/notes/${noteId}`);
+      if (!noteId) {
+        throw new Error('Geen noteId ontvangen na opslaan');
       }
+      navigate(`/notes/${noteId}`);
+      return noteId;
     } catch (error) {
       console.error('Error saving note:', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -52,6 +56,7 @@ export const NewNotePage: React.FC = () => {
               title: '',
               content: '',
               tags: [],
+              taskMarkings: [],
             }}
             onSave={handleSave}
             onCancel={handleCancel}

@@ -506,6 +506,10 @@ export const translations: Translations = {
     nl: 'Taken succesvol geëxtraheerd',
     en: 'Tasks successfully extracted',
   },
+  'tasks.batch_created': {
+    nl: '{{count}} taken succesvol aangemaakt',
+    en: '{{count}} tasks successfully created',
+  },
   'tasks.error.create': {
     nl: 'Kon de taak niet aanmaken',
     en: 'Could not create task',
@@ -521,6 +525,10 @@ export const translations: Translations = {
   'tasks.error.load': {
     nl: 'Er is een fout opgetreden bij het laden van de taken',
     en: 'An error occurred while loading tasks',
+  },
+  'tasks.error.batch_creation_failed': {
+    nl: 'Er is een fout opgetreden bij het aanmaken van de taken',
+    en: 'An error occurred while creating tasks',
   },
 
   // Formatting
@@ -597,6 +605,10 @@ export const translations: Translations = {
   'notes.error.content_required': {
     nl: 'Inhoud is verplicht',
     en: 'Content is required',
+  },
+  'notes.error.save_failed': {
+    nl: 'Kon de notitie niet opslaan. Probeer het opnieuw.',
+    en: 'Could not save the note. Please try again.',
   },
 
   // Task markings

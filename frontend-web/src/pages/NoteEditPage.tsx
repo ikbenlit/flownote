@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { NoteEditor } from '../components/NoteEditor';
 import { useNotes } from '../context/NoteContext';
+import { TaskMarking } from '../context/NoteContext';
 import { FaArrowLeft } from 'react-icons/fa';
 
 export const NoteEditPage: React.FC = () => {
@@ -19,17 +20,26 @@ export const NoteEditPage: React.FC = () => {
     }
   }, [id, note]);
 
-  const handleSave = async (noteData: { title: string; content: string; tags: string[] }) => {
-    if (!id) return;
+  const handleSave = async (noteData: { title: string; content: string; tags: string[]; taskMarkings: TaskMarking[] }): Promise<string> => {
+    if (!id) {
+      throw new Error('Geen noteId beschikbaar voor update');
+    }
     
     try {
       setIsLoading(true);
       const success = await updateNote(id, noteData);
-      if (success) {
-        navigate(`/notes/${id}`);
+      if (!success) {
+        throw new Error('Notitie kon niet worden bijgewerkt');
       }
+      
+      const savedId = id;
+      
+      setTimeout(() => navigate(`/notes/${savedId}`), 0);
+      
+      return savedId;
     } catch (error) {
       console.error('Error updating note:', error);
+      throw new Error('Notitie kon niet worden opgeslagen');
     } finally {
       setIsLoading(false);
     }

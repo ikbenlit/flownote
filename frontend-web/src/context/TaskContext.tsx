@@ -74,17 +74,27 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!currentUser) throw new Error(t('auth.error.login_required'));
 
         try {
+            // Controleer of we een geldige sourceNoteId hebben
+            if (!taskData.sourceNoteId) {
+                throw new Error('Een geldige sourceNoteId is vereist voor het maken van een taak');
+            }
+
             const now = new Date();
-            const docRef = await addDoc(collection(db, 'tasks'), {
+            const newTask = {
                 ...taskData,
                 userId: currentUser.uid,
                 createdAt: now,
-                updatedAt: now
-            });
+                updatedAt: now,
+                status: taskData.status || 'todo',
+                position: taskData.position || 0,
+                priority: taskData.priority || 'medium'
+            };
+            
+            const docRef = await addDoc(collection(db, 'tasks'), newTask);
             return docRef.id;
         } catch (err) {
-            console.error('Fout bij het toevoegen van taak:', err);
-            throw new Error(t('tasks.error.create'));
+            console.error('TaskContext: Fout bij het toevoegen van taak:', err);
+            throw err;
         }
     }, [currentUser, t]);
 

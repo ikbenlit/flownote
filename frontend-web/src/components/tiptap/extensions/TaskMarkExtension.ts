@@ -1,11 +1,10 @@
 import { Mark } from '@tiptap/core';
 import { Plugin, PluginKey } from 'prosemirror-state';
+import { EditorView } from 'prosemirror-view';
 import { v4 as uuidv4 } from 'uuid';
-import './TaskMark.css';
 
 export interface TaskMarkOptions {
     HTMLAttributes: Record<string, any>;
-    onTaskMarkClick?: (attrs: TaskMarkAttributes) => void;
     onTaskMarkRemove?: (taskId: string) => void;
 }
 
@@ -36,7 +35,6 @@ export const TaskMarkExtension = Mark.create<TaskMarkOptions>({
                 class: 'task-mark',
                 'data-task-id': '',
             },
-            onTaskMarkClick: undefined,
             onTaskMarkRemove: undefined,
         };
     },
@@ -123,25 +121,20 @@ export const TaskMarkExtension = Mark.create<TaskMarkOptions>({
 
                     const markType = state.schema.marks.taskMark;
                     if (!markType) {
-                        console.error('No mark type named taskMark found');
+                        console.error('Geen markType genaamd taskMark gevonden');
                         return false;
                     }
                     
                     let hasRemoved = false;
-
                     state.doc.descendants((node, pos) => {
                         if (!node.isText) return;
 
-                        const marksToKeep = node.marks.filter(mark => {
-                            if (mark.type === markType && mark.attrs.id === id) {
-                                hasRemoved = true;
-                                return false;
-                            }
-                            return true;
-                        });
-
-                        if (hasRemoved) {
-                            tr.setNodeMarkup(pos, undefined, undefined, marksToKeep);
+                        const marks = node.marks;
+                        const taskMark = marks.find(m => m.type === markType && m.attrs.id === id);
+                        
+                        if (taskMark) {
+                            hasRemoved = true;
+                            tr.removeMark(pos, pos + node.nodeSize, markType);
                         }
                     });
 
@@ -155,27 +148,60 @@ export const TaskMarkExtension = Mark.create<TaskMarkOptions>({
     },
 
     addProseMirrorPlugins() {
-        const key = new PluginKey('task-mark');
-
+        const extension = this;
+        
         return [
             new Plugin({
-                key,
+                key: new PluginKey('task-mark-click'),
                 props: {
-                    handleClick: (view, pos) => {
+                    /**
+                     * Handelt klikken op taskMarks af.
+                     * @param view - De huidige editor view
+                     * @param pos - De positie in het document waar geklikt is
+                     * @returns true als de klik is afgehandeld, false anders
+                     */
+                    handleClick(
+                        view: EditorView,
+                        pos: number,
+                    ): boolean {
+                        // Controleer of we op een taskMark hebben geklikt
                         const { state } = view;
-                        const { doc } = state;
-                        const marks = doc.resolve(pos).marks();
-                        const taskMark = marks.find(mark => mark.type.name === 'taskMark');
+                        const { schema, doc } = state;
+                        const range = doc.resolve(pos);
+                        const marks = range.marks();
+                        const taskMark = marks.find(m => m.type === schema.marks.taskMark);
 
                         if (taskMark) {
-                            if (this.options.onTaskMarkClick) {
-                                this.options.onTaskMarkClick(taskMark.attrs as TaskMarkAttributes);
+                            // Verwijder de markering
+                            const tr = view.state.tr;
+                            const markType = schema.marks.taskMark;
+                            
+                            // Zoek de volledige reikwijdte van de markering
+                            let from = pos;
+                            let to = pos;
+                            
+                            // Zoek alle nodes die deze specifieke markering bevatten
+                            doc.nodesBetween(0, doc.content.size, (node, nodePos) => {
+                                if (node.marks.some(m => m.type === markType && m.attrs.id === taskMark.attrs.id)) {
+                                    from = Math.min(from, nodePos);
+                                    to = Math.max(to, nodePos + node.nodeSize);
+                                }
+                            });
+
+                            // Verwijder de markering en dispatch de transactie
+                            tr.removeMark(from, to, markType);
+                            view.dispatch(tr);
+
+                            // Roep de callback aan als die bestaat
+                            if (extension.options.onTaskMarkRemove) {
+                                extension.options.onTaskMarkRemove(taskMark.attrs.id);
                             }
+
                             return true;
                         }
 
                         return false;
-                    },
+                    }
                 },
             }),
         ];
