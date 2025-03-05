@@ -1,10 +1,113 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, memo } from 'react';
 import { Note } from '../context/NoteContext';
 import AIAssistant from './AIAssistant';
+import { useEditor, EditorContent, BubbleMenu } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import Link from '@tiptap/extension-link';
+import { TaskMarkExtension } from './tiptap/extensions/TaskMarkExtension';
+import { useTask } from '../context/TaskContext';
+import { Editor } from '@tiptap/core';
+
+interface EditorToolbarProps {
+  editor: Editor | null;
+  onFormatting: (command: () => void) => void;
+}
+
+const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
+  if (!editor) return null;
+
+  return (
+    <div className="flex flex-wrap gap-2 p-2 mb-2 border border-gray-200 dark:border-dark-border-primary rounded-lg bg-white dark:bg-dark-bg-secondary">
+      <button
+        type="button"
+        onClick={() => onFormatting(() => editor.chain().focus().toggleBold().run())}
+        className={`p-2 rounded ${editor.isActive('bold') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Vet (Ctrl+B)"
+      >
+        <strong>B</strong>
+      </button>
+      <button
+        type="button"
+        onClick={() => onFormatting(() => editor.chain().focus().toggleItalic().run())}
+        className={`p-2 rounded ${editor.isActive('italic') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Cursief (Ctrl+I)"
+      >
+        <em>I</em>
+      </button>
+      <button
+        type="button"
+        onClick={() => onFormatting(() => editor.chain().focus().toggleUnderline().run())}
+        className={`p-2 rounded ${editor.isActive('underline') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Onderstrepen (Ctrl+U)"
+      >
+        <u>U</u>
+      </button>
+      <div className="w-px h-6 bg-gray-300 dark:bg-dark-border-primary mx-1" />
+      <button
+        type="button"
+        onClick={() => onFormatting(() => editor.chain().focus().toggleHeading({ level: 1 }).run())}
+        className={`p-2 rounded ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Kop 1"
+      >
+        H1
+      </button>
+      <button
+        type="button"
+        onClick={() => onFormatting(() => editor.chain().focus().toggleHeading({ level: 2 }).run())}
+        className={`p-2 rounded ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Kop 2"
+      >
+        H2
+      </button>
+      <button
+        type="button"
+        onClick={() => onFormatting(() => editor.chain().focus().toggleHeading({ level: 3 }).run())}
+        className={`p-2 rounded ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Kop 3"
+      >
+        H3
+      </button>
+      <div className="w-px h-6 bg-gray-300 dark:bg-dark-border-primary mx-1" />
+      <button
+        type="button"
+        onClick={() => onFormatting(() => editor.chain().focus().toggleBulletList().run())}
+        className={`p-2 rounded ${editor.isActive('bulletList') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Bullet lijst"
+      >
+        • Lijst
+      </button>
+      <button
+        type="button"
+        onClick={() => onFormatting(() => editor.chain().focus().toggleOrderedList().run())}
+        className={`p-2 rounded ${editor.isActive('orderedList') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Genummerde lijst"
+      >
+        1. Lijst
+      </button>
+      <div className="w-px h-6 bg-gray-300 dark:bg-dark-border-primary mx-1" />
+      <button
+        type="button"
+        onClick={() => {
+          const url = window.prompt('Voer de URL in:');
+          if (url) {
+            onFormatting(() => editor.chain().focus().setLink({ href: url }).run());
+          }
+        }}
+        className={`p-2 rounded ${editor.isActive('link') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
+        title="Link invoegen"
+      >
+        🔗 Link
+      </button>
+    </div>
+  );
+});
+
+EditorToolbar.displayName = 'EditorToolbar';
 
 interface NoteEditorProps {
   initialNote?: Partial<Note>;
-  onSave: (note: { title: string; content: string; tags: string[] }) => void;
+  onSave: (note: { title: string; content: string; tags: string[]; taskMarkings: any[] }) => void;
   onCancel: () => void;
 }
 
@@ -14,39 +117,172 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   onCancel,
 }) => {
   const [title, setTitle] = useState(initialNote?.title || '');
-  const [content, setContent] = useState(initialNote?.content || '');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>(initialNote?.tags || []);
   const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
+  const { addTask } = useTask();
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3]
+        }
+      }),
+      Underline,
+      Link.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          class: 'text-blue-500 hover:text-blue-700 underline'
+        }
+      }),
+      TaskMarkExtension.configure({
+        HTMLAttributes: {
+          class: 'bg-yellow-200 dark:bg-yellow-700 cursor-pointer',
+        },
+        onTaskMarkClick: async (attrs) => {
+          if (!editor) return;
+          
+          const { startOffset, endOffset } = attrs;
+          const text = editor.state.doc.textBetween(startOffset || 0, endOffset || 0);
+          
+          try {
+            await addTask({
+              title: text,
+              status: 'todo',
+              sourceNoteId: initialNote?.id || '',
+              sourceNoteTitle: title,
+              extractedText: text,
+              position: 0,
+              userId: '', // Dit wordt automatisch ingevuld door de TaskContext
+            });
+          } catch (error) {
+            console.error('Fout bij het maken van taak:', error);
+          }
+        },
+      }),
+    ],
+    content: initialNote?.content || '',
+    editorProps: {
+      attributes: {
+        class: 'prose prose-lg dark:prose-invert max-w-none w-full px-4 py-3 font-kalam text-lg border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary min-h-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200',
+      },
+      handleKeyDown: (view, event) => {
+        console.log('Editor KeyDown:', event.key);
+        // Voorkom form submission bij Enter
+        if (event.key === 'Enter' && !event.ctrlKey) {
+          event.preventDefault();
+          editor?.commands.insertContent('<p></p>');
+          return true;
+        }
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          return true;
+        }
+        return false;
+      },
+    },
+    onUpdate: ({ editor }) => {
+      console.log('Editor Update:', {
+        isFocused: editor.isFocused,
+        selection: editor.state.selection,
+        content: editor.getHTML()
+      });
+    },
+    onCreate: ({ editor }) => {
+      console.log('Editor Created');
+      // Focus de editor bij het aanmaken
+      editor.commands.focus();
+    },
+    onDestroy: () => {
+      console.log('Editor Destroyed');
+    },
+  });
+
+  // Debug logging voor component lifecycle
+  useEffect(() => {
+    console.log('NoteEditor mounted');
+    return () => {
+      console.log('NoteEditor unmounted');
+    };
+  }, []);
 
   useEffect(() => {
-    if (initialNote) {
+    if (initialNote && editor) {
+      console.log('InitialNote changed:', initialNote);
       setTitle(initialNote.title || '');
-      setContent(initialNote.content || '');
+      editor.commands.setContent(initialNote.content || '');
       setTags(initialNote.tags || []);
+      // Focus de editor na het laden van de inhoud
+      editor.commands.focus();
     }
-  }, [initialNote]);
+  }, [initialNote, editor]);
 
+  // Debug logging voor formatting
+  const handleFormatting = useCallback((command: () => void) => {
+    if (!editor) return;
+    console.log('Applying formatting command');
+    
+    // Voorkom dat de editor focus verliest
+    const currentSelection = editor.state.selection;
+    
+    // Voer de opmaak command uit
+    command();
+    
+    // Herstel de focus zonder form submission te triggeren
+    requestAnimationFrame(() => {
+      editor.commands.focus();
+      editor.commands.setTextSelection(currentSelection);
+    });
+    
+    console.log('Formatting applied, focusing editor');
+  }, [editor]);
+
+  // Debug logging voor form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
+    console.log('Form submitted');
     
     // Validate form
     const newErrors: { title?: string; content?: string } = {};
     
     if (!title.trim()) {
-      newErrors.title = 'Title is required';
+      newErrors.title = 'Titel is verplicht';
     }
     
-    if (!content.trim()) {
-      newErrors.content = 'Content is required';
+    if (!editor?.getText().trim()) {
+      newErrors.content = 'Inhoud is verplicht';
     }
     
     if (Object.keys(newErrors).length > 0) {
+      console.log('Validation errors:', newErrors);
       setErrors(newErrors);
       return;
     }
+
+    // Verzamel alle taakmarkeringen
+    const taskMarkings = editor?.getJSON().content?.reduce((marks: any[], node: any) => {
+      if (node.marks) {
+        const taskMarks = node.marks.filter((mark: any) => mark.type === 'taskMark');
+        return [...marks, ...taskMarks];
+      }
+      return marks;
+    }, []) || [];
     
-    onSave({ title, content, tags });
+    console.log('Saving note with data:', {
+      title,
+      content: editor?.getHTML(),
+      tags,
+      taskMarkings,
+    });
+    
+    onSave({
+      title,
+      content: editor?.getHTML() || '',
+      tags,
+      taskMarkings,
+    });
   };
 
   const handleAddTag = () => {
@@ -70,11 +306,45 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
 
   // Handle AI generated text
   const handleApplyAIText = (generatedText: string) => {
-    setContent(generatedText);
+    editor?.commands.setContent(generatedText);
   };
 
+  const handleMarkTask = useCallback(() => {
+    if (!editor || editor.state.selection.empty) return;
+    
+    editor.chain()
+      .focus()
+      .setTaskMark()
+      .run();
+  }, [editor]);
+
+  // Voorkom dat het formulier automatisch wordt verzonden
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && e.ctrlKey) {
+      e.preventDefault();
+      e.stopPropagation();
+      handleSubmit(e);
+    }
+  };
+
+  // Voorkom dat het formulier automatisch wordt verzonden bij focus events
+  const handleFocus = (e: React.FocusEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  if (!editor) {
+    return null;
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form 
+      onSubmit={handleSubmit} 
+      onKeyDown={handleKeyDown} 
+      onFocus={handleFocus}
+      className="space-y-6"
+      noValidate
+    >
       <div>
         <label htmlFor="title" className="block font-patrick-hand text-lg text-gray-700 dark:text-dark-text-primary mb-2">
           Titel
@@ -96,17 +366,83 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           <label htmlFor="content" className="block font-patrick-hand text-lg text-gray-700 dark:text-dark-text-primary mb-2">
             Inhoud
           </label>
-          <AIAssistant content={content} onApplyText={handleApplyAIText} />
+          <div className="flex items-center space-x-2">
+            <button
+              type="button"
+              onClick={handleMarkTask}
+              className="px-3 py-1 text-sm font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
+            >
+              Als taak markeren
+            </button>
+            <AIAssistant content={editor?.getHTML()} onApplyText={handleApplyAIText} />
+          </div>
         </div>
-        <textarea
-          id="content"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          rows={8}
-          className="w-full px-4 py-3 font-kalam text-lg border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary placeholder-gray-400 dark:placeholder-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200"
-          placeholder="Begin hier met schrijven..."
-          required
-        />
+        <EditorToolbar editor={editor} onFormatting={handleFormatting} />
+        {editor && (
+          <BubbleMenu
+            editor={editor}
+            tippyOptions={{ duration: 100 }}
+            className="flex gap-1 p-1 rounded-lg border border-gray-200 dark:border-dark-border-primary bg-white dark:bg-dark-bg-secondary shadow-lg"
+          >
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleBold().run()}
+              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
+                editor.isActive('bold') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
+              }`}
+              title="Vet (Ctrl+B)"
+            >
+              <strong>B</strong>
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleItalic().run()}
+              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
+                editor.isActive('italic') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
+              }`}
+              title="Cursief (Ctrl+I)"
+            >
+              <em>I</em>
+            </button>
+            <button
+              type="button"
+              onClick={() => editor.chain().focus().toggleUnderline().run()}
+              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
+                editor.isActive('underline') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
+              }`}
+              title="Onderstrepen (Ctrl+U)"
+            >
+              <u>U</u>
+            </button>
+            <div className="w-px h-4 my-auto bg-gray-300 dark:bg-dark-border-primary" />
+            <button
+              type="button"
+              onClick={() => {
+                const url = window.prompt('Voer de URL in:');
+                if (url) {
+                  editor.chain().focus().setLink({ href: url }).run();
+                }
+              }}
+              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
+                editor.isActive('link') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
+              }`}
+              title="Link invoegen"
+            >
+              🔗
+            </button>
+            <button
+              type="button"
+              onClick={handleMarkTask}
+              className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
+                editor.isActive('taskMark') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
+              }`}
+              title="Als taak markeren"
+            >
+              ✓
+            </button>
+          </BubbleMenu>
+        )}
+        <EditorContent editor={editor} />
         {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content}</p>}
       </div>
 

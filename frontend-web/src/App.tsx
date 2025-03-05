@@ -13,6 +13,7 @@ import { AuthProvider } from './context/AuthContext';
 import { AIProvider } from './context/AIContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { I18nProvider } from './context/I18nContext';
+import { TaskProvider } from './context/TaskContext';
 import PrivateRoute from './components/PrivateRoute';
 import LoginPage from './pages/LoginPage';
 import { MainLayout } from './components/MainLayout';
@@ -23,29 +24,31 @@ function App() {
       <ThemeProvider>
         <AuthProvider>
           <NoteProvider>
-            <AIProvider>
-              <Router>
-                <Routes>
-                  {/* Public routes */}
-                  <Route path="/" element={<LandingPage />} />
-                  <Route path="/login" element={<LoginPage />} />
-                  
-                  {/* Protected routes wrapped in MainLayout */}
-                  <Route element={<PrivateRoute />}>
-                    <Route element={<MainLayout />}>
-                      <Route path="/app" element={<DashboardPage />} />
-                      <Route path="/transcribe" element={<TranscriptionPage />} />
-                      <Route path="/notes" element={<NotesPage />} />
-                      <Route path="/notes/:id" element={<NoteDetailPage />} />
-                      <Route path="/notes/edit/:id" element={<NoteEditPage />} />
-                      <Route path="/notes/new" element={<NewNotePage />} />
-                      <Route path="/notes/new-from-transcription" element={<NewNoteFromTranscriptionPage />} />
-                      <Route path="/ai-generator" element={<AIGeneratorPage />} />
+            <TaskProvider>
+              <AIProvider>
+                <Router>
+                  <Routes>
+                    {/* Public routes */}
+                    <Route path="/" element={<LandingPage />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    
+                    {/* Protected routes wrapped in MainLayout */}
+                    <Route element={<PrivateRoute />}>
+                      <Route element={<MainLayout />}>
+                        <Route path="/app" element={<DashboardPage />} />
+                        <Route path="/transcribe" element={<TranscriptionPage />} />
+                        <Route path="/notes" element={<NotesPage />} />
+                        <Route path="/notes/:id" element={<NoteDetailPage />} />
+                        <Route path="/notes/edit/:id" element={<NoteEditPage />} />
+                        <Route path="/notes/new" element={<NewNotePage />} />
+                        <Route path="/notes/new-from-transcription" element={<NewNoteFromTranscriptionPage />} />
+                        <Route path="/ai-generator" element={<AIGeneratorPage />} />
+                      </Route>
                     </Route>
-                  </Route>
-                </Routes>
-              </Router>
-            </AIProvider>
+                  </Routes>
+                </Router>
+              </AIProvider>
+            </TaskProvider>
           </NoteProvider>
         </AuthProvider>
       </ThemeProvider>

@@ -13,8 +13,11 @@ De applicatie is modulair opgebouwd met de volgende componenten:
 - Rol: API-endpoints voor communicatie met de frontend, database en externe services.
 
 **Database:**
-- Systeem: PostgreSQL voor gestructureerde opslag van gebruikersdata, notities en taken.
-- Queries: Parameterized SQL-queries om beveiliging te waarborgen (tegen SQL-injectie).
+- Systeem: Firebase Firestore voor flexibele, schaalbare opslag van gebruikersdata, notities en taken.
+- Collecties: 'notes' en 'tasks' met gebruikersspecifieke toegangscontrole.
+- Indexen: Samengestelde indexen voor efficiënte queries op basis van gebruikers-ID en sorteervelden.
+- Beveiligingsregels: Strikte regels die ervoor zorgen dat gebruikers alleen hun eigen data kunnen lezen en schrijven.
+- Persistentie: Multi-tab IndexedDB persistentie voor offline functionaliteit en betere gebruikerservaring.
 
 **Authenticatie:**
 - Dienst: Firebase Authentication voor gebruikersregistratie en -login.
@@ -51,6 +54,10 @@ De applicatie is modulair opgebouwd met de volgende componenten:
 - Rijke Teksteditor: Gebruik een library zoals Quill of TinyMCE met basisfunctionaliteit (vet, cursief, lijsten).
 - Synchronisatie: Wijzigingen worden real-time opgeslagen in de database via API-calls.
 - API: POST/PUT-endpoints voor het opslaan en bijwerken van notities.
+- Bekende problemen en oplossingen:
+  - Probleem: Automatisch sluiten van editor bij opmaak - De editor sloot automatisch wanneer gebruikers opmaak toevoegden omdat de opmaakknoppen geen expliciet `type="button"` attribuut hadden, waardoor ze als `type="submit"` werden behandeld en het formulier verzonden.
+  - Oplossing: Toevoegen van `type="button"` aan alle opmaakknoppen in de EditorToolbar en BubbleMenu componenten om te voorkomen dat ze het formulier verzenden. De editor sluit nu alleen wanneer de gebruiker bewust op de "Opslaan" knop klikt.
+  - Technische details: In HTML-formulieren hebben knoppen standaard een `type="submit"` als er geen expliciete type is opgegeven. Door `type="button"` toe te voegen aan opmaakknoppen, voeren ze alleen hun opmaakfunctie uit zonder het formulier te verzenden.
 
 4. AI-gebaseerde Tekstgeneratie
 - Doel: Tekst genereren of verbeteren op basis van gebruikersinput en geselecteerde teksttypes.
@@ -70,10 +77,21 @@ De applicatie is modulair opgebouwd met de volgende componenten:
 6. Taakbeheer met Kanban/Swimminglanes
 - Doel: Taken organiseren en beheren in een visueel Kanban-board.
 *Technische Implementatie:*
-- UI: React-component met kolommen ("To Do", "In Progress", "Done").
-- Interactie: Drag-and-drop met een library zoals react-beautiful-dnd.
-- Backend: API-endpoints voor CRUD-operaties op taken (create, read, update, delete).
-    Taken worden in PostgreSQL opgeslagen en kunnen worden gekoppeld aan notities via een relationele tabel.
+- Taakmarkering:
+  - TaskMarkExtension: Aangepaste TipTap extensie voor het markeren van tekst als taken
+  - Interactief: Klikbare markeringen met unieke ID's en positie-tracking
+  - Extractie: Automatische taakcreatie bij klikken op markeringen
+- UI: React-component met kolommen ("To Do", "In Progress", "Done")
+- Interactie: Drag-and-drop met een library zoals react-beautiful-dnd
+- Backend: API-endpoints voor CRUD-operaties op taken (create, read, update, delete)
+- Database: Taken worden in PostgreSQL opgeslagen met relaties naar bronnotities
+- Attributen:
+  - Taak ID (UUID)
+  - Titel (geëxtraheerde tekst)
+  - Status (todo, in progress, done)
+  - Bron-notitie referentie
+  - Start- en eindpositie in notitie
+  - Gebruikers-ID voor eigenaarschap
 
 ## Ontwikkelingsrichtlijnen ##
 - Modulariteit:
@@ -85,32 +103,41 @@ De applicatie is modulair opgebouwd met de volgende componenten:
     Gebruik Axios of Fetch met async/await en try-catch voor foutafhandeling.
     Implementeer timeouts en retries voor externe API's (Deepgram, OpenAI).
 - Database:
-    Gebruik een ORM (bijv. Prisma) of raw SQL met parameterized queries.
-    Definieer tabellen: users, notes, tasks met foreign keys waar nodig.
+    Gebruik Firebase Firestore SDK voor interactie met de database.
+    Definieer collecties: notes, tasks met userId voor eigenaarschap.
+    Implementeer retry-logica en error handling voor Firestore operaties.
+    Gebruik samengestelde indexen voor efficiënte queries.
 - Authenticatie:
   - Frontend: 
     - Gebruik AuthContext voor centrale authenticatiestatus.
     - Implementeer PrivateRoute voor routebeveiliging.
     - Toon duidelijke feedback tijdens authenticatieprocessen.
   - Backend: 
-    - Valideer JWT-tokens bij elke beveiligde API-aanroep.
+    - Valideer Firebase tokens bij elke beveiligde API-aanroep.
     - Koppel gebruikers-ID's aan alle gebruikersspecifieke data.
 - Prestaties:
     Minimaliseer renders in React met useMemo/useCallback.
     Gebruik lazy loading voor componenten en assets.
+    Benut Firestore multi-tab persistentie voor offline functionaliteit.
 
 ## Technische Vereisten ##
 - Dependencies:
-  - Frontend: react, react-router-dom, vite, typescript, tailwindcss, axios, react-beautiful-dnd, firebase.
-  - Backend: express, typescript, pg (PostgreSQL), firebase-admin, axios.
+  - Frontend: react, react-router-dom, vite, typescript, tailwindcss, axios, react-beautiful-dnd, firebase, @tiptap/react.
+  - Backend: express, typescript, firebase-admin, axios.
 - Omgeving:
-  - Node.js v18+, PostgreSQL v15+, API-keys voor Firebase, Deepgram en OpenAI.
+  - Node.js v18+, Firebase project met Firestore en Authentication, API-keys voor Deepgram en OpenAI.
 - Deployment:
   - Frontend: Static hosting (Vercel/Netlify).
-  - Backend: Server (Render/Heroku) met PostgreSQL-instantie.
+  - Backend: Server (Render/Heroku).
+- Firebase Configuratie:
+  - Firestore Security Rules: Regels die ervoor zorgen dat gebruikers alleen hun eigen data kunnen lezen en schrijven.
+  - Firestore Indexes: Samengestelde indexen voor notes (userId, updatedAt, __name__) en tasks (userId, position, __name__).
+  - Authentication: Google-authenticatie ingeschakeld.
 
 ## Toekomstige Overwegingen ##
-- Offline Modus: Implementeer lokale opslag (IndexedDB) en synchronisatie bij connectiviteit.
+- Offline Modus: Verbeter de bestaande Firestore multi-tab persistentie met aangepaste offline-first strategieën.
 - AI-verbeteringen: Voeg contextbewuste prompts toe voor gepersonaliseerde output.
-- Schaalbaarheid: Overweeg load balancing en database-replicatie bij groei.
+- Schaalbaarheid: Benut Firestore's automatische schaalbaarheid en overweeg sharding bij extreme groei.
 - Authenticatie-uitbreidingen: Implementeer e-mail/wachtwoord login, sociale media login, en multi-factor authenticatie.
+- Realtime Samenwerking: Gebruik Firestore's realtime updates voor collaboratieve notitie-bewerking.
+- Geavanceerde Queries: Implementeer Firestore composite queries voor complexere zoekfunctionaliteit.

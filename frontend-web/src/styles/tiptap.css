@@ -1,0 +1,35 @@
+/* TipTap Editor Styles */
+.ProseMirror {
+    min-height: 200px;
+    padding: 1rem;
+}
+
+.ProseMirror:focus {
+    outline: none;
+}
+
+.ProseMirror p {
+    margin-bottom: 1em;
+}
+
+/* Task Mark Styles */
+.task-mark {
+    background-color: rgba(255, 231, 143, 0.3);
+    border-bottom: 2px solid #ffd700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.task-mark:hover {
+    background-color: rgba(255, 231, 143, 0.5);
+}
+
+/* Dark mode styles */
+.dark .task-mark {
+    background-color: rgba(255, 231, 143, 0.2);
+    border-bottom-color: #b7950b;
+}
+
+.dark .task-mark:hover {
+    background-color: rgba(255, 231, 143, 0.3);
+} 
