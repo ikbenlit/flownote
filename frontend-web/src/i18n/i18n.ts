@@ -124,6 +124,10 @@ export const translations: Translations = {
     nl: 'Profielfoto',
     en: 'Profile Image',
   },
+  'auth.error.login_required': {
+    nl: 'Gebruiker moet ingelogd zijn',
+    en: 'User must be logged in',
+  },
 
   // Notes
   'notes.title': {
@@ -357,5 +361,235 @@ export const translations: Translations = {
   'user.menu': {
     nl: 'Gebruikersmenu',
     en: 'User menu',
+  },
+
+  // Tasks
+  'tasks.title': {
+    nl: 'Taken',
+    en: 'Tasks',
+  },
+  'tasks.subtitle': {
+    nl: 'Beheer je taken en volg je voortgang',
+    en: 'Manage your tasks and track your progress',
+  },
+  'tasks.empty.state': {
+    nl: 'Nog geen taken gevonden. Begin met het markeren van tekst in je notities als taken!',
+    en: 'No tasks found yet. Start by marking text in your notes as tasks!',
+  },
+  'tasks.create': {
+    nl: 'Nieuwe taak',
+    en: 'New task',
+  },
+  'tasks.edit': {
+    nl: 'Taak bewerken',
+    en: 'Edit task',
+  },
+  'tasks.delete': {
+    nl: 'Taak verwijderen',
+    en: 'Delete task',
+  },
+  'tasks.delete.confirmation': {
+    nl: 'Weet je zeker dat je deze taak wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.',
+    en: 'Are you sure you want to delete this task? This action cannot be undone.',
+  },
+  'tasks.save': {
+    nl: 'Opslaan',
+    en: 'Save',
+  },
+  'tasks.cancel': {
+    nl: 'Annuleren',
+    en: 'Cancel',
+  },
+  'tasks.mark': {
+    nl: 'Als taak markeren',
+    en: 'Mark as task',
+  },
+  'tasks.extract': {
+    nl: 'Taken extraheren',
+    en: 'Extract tasks',
+  },
+  'tasks.view': {
+    nl: 'Bekijk taak',
+    en: 'View task',
+  },
+  'tasks.source': {
+    nl: 'Bronnotitie',
+    en: 'Source note',
+  },
+  'tasks.created': {
+    nl: 'Aangemaakt op',
+    en: 'Created on',
+  },
+  'tasks.updated': {
+    nl: 'Bijgewerkt op',
+    en: 'Updated on',
+  },
+  'tasks.deadline': {
+    nl: 'Deadline',
+    en: 'Deadline',
+  },
+  'tasks.set.deadline': {
+    nl: 'Deadline instellen',
+    en: 'Set deadline',
+  },
+
+  // Task Status
+  'tasks.status': {
+    nl: 'Status',
+    en: 'Status',
+  },
+  'tasks.status.todo': {
+    nl: 'Te doen',
+    en: 'To Do',
+  },
+  'tasks.status.in_progress': {
+    nl: 'In uitvoering',
+    en: 'In Progress',
+  },
+  'tasks.status.done': {
+    nl: 'Afgerond',
+    en: 'Done',
+  },
+
+  // Task Priority
+  'tasks.priority': {
+    nl: 'Prioriteit',
+    en: 'Priority',
+  },
+  'tasks.priority.low': {
+    nl: 'Laag',
+    en: 'Low',
+  },
+  'tasks.priority.medium': {
+    nl: 'Gemiddeld',
+    en: 'Medium',
+  },
+  'tasks.priority.high': {
+    nl: 'Hoog',
+    en: 'High',
+  },
+
+  // Kanban Board
+  'tasks.kanban.title': {
+    nl: 'Kanban Bord',
+    en: 'Kanban Board',
+  },
+  'tasks.kanban.move': {
+    nl: 'Verplaats naar',
+    en: 'Move to',
+  },
+  'tasks.kanban.add': {
+    nl: 'Taak toevoegen',
+    en: 'Add task',
+  },
+
+  // Task Messages
+  'tasks.success.created': {
+    nl: 'Taak succesvol aangemaakt',
+    en: 'Task successfully created',
+  },
+  'tasks.success.updated': {
+    nl: 'Taak succesvol bijgewerkt',
+    en: 'Task successfully updated',
+  },
+  'tasks.success.deleted': {
+    nl: 'Taak succesvol verwijderd',
+    en: 'Task successfully deleted',
+  },
+  'tasks.success.extracted': {
+    nl: 'Taken succesvol geëxtraheerd',
+    en: 'Tasks successfully extracted',
+  },
+  'tasks.error.create': {
+    nl: 'Kon de taak niet aanmaken',
+    en: 'Could not create task',
+  },
+  'tasks.error.update': {
+    nl: 'Kon de taak niet bijwerken',
+    en: 'Could not update task',
+  },
+  'tasks.error.delete': {
+    nl: 'Kon de taak niet verwijderen',
+    en: 'Could not delete task',
+  },
+  'tasks.error.load': {
+    nl: 'Er is een fout opgetreden bij het laden van de taken',
+    en: 'An error occurred while loading tasks',
+  },
+
+  // Formatting
+  'formatting.bold': {
+    nl: 'Vet (Ctrl+B)',
+    en: 'Bold (Ctrl+B)',
+  },
+  'formatting.italic': {
+    nl: 'Cursief (Ctrl+I)',
+    en: 'Italic (Ctrl+I)',
+  },
+  'formatting.underline': {
+    nl: 'Onderstrepen (Ctrl+U)',
+    en: 'Underline (Ctrl+U)',
+  },
+  'formatting.heading1': {
+    nl: 'Kop 1',
+    en: 'Heading 1',
+  },
+  'formatting.heading2': {
+    nl: 'Kop 2',
+    en: 'Heading 2',
+  },
+  'formatting.heading3': {
+    nl: 'Kop 3',
+    en: 'Heading 3',
+  },
+  'formatting.bullet_list': {
+    nl: 'Bullet lijst',
+    en: 'Bullet list',
+  },
+  'formatting.ordered_list': {
+    nl: 'Genummerde lijst',
+    en: 'Numbered list',
+  },
+  'formatting.insert_link': {
+    nl: 'Link invoegen',
+    en: 'Insert link',
+  },
+  'formatting.enter_url': {
+    nl: 'Voer de URL in:',
+    en: 'Enter the URL:',
+  },
+
+  // Additional Notes translations
+  'notes.title_label': {
+    nl: 'Titel',
+    en: 'Title',
+  },
+  'notes.content_label': {
+    nl: 'Inhoud',
+    en: 'Content',
+  },
+  'notes.tags_label': {
+    nl: 'Tags',
+    en: 'Tags',
+  },
+  'notes.title_placeholder': {
+    nl: 'Geef je notitie een titel...',
+    en: 'Give your note a title...',
+  },
+  'notes.tags_placeholder': {
+    nl: 'Voeg tags toe...',
+    en: 'Add tags...',
+  },
+  'notes.add_tag': {
+    nl: 'Tag Toevoegen',
+    en: 'Add Tag',
+  },
+  'notes.error.title_required': {
+    nl: 'Titel is verplicht',
+    en: 'Title is required',
+  },
+  'notes.error.content_required': {
+    nl: 'Inhoud is verplicht',
+    en: 'Content is required',
   },
 }; 

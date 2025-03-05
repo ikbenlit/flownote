@@ -3,6 +3,7 @@ import { collection, query, where, orderBy, onSnapshot, addDoc, updateDoc, delet
 import { db } from '../firebase';
 import { useAuth } from './AuthContext';
 import { Task } from '../../../backend/src/models/Task';
+import { useI18n } from './I18nContext';
 
 interface TaskContextType {
     tasks: Task[];
@@ -29,6 +30,7 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const { currentUser } = useAuth();
+    const { t } = useI18n();
 
     // Luister naar taken van de huidige gebruiker
     useEffect(() => {
@@ -60,16 +62,16 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
             },
             (err) => {
                 console.error('Fout bij het ophalen van taken:', err);
-                setError('Er is een fout opgetreden bij het laden van de taken.');
+                setError(t('tasks.error.load'));
                 setLoading(false);
             }
         );
 
         return () => unsubscribe();
-    }, [currentUser]);
+    }, [currentUser, t]);
 
     const addTask = useCallback(async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>) => {
-        if (!currentUser) throw new Error('Gebruiker moet ingelogd zijn');
+        if (!currentUser) throw new Error(t('auth.error.login_required'));
 
         try {
             const now = new Date();
@@ -82,12 +84,12 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
             return docRef.id;
         } catch (err) {
             console.error('Fout bij het toevoegen van taak:', err);
-            throw new Error('Kon de taak niet toevoegen');
+            throw new Error(t('tasks.error.create'));
         }
-    }, [currentUser]);
+    }, [currentUser, t]);
 
     const updateTask = useCallback(async (taskId: string, updates: Partial<Task>) => {
-        if (!currentUser) throw new Error('Gebruiker moet ingelogd zijn');
+        if (!currentUser) throw new Error(t('auth.error.login_required'));
 
         try {
             const taskRef = doc(db, 'tasks', taskId);
@@ -97,20 +99,20 @@ export const TaskProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
         } catch (err) {
             console.error('Fout bij het bijwerken van taak:', err);
-            throw new Error('Kon de taak niet bijwerken');
+            throw new Error(t('tasks.error.update'));
         }
-    }, [currentUser]);
+    }, [currentUser, t]);
 
     const deleteTask = useCallback(async (taskId: string) => {
-        if (!currentUser) throw new Error('Gebruiker moet ingelogd zijn');
+        if (!currentUser) throw new Error(t('auth.error.login_required'));
 
         try {
             await deleteDoc(doc(db, 'tasks', taskId));
         } catch (err) {
             console.error('Fout bij het verwijderen van taak:', err);
-            throw new Error('Kon de taak niet verwijderen');
+            throw new Error(t('tasks.error.delete'));
         }
-    }, [currentUser]);
+    }, [currentUser, t]);
 
     const getTasksByNoteId = useCallback((noteId: string) => {
         return tasks.filter(task => task.sourceNoteId === noteId);
