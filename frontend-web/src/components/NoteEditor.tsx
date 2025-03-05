@@ -8,6 +8,7 @@ import Link from '@tiptap/extension-link';
 import { TaskMarkExtension } from './tiptap/extensions/TaskMarkExtension';
 import { useTask } from '../context/TaskContext';
 import { Editor } from '@tiptap/core';
+import { useI18n } from '../context/I18nContext';
 
 interface EditorToolbarProps {
   editor: Editor | null;
@@ -16,6 +17,8 @@ interface EditorToolbarProps {
 
 const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
   if (!editor) return null;
+  
+  const { t } = useI18n();
 
   return (
     <div className="flex flex-wrap gap-2 p-2 mb-2 border border-gray-200 dark:border-dark-border-primary rounded-lg bg-white dark:bg-dark-bg-secondary">
@@ -23,7 +26,7 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
         type="button"
         onClick={() => onFormatting(() => editor.chain().focus().toggleBold().run())}
         className={`p-2 rounded ${editor.isActive('bold') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Vet (Ctrl+B)"
+        title={t('formatting.bold')}
       >
         <strong>B</strong>
       </button>
@@ -31,7 +34,7 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
         type="button"
         onClick={() => onFormatting(() => editor.chain().focus().toggleItalic().run())}
         className={`p-2 rounded ${editor.isActive('italic') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Cursief (Ctrl+I)"
+        title={t('formatting.italic')}
       >
         <em>I</em>
       </button>
@@ -39,7 +42,7 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
         type="button"
         onClick={() => onFormatting(() => editor.chain().focus().toggleUnderline().run())}
         className={`p-2 rounded ${editor.isActive('underline') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Onderstrepen (Ctrl+U)"
+        title={t('formatting.underline')}
       >
         <u>U</u>
       </button>
@@ -48,7 +51,7 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
         type="button"
         onClick={() => onFormatting(() => editor.chain().focus().toggleHeading({ level: 1 }).run())}
         className={`p-2 rounded ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Kop 1"
+        title={t('formatting.heading1')}
       >
         H1
       </button>
@@ -56,7 +59,7 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
         type="button"
         onClick={() => onFormatting(() => editor.chain().focus().toggleHeading({ level: 2 }).run())}
         className={`p-2 rounded ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Kop 2"
+        title={t('formatting.heading2')}
       >
         H2
       </button>
@@ -64,7 +67,7 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
         type="button"
         onClick={() => onFormatting(() => editor.chain().focus().toggleHeading({ level: 3 }).run())}
         className={`p-2 rounded ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Kop 3"
+        title={t('formatting.heading3')}
       >
         H3
       </button>
@@ -73,7 +76,7 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
         type="button"
         onClick={() => onFormatting(() => editor.chain().focus().toggleBulletList().run())}
         className={`p-2 rounded ${editor.isActive('bulletList') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Bullet lijst"
+        title={t('formatting.bullet_list')}
       >
         • Lijst
       </button>
@@ -81,7 +84,7 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
         type="button"
         onClick={() => onFormatting(() => editor.chain().focus().toggleOrderedList().run())}
         className={`p-2 rounded ${editor.isActive('orderedList') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Genummerde lijst"
+        title={t('formatting.ordered_list')}
       >
         1. Lijst
       </button>
@@ -89,13 +92,13 @@ const EditorToolbar = memo(({ editor, onFormatting }: EditorToolbarProps) => {
       <button
         type="button"
         onClick={() => {
-          const url = window.prompt('Voer de URL in:');
+          const url = window.prompt(t('formatting.enter_url'));
           if (url) {
             onFormatting(() => editor.chain().focus().setLink({ href: url }).run());
           }
         }}
         className={`p-2 rounded ${editor.isActive('link') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''}`}
-        title="Link invoegen"
+        title={t('formatting.insert_link')}
       >
         🔗 Link
       </button>
@@ -121,6 +124,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   const [tags, setTags] = useState<string[]>(initialNote?.tags || []);
   const [errors, setErrors] = useState<{ title?: string; content?: string }>({});
   const { addTask } = useTask();
+  const { t } = useI18n();
 
   const editor = useEditor({
     extensions: [
@@ -209,11 +213,11 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     const newErrors: { title?: string; content?: string } = {};
     
     if (!title.trim()) {
-      newErrors.title = 'Titel is verplicht';
+      newErrors.title = t('notes.error.title_required');
     }
     
     if (!editor?.getText().trim()) {
-      newErrors.content = 'Inhoud is verplicht';
+      newErrors.content = t('notes.error.content_required');
     }
     
     if (Object.keys(newErrors).length > 0) {
@@ -296,7 +300,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     >
       <div>
         <label htmlFor="title" className="block font-patrick-hand text-lg text-gray-700 dark:text-dark-text-primary mb-2">
-          Titel
+          {t('notes.title_label')}
         </label>
         <input
           type="text"
@@ -304,7 +308,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           className="w-full px-4 py-3 font-caveat text-xl border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary placeholder-gray-400 dark:placeholder-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200"
-          placeholder="Geef je notitie een titel..."
+          placeholder={t('notes.title_placeholder')}
           required
         />
         {errors.title && <p className="mt-1 text-sm text-red-600">{errors.title}</p>}
@@ -313,7 +317,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       <div>
         <div className="flex justify-between items-center mb-1">
           <label htmlFor="content" className="block font-patrick-hand text-lg text-gray-700 dark:text-dark-text-primary mb-2">
-            Inhoud
+            {t('notes.content_label')}
           </label>
           <div className="flex items-center space-x-2">
             <button
@@ -321,7 +325,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
               onClick={handleMarkTask}
               className="px-3 py-1 text-sm font-medium text-white bg-yellow-500 rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2"
             >
-              Als taak markeren
+              {t('tasks.mark')}
             </button>
             <AIAssistant content={editor?.getHTML()} onApplyText={handleApplyAIText} />
           </div>
@@ -339,7 +343,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
               className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
                 editor.isActive('bold') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
               }`}
-              title="Vet (Ctrl+B)"
+              title={t('formatting.bold')}
             >
               <strong>B</strong>
             </button>
@@ -349,7 +353,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
               className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
                 editor.isActive('italic') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
               }`}
-              title="Cursief (Ctrl+I)"
+              title={t('formatting.italic')}
             >
               <em>I</em>
             </button>
@@ -359,7 +363,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
               className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
                 editor.isActive('underline') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
               }`}
-              title="Onderstrepen (Ctrl+U)"
+              title={t('formatting.underline')}
             >
               <u>U</u>
             </button>
@@ -367,7 +371,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
             <button
               type="button"
               onClick={() => {
-                const url = window.prompt('Voer de URL in:');
+                const url = window.prompt(t('formatting.enter_url'));
                 if (url) {
                   editor.chain().focus().setLink({ href: url }).run();
                 }
@@ -375,7 +379,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
               className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
                 editor.isActive('link') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
               }`}
-              title="Link invoegen"
+              title={t('formatting.insert_link')}
             >
               🔗
             </button>
@@ -385,7 +389,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
               className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
                 editor.isActive('taskMark') ? 'bg-gray-200 dark:bg-dark-bg-tertiary' : ''
               }`}
-              title="Als taak markeren"
+              title={t('tasks.mark')}
             >
               ✓
             </button>
@@ -397,7 +401,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
 
       <div>
         <label htmlFor="tags" className="block font-patrick-hand text-lg text-gray-700 dark:text-dark-text-primary mb-2">
-          Tags
+          {t('notes.tags_label')}
         </label>
         <div className="flex gap-2 mb-3">
           {tags.map((tag, index) => (
@@ -424,14 +428,14 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={handleTagKeyDown}
             className="flex-grow px-4 py-2 font-patrick-hand text-lg border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary placeholder-gray-400 dark:placeholder-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200"
-            placeholder="Voeg tags toe..."
+            placeholder={t('notes.tags_placeholder')}
           />
           <button
             type="button"
             onClick={handleAddTag}
             className="px-4 py-2 font-patrick-hand text-lg bg-blue-500 dark:bg-dark-accent-blue text-white rounded-xl hover:bg-blue-600 dark:hover:bg-dark-accent-blue-light focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:ring-offset-2 transition-colors duration-200"
           >
-            Tag Toevoegen
+            {t('notes.add_tag')}
           </button>
         </div>
       </div>
@@ -442,13 +446,13 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           onClick={onCancel}
           className="px-4 py-2 border border-gray-300 dark:border-dark-border-primary rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-dark-text-secondary bg-white dark:bg-dark-bg-secondary hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue transition-colors duration-200"
         >
-          Annuleren
+          {t('notes.cancel')}
         </button>
         <button
           type="submit"
           className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 dark:bg-dark-accent-blue hover:bg-blue-700 dark:hover:bg-dark-accent-blue-light focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue transition-colors duration-200"
         >
-          Opslaan
+          {t('notes.save')}
         </button>
       </div>
     </form>
