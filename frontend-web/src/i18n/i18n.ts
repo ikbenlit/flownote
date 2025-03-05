@@ -29,6 +29,12 @@ export const translations: Translations = {
     en: 'Loading...',
   },
 
+  // Common filters
+  'all': {
+    nl: 'Alle',
+    en: 'All',
+  },
+
   // Navigation
   'nav.dashboard': {
     nl: 'Dashboard',
