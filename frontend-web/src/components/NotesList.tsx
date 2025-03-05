@@ -64,9 +64,11 @@ export const NotesList: React.FC<NotesListProps> = ({ notes, onDelete }) => {
             
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-blue-50 dark:from-dark-bg-tertiary dark:to-dark-border-primary opacity-30 rounded-lg"></div>
-              <p className="font-kalam text-gray-700 dark:text-dark-text-secondary mb-4 line-clamp-3 relative p-3 rounded-lg">
-                {note.content}
-              </p>
+              <div className="font-kalam text-gray-700 dark:text-dark-text-secondary mb-4 relative p-3 rounded-lg prose prose-sm dark:prose-invert max-w-none overflow-hidden">
+                <div className="line-clamp-3">
+                  <div dangerouslySetInnerHTML={{ __html: note.content }} />
+                </div>
+              </div>
             </div>
             
             {note.tags && note.tags.length > 0 && (

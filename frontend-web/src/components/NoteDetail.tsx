@@ -72,8 +72,8 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
           </div>
         )}
 
-        <div className="prose max-w-none">
-          <p className="whitespace-pre-wrap">{note.content}</p>
+        <div className="prose prose-lg dark:prose-invert max-w-none">
+          <div dangerouslySetInnerHTML={{ __html: note.content }} />
         </div>
       </div>
     </div>
