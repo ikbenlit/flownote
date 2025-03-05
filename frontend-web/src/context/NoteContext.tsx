@@ -13,12 +13,24 @@ import {
 } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 
+// Define the TaskMarking type
+export interface TaskMarking {
+  id: string;
+  startOffset: number;
+  endOffset: number;
+  extractedTaskId?: string;
+  markedText: string;
+  createdAt: Timestamp;
+}
+
 // Define the Note type
 export interface Note {
   id?: string;
   title: string;
   content: string;
   tags: string[];
+  taskMarkings?: TaskMarking[];
+  extractedTaskIds?: string[];
   createdAt: Timestamp;
   updatedAt: Timestamp;
   userId: string;

@@ -1,0 +1,30 @@
+/* TaskMark styling */
+.ProseMirror .task-mark,
+.ProseMirror span[data-task-id] {
+  background-color: #fef08a !important; /* Light yellow */
+  padding: 2px 0;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline;
+  position: relative;
+  box-shadow: 0 0 0 2px #fef08a;
+}
+
+.dark .ProseMirror .task-mark,
+.dark .ProseMirror span[data-task-id] {
+  background-color: #b45309 !important; /* Darker yellow for dark mode */
+  box-shadow: 0 0 0 2px #b45309;
+}
+
+.ProseMirror .task-mark:hover,
+.ProseMirror span[data-task-id]:hover {
+  background-color: #fcd34d !important; /* Slightly darker on hover */
+  box-shadow: 0 0 0 2px #fcd34d;
+}
+
+.dark .ProseMirror .task-mark:hover,
+.dark .ProseMirror span[data-task-id]:hover {
+  background-color: #92400e !important;
+  box-shadow: 0 0 0 2px #92400e;
+} 

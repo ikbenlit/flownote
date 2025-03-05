@@ -4,7 +4,7 @@ import { Language, translations } from '../i18n/i18n';
 type I18nContextType = {
   language: Language;
   setLanguage: (language: Language) => void;
-  t: (key: string) => string;
+  t: (key: string, params?: Record<string, any>) => string;
 };
 
 const I18nContext = createContext<I18nContextType | undefined>(undefined);
@@ -28,12 +28,22 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [language]);
 
   // Translation function
-  const t = (key: string): string => {
+  const t = (key: string, params?: Record<string, any>): string => {
     if (!translations[key]) {
       console.warn(`Translation key not found: ${key}`);
       return key;
     }
-    return translations[key][language];
+    
+    let translation = translations[key][language];
+    
+    // Replace parameters if they exist
+    if (params) {
+      Object.entries(params).forEach(([paramKey, paramValue]) => {
+        translation = translation.replace(`{{${paramKey}}}`, String(paramValue));
+      });
+    }
+    
+    return translation;
   };
 
   return (

@@ -401,7 +401,7 @@ export const translations: Translations = {
     en: 'Cancel',
   },
   'tasks.mark': {
-    nl: 'Als taak markeren',
+    nl: 'Markeer als taak',
     en: 'Mark as task',
   },
   'tasks.extract': {
@@ -591,5 +591,19 @@ export const translations: Translations = {
   'notes.error.content_required': {
     nl: 'Inhoud is verplicht',
     en: 'Content is required',
+  },
+
+  // Task markings
+  'tasks.marked_count': {
+    nl: 'Gemarkeerde taken: {{count}}',
+    en: 'Marked tasks: {{count}}'
+  },
+  'tasks.marked_texts': {
+    nl: 'Gemarkeerde tekstfragmenten',
+    en: 'Marked text fragments'
+  },
+  'tasks.remove_marking': {
+    nl: 'Markering verwijderen',
+    en: 'Remove marking'
   },
 }; 
