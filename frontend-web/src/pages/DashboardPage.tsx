@@ -29,6 +29,13 @@ export const DashboardPage: React.FC = () => {
     return new Date(timestamp).toLocaleDateString();
   };
 
+  // Strip HTML tags for preview
+  const stripHtml = (html: string) => {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  };
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -106,17 +113,41 @@ export const DashboardPage: React.FC = () => {
               <Link 
                 key={note.id} 
                 to={`/notes/${note.id}`}
-                className="bg-white dark:bg-dark-bg-secondary rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-200"
+                className="bg-white dark:bg-dark-bg-secondary rounded-xl shadow-sm p-6 hover:shadow-md transition-shadow duration-200 group"
               >
                 <h3 className="font-architects-daughter text-xl font-bold text-gray-900 dark:text-dark-text-primary mb-2 truncate">
                   {note.title}
                 </h3>
-                <p className="font-patrick-hand text-gray-600 dark:text-dark-text-secondary line-clamp-3">
-                  {note.content}
-                </p>
-                <p className="font-patrick-hand text-sm text-gray-500 dark:text-dark-text-tertiary mt-4">
-                  {t('notes.updated')} {formatDate(note.updatedAt)}
-                </p>
+                <div className="prose prose-sm dark:prose-invert max-w-none mb-4 overflow-hidden line-clamp-3">
+                  <div 
+                    className="text-gray-600 dark:text-dark-text-secondary font-patrick-hand"
+                    dangerouslySetInnerHTML={{ 
+                      __html: stripHtml(note.content).substring(0, 200) + (note.content.length > 200 ? '...' : '') 
+                    }} 
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <p className="font-patrick-hand text-sm text-gray-500 dark:text-dark-text-tertiary">
+                    {t('notes.updated')} {formatDate(note.updatedAt)}
+                  </p>
+                  {note.tags && note.tags.length > 0 && (
+                    <div className="flex gap-2">
+                      {note.tags.slice(0, 2).map((tag, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 text-xs font-patrick-hand rounded-full bg-blue-100 dark:bg-dark-bg-tertiary text-blue-600 dark:text-dark-accent-blue"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {note.tags.length > 2 && (
+                        <span className="px-2 py-1 text-xs font-patrick-hand rounded-full bg-gray-100 dark:bg-dark-bg-tertiary text-gray-600 dark:text-dark-text-secondary">
+                          +{note.tags.length - 2}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
               </Link>
             ))}
           </div>
