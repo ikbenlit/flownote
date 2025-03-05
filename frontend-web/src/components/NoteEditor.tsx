@@ -168,77 +168,44 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
         class: 'prose prose-lg dark:prose-invert max-w-none w-full px-4 py-3 font-kalam text-lg border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary min-h-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200',
       },
       handleKeyDown: (_, event) => {
-        console.log('Editor KeyDown:', event.key);
-        
-        // Alleen Escape afhandelen voor het voorkomen van form submission
         if (event.key === 'Escape') {
           event.preventDefault();
           return true;
         }
         
-        // Laat TipTap Enter-toets standaard afhandelen voor lijsten en koppen
         return false;
       },
     },
-    onUpdate: ({ editor }) => {
-      console.log('Editor Update:', {
-        isFocused: editor.isFocused,
-        selection: editor.state.selection,
-        content: editor.getHTML()
-      });
-    },
+    onUpdate: () => {},
     onCreate: ({ editor }) => {
-      console.log('Editor Created');
-      // Focus de editor bij het aanmaken
       editor.commands.focus();
     },
-    onDestroy: () => {
-      console.log('Editor Destroyed');
-    },
+    onDestroy: () => {},
   });
-
-  // Debug logging voor component lifecycle
-  useEffect(() => {
-    console.log('NoteEditor mounted');
-    return () => {
-      console.log('NoteEditor unmounted');
-    };
-  }, []);
 
   useEffect(() => {
     if (initialNote && editor) {
-      console.log('InitialNote changed:', initialNote);
       setTitle(initialNote.title || '');
       editor.commands.setContent(initialNote.content || '');
       setTags(initialNote.tags || []);
-      // Focus de editor na het laden van de inhoud
       editor.commands.focus();
     }
   }, [initialNote, editor]);
 
-  // Debug logging voor formatting
   const handleFormatting = useCallback((command: () => void) => {
     if (!editor) return;
-    console.log('Applying formatting command');
     
-    // Voer de opmaak command uit
     command();
     
-    // Herstel de focus zonder form submission te triggeren
     requestAnimationFrame(() => {
       editor.commands.focus();
     });
-    
-    console.log('Formatting applied, focusing editor');
   }, [editor]);
 
-  // Debug logging voor form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Form submitted');
     
-    // Validate form
     const newErrors: { title?: string; content?: string } = {};
     
     if (!title.trim()) {
@@ -250,12 +217,10 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     }
     
     if (Object.keys(newErrors).length > 0) {
-      console.log('Validation errors:', newErrors);
       setErrors(newErrors);
       return;
     }
 
-    // Verzamel alle taakmarkeringen
     const taskMarkings = editor?.getJSON().content?.reduce((marks: any[], node: any) => {
       if (node.marks) {
         const taskMarks = node.marks.filter((mark: any) => mark.type === 'taskMark');
@@ -263,13 +228,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       }
       return marks;
     }, []) || [];
-    
-    console.log('Saving note with data:', {
-      title,
-      content: editor?.getHTML(),
-      tags,
-      taskMarkings,
-    });
     
     onSave({
       title,
@@ -298,7 +256,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
-  // Handle AI generated text
   const handleApplyAIText = (generatedText: string) => {
     editor?.commands.setContent(generatedText);
   };
@@ -312,7 +269,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       .run();
   }, [editor]);
 
-  // Voorkom dat het formulier automatisch wordt verzonden
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && e.ctrlKey) {
       e.preventDefault();
@@ -321,7 +277,6 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     }
   };
 
-  // Voorkom dat het formulier automatisch wordt verzonden bij focus events
   const handleFocus = (e: React.FocusEvent) => {
     e.preventDefault();
     e.stopPropagation();

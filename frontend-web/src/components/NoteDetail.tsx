@@ -5,14 +5,14 @@ import { FaEdit, FaTrash, FaArrowLeft, FaTags } from 'react-icons/fa';
 
 interface NoteDetailProps {
   note: Note;
-  onDelete: (id: string) => void;
+  onDelete: () => void;
 }
 
 export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
   const formatDate = (timestamp: any) => {
     if (!timestamp) return '';
     const date = timestamp.toDate();
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('nl-NL', {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
@@ -27,7 +27,7 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
         <div className="flex justify-between items-start mb-4">
           <Link to="/notes" className="text-blue-600 hover:text-blue-800 flex items-center">
             <FaArrowLeft className="mr-1" />
-            <span>Back to Notes</span>
+            <span>Terug naar Notities</span>
           </Link>
           <div className="flex space-x-3">
             <Link
@@ -35,14 +35,14 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
               className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               <FaEdit className="mr-1.5" />
-              Edit
+              Bewerken
             </Link>
             <button
-              onClick={() => onDelete(note.id!)}
+              onClick={() => onDelete()}
               className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               <FaTrash className="mr-1.5" />
-              Delete
+              Verwijderen
             </button>
           </div>
         </div>
@@ -51,10 +51,10 @@ export const NoteDetail: React.FC<NoteDetailProps> = ({ note, onDelete }) => {
         
         <div className="text-sm text-gray-500 mb-6">
           {note.createdAt && (
-            <p>Created: {formatDate(note.createdAt)}</p>
+            <p>Aangemaakt: {formatDate(note.createdAt)}</p>
           )}
           {note.updatedAt && note.updatedAt !== note.createdAt && (
-            <p>Updated: {formatDate(note.updatedAt)}</p>
+            <p>Bijgewerkt: {formatDate(note.updatedAt)}</p>
           )}
         </div>
 
