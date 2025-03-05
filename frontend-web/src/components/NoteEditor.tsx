@@ -167,18 +167,16 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       attributes: {
         class: 'prose prose-lg dark:prose-invert max-w-none w-full px-4 py-3 font-kalam text-lg border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary min-h-[200px] focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200',
       },
-      handleKeyDown: (view, event) => {
+      handleKeyDown: (_, event) => {
         console.log('Editor KeyDown:', event.key);
-        // Voorkom form submission bij Enter
-        if (event.key === 'Enter' && !event.ctrlKey) {
-          event.preventDefault();
-          editor?.commands.insertContent('<p></p>');
-          return true;
-        }
+        
+        // Alleen Escape afhandelen voor het voorkomen van form submission
         if (event.key === 'Escape') {
           event.preventDefault();
           return true;
         }
+        
+        // Laat TipTap Enter-toets standaard afhandelen voor lijsten en koppen
         return false;
       },
     },
@@ -223,16 +221,12 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
     if (!editor) return;
     console.log('Applying formatting command');
     
-    // Voorkom dat de editor focus verliest
-    const currentSelection = editor.state.selection;
-    
     // Voer de opmaak command uit
     command();
     
     // Herstel de focus zonder form submission te triggeren
     requestAnimationFrame(() => {
       editor.commands.focus();
-      editor.commands.setTextSelection(currentSelection);
     });
     
     console.log('Formatting applied, focusing editor');
