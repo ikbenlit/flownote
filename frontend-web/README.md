@@ -1,50 +1,106 @@
-# React + TypeScript + Vite
+# FlowNote 📝
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+FlowNote is een moderne notitie- en taakbeheerapplicatie die AI-gestuurde tekstgeneratie integreert met een rijke tekstbewerker. De applicatie is gebouwd met React, TypeScript en Firebase, met focus op gebruiksgemak en productiviteit.
 
-Currently, two official plugins are available:
+## ✨ Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 📝 Rijke tekstbewerking met TipTap editor
+- 🎯 Geïntegreerd taakbeheer met tekstmarkeringen
+- 🤖 AI-gestuurde tekstgeneratie met OpenAI
+- 🌙 Dark mode ondersteuning
+- 📱 Volledig responsive design
+- 🔄 Offline synchronisatie
+- 🏷️ Tags voor notitie-organisatie
+- 🔒 Google authenticatie
+- 📊 Dashboard met recente notities
 
-## Expanding the ESLint configuration
+## 🚀 Snelle Start
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Vereisten
 
-- Configure the top-level `parserOptions` property like this:
+- Node.js 18+ 
+- npm of yarn
+- Een Firebase project
+- Een OpenAI API key
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Installatie
+
+1. Clone de repository:
+```bash
+git clone https://github.com/jouw-username/flownote.git
+cd flownote/frontend-web
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+2. Installeer dependencies:
+```bash
+npm install
+# of
+yarn install
 ```
+
+3. Maak een `.env` bestand aan in de root van het project:
+```env
+VITE_FIREBASE_API_KEY=jouw-firebase-api-key
+VITE_FIREBASE_AUTH_DOMAIN=jouw-firebase-auth-domain
+VITE_FIREBASE_PROJECT_ID=jouw-firebase-project-id
+VITE_FIREBASE_STORAGE_BUCKET=jouw-firebase-storage-bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=jouw-firebase-messaging-sender-id
+VITE_FIREBASE_APP_ID=jouw-firebase-app-id
+VITE_OPENAI_API_KEY=jouw-openai-api-key
+```
+
+4. Start de development server:
+```bash
+npm run dev
+# of
+yarn dev
+```
+
+De applicatie is nu beschikbaar op `http://localhost:5173`
+
+## 🛠️ Gebouwd met
+
+- [React](https://reactjs.org/) - UI Framework
+- [Vite](https://vitejs.dev/) - Build tool
+- [TypeScript](https://www.typescriptlang.org/) - Programming language
+- [TipTap](https://tiptap.dev/) - Rich text editor
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [Firebase](https://firebase.google.com/) - Backend services
+- [OpenAI API](https://openai.com/) - AI text generation
+
+## 📁 Project Structuur
+
+```
+src/
+├── components/     # Herbruikbare UI componenten
+├── pages/         # Pagina componenten
+├── context/       # React Context providers
+├── services/      # API en externe services
+└── styles/        # Global styling
+```
+
+## 🔧 Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Bouw voor productie
+- `npm run lint` - Controleer code met ESLint
+- `npm run preview` - Preview productie build lokaal
+
+## 🤝 Bijdragen
+
+Bijdragen zijn welkom! Zie [CONTRIBUTING.md](CONTRIBUTING.md) voor details.
+
+## 📝 Licentie
+
+Dit project is gelicentieerd onder de MIT License - zie het [LICENSE](LICENSE) bestand voor details.
+
+## 🙏 Credits
+
+- Fonts: Architects Daughter, Patrick Hand, Caveat, en Kalam
+- Icons: [React Icons](https://react-icons.github.io/react-icons/)
+- UI Inspiratie: [Notion](https://notion.so)
+
+## 📫 Contact
+
+- GitHub Issues: [Issues](https://github.com/jouw-username/flownote/issues)
+- Email: jouw@email.com

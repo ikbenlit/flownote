@@ -15,25 +15,22 @@ Dit document beschrijft een gefaseerd implementatieplan voor het toevoegen van e
 - Zorg voor toegang tot de huidige gebruiker en notitie-informatie
 - Definieer basis CRUD-operaties voor taken
 
-### 1.3 Editor and UI Componenten Installatie ⚠️
+### 1.3 Editor and UI Componenten Installatie ✅
 - ✅ Installeer TipTap editor en benodigde extensies
 - ✅ Implementeer aangepaste TaskMarkExtension voor taakmarkeringen
 - ✅ Integreer taakmarkeringsfunctionaliteit in de notitie-editor
 - ✅ Voeg UI-elementen toe voor het markeren van taken
-- ❌ Implementeer basis rich text functies:
+- ✅ Implementeer basis rich text functies:
   - Tekststijlen (vet, cursief, onderstreept)
   - Kopniveaus (h1, h2, h3)
   - Lijsten (bullet points, genummerd)
   - Links
-  - Codeblokken
-  - Citaten
-- ❌ Voeg toolbar toe voor rich text formatting
-- ❌ Implementeer keyboard shortcuts voor text formatting
+- ✅ Voeg toolbar toe voor rich text formatting
 
-### 1.4 Vertalingen en Copy
-- Breid het i18n-systeem uit met taak-gerelateerde vertalingen
-- Voeg vertalingen toe voor alle nieuwe UI-elementen en berichten
-- Zorg voor consistentie in terminologie tussen notities en taken
+### 1.4 Vertalingen en Copy ✅
+- ✅ Breid het i18n-systeem uit met taak-gerelateerde vertalingen
+- ✅ Voeg vertalingen toe voor alle nieuwe UI-elementen en berichten
+- ✅ Zorg voor consistentie in terminologie tussen notities en taken
 
 ## Fase 2: Basis Taken UI
 

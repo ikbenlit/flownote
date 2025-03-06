@@ -1,60 +1,60 @@
 ## Frontend (Web)
-- **Framework**: React + Vite + TypeScript → For a fast and modular web app.
-- **UI Styling**: Tailwind CSS → For streamlined and responsive styling.
-- **Routing**: React Router → For page navigation.
-- **Components**: Functional React components with hooks.
+- **Framework**: React + Vite + TypeScript → Voor een snelle en modulaire web app
+- **UI Styling**: 
+  - Tailwind CSS → Voor gestroomlijnde en responsive styling
+  - Custom fonts: Architects Daughter, Patrick Hand, Caveat, Kalam → Voor een persoonlijke touch
+- **Routing**: React Router → Voor paginanavigatie
+- **Editor**: TipTap → Voor rijke tekstbewerking met aangepaste extensies
+- **State Management**: React Context API → Voor globaal state beheer
+- **Authentication**: Firebase Authentication → Voor gebruikersbeheer
+- **Database**: Firebase Firestore → Voor data opslag en realtime updates
 
 📂 **Key Frontend Files:**
-- `App.tsx` → Main component with routing.
-- `pages/transcription-page.tsx` → Audio recording and transcription interface.
-- `components/audio-recorder.tsx` → Audio recording functionality.
-- `components/AuthButton.tsx` → Authentication button (in progress).
+- `App.tsx` → Hoofdcomponent met routing en providers
+- `pages/` → Pagina componenten:
+  - `DashboardPage.tsx` → Dashboard met recente notities en snelle acties
+  - `NotesPage.tsx` → Overzicht van alle notities
+  - `NoteEditPage.tsx` → Bewerken van bestaande notities
+  - `NewNotePage.tsx` → Aanmaken van nieuwe notities
+  - `AIGeneratorPage.tsx` → AI-gestuurde tekstgeneratie
+  - `TranscriptionPage.tsx` → Audio opname en transcriptie
+- `components/` → Herbruikbare componenten:
+  - `NoteEditor.tsx` → Rijke tekstbewerker met taakmarkeringen
+  - `AIAssistant.tsx` → AI-tekstgeneratie assistent
+  - `AuthButton.tsx` → Authenticatie knoppen
+  - `NotesList.tsx` → Notitie overzichtscomponent
 
-## Backend
-- **Server**: Node.js + Express + TypeScript → Type-safe API server.
-- **AI Integration**:
-  - **Deepgram API** → For Dutch speech-to-text transcription.
-- **Middleware**: 
-  - CORS → For secure cross-origin requests
-  - Multer → For handling audio file uploads
-  - Express JSON parser → For request parsing
+## Backend & Services
+- **Authentication**: Firebase Authentication met Google login
+- **Database**: Firebase Firestore
+  - Collections: notes, tasks
+  - Security Rules: Gebruiker-specifieke toegangscontrole
+  - Offline support: Multi-tab persistence
+- **AI Services**:
+  - **OpenAI API** → Voor AI-gestuurde tekstgeneratie
+  - **Deepgram API** → Voor Nederlandse spraak-naar-tekst transcriptie (gepland)
 
-📂 **Key Backend Files:**
-- `src/index.ts` → Main server file with Express and Deepgram setup.
-- `tsconfig.json` → TypeScript configuration.
-- `.env` → Environment variables (Deepgram API key).
+## Huidige Features ✅
+- Gebruikersauthenticatie met Google
+- Notities CRUD operaties
+- Rijke tekstbewerking met TipTap
+- Taakmarkeringen in notities
+- Taakextractie uit gemarkeerde tekst
+- Dark mode ondersteuning
+- Responsive design
+- Offline ondersteuning
+- AI-gestuurde tekstgeneratie
+- Tags voor notities
+- Dashboard met recente notities
 
-## Development Setup
-- **Package Manager**: npm
-- **Development Tools**:
-  - nodemon → For hot-reloading backend
-  - ts-node → For TypeScript execution
-  - TypeScript → For type safety
-
-## API Endpoints
-- `GET /api/health` → Health check endpoint
-- `POST /api/transcribe` → Audio transcription endpoint
-  - Accepts: multipart/form-data with audio file
-  - Returns: JSON with transcription text
-
-## 🌟 Current Features
-✅ Real-time speech-to-text transcription via Deepgram
-✅ Dutch language support for transcriptions
-✅ Cross-origin support for frontend integration
-✅ Type-safe backend with TypeScript
-✅ Hot-reloading development setup
-✅ Task marking in notes with TipTap editor
-✅ Task extraction from marked text
-✅ Task management system integration
-
-## 🚀 Planned Features
-- [ ] Firebase authentication integration
-- [ ] OpenAI integration for content generation
-- [ ] PostgreSQL database setup
-- [ ] User management system
-- [ ] Firestore data storage
-- [ ] Docker containerization
-- [ ] Database migrations
-- [ ] Kanban board for task visualization
-- [ ] Task prioritization and filtering
-- [ ] Task notifications and reminders
+## Geplande Features 🚀
+- [ ] Spraak-naar-tekst transcriptie
+- [ ] Kanban board voor taken
+- [ ] Taakprioriteiten en filters
+- [ ] Realtime samenwerking
+- [ ] Geavanceerde zoekfunctionaliteit
+- [ ] Notitie-categorieën
+- [ ] Notitie-sjablonen
+- [ ] Exporteren van notities
+- [ ] Extra authenticatiemethoden
+- [ ] Notificaties en herinneringen
