@@ -115,15 +115,25 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
       const wsHost = process.env.NODE_ENV === 'production' 
         ? window.location.host
         : 'localhost:3000';
-      socket.current = new WebSocket(`${wsProtocol}//${wsHost}`);
+      const wsUrl = `${wsProtocol}//${wsHost}`;
+      console.log('Attempting WebSocket connection to:', wsUrl);
+      console.log('Current environment:', process.env.NODE_ENV);
+      console.log('Window location:', {
+        protocol: window.location.protocol,
+        host: window.location.host,
+        hostname: window.location.hostname,
+        pathname: window.location.pathname
+      });
+      
+      socket.current = new WebSocket(wsUrl);
       
       socket.current.onopen = () => {
-        console.log('WebSocket connected to server');
+        console.log('WebSocket connection established successfully');
       };
 
       socket.current.onmessage = (event) => {
+        console.log('WebSocket message received:', event.data);
         try {
-          console.log('Received WebSocket message:', event.data);
           const data = JSON.parse(event.data);
           if (data.transcript !== undefined) { // Check if this is a transcript message
             console.log('Received transcript:', data.transcript, 'is_final:', data.is_final, 'speech_detected:', data.speech_detected);
@@ -167,20 +177,51 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
       };
 
       socket.current.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        console.error('WebSocket connection error:', error);
+        console.error('WebSocket readyState:', socket.current?.readyState);
+        // Log additional connection details
+        console.error('Connection details:', {
+          url: wsUrl,
+          readyState: socket.current?.readyState,
+          protocol: socket.current?.protocol,
+          extensions: socket.current?.extensions,
+          bufferedAmount: socket.current?.bufferedAmount
+        });
       };
 
-      socket.current.onclose = () => {
-        console.log('WebSocket connection closed');
+      socket.current.onclose = (event) => {
+        console.log('WebSocket connection closed:', {
+          code: event.code,
+          reason: event.reason,
+          wasClean: event.wasClean
+        });
       };
 
-      // Wait for WebSocket to be ready
+      // Wait for WebSocket to be ready with more detailed error handling
       await new Promise<void>((resolve, reject) => {
-        const timeout = setTimeout(() => reject(new Error('WebSocket connection timeout')), 5000);
-        socket.current!.onopen = () => {
-          clearTimeout(timeout);
-          resolve();
-        };
+        const timeout = setTimeout(() => {
+          const error = new Error('WebSocket connection timeout');
+          console.error('Connection timeout details:', {
+            url: wsUrl,
+            readyState: socket.current?.readyState,
+            protocol: socket.current?.protocol
+          });
+          reject(error);
+        }, 5000);
+
+        if (socket.current) {
+          socket.current.onopen = () => {
+            console.log('WebSocket connected successfully within timeout');
+            clearTimeout(timeout);
+            resolve();
+          };
+          
+          socket.current.onerror = (error) => {
+            console.error('WebSocket error during connection setup:', error);
+            clearTimeout(timeout);
+            reject(new Error('WebSocket connection failed'));
+          };
+        }
       });
       
       const stream = await navigator.mediaDevices.getUserMedia({ 
