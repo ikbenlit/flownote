@@ -29,17 +29,12 @@ export const NoteEditPage: React.FC = () => {
       setIsLoading(true);
       const success = await updateNote(id, noteData);
       if (!success) {
-        throw new Error('Notitie kon niet worden bijgewerkt');
+        throw new Error('Failed to update note');
       }
-      
-      const savedId = id;
-      
-      setTimeout(() => navigate(`/notes/${savedId}`), 0);
-      
-      return savedId;
+      return id;
     } catch (error) {
       console.error('Error updating note:', error);
-      throw new Error('Notitie kon niet worden opgeslagen');
+      throw error;
     } finally {
       setIsLoading(false);
     }

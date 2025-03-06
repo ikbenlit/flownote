@@ -15,7 +15,7 @@ const AIAssistant: React.FC<AIAssistantProps> = ({ content, onApplyText }) => {
 
   const handleGenerate = async () => {
     try {
-      const result = await generateTextWithAI(content, action, customPrompt);
+      await generateTextWithAI(content, action, customPrompt);
       // Result is automatically stored in generatedText via the context
     } catch (error) {
       // Error is handled by the context
