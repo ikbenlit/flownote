@@ -1,17 +1,22 @@
 {
-  "name": "backend",
+  "name": "flownote-backend",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Flownote backend server",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "nodemon --exec ts-node --files src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "postinstall": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "dependencies": {
-    "@deepgram/sdk": "^3.11.1",
     "@types/cors": "^2.8.17",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
