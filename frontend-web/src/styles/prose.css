@@ -1,0 +1,79 @@
+@layer components {
+  /* Editor Typography */
+  .prose {
+    @apply font-body text-base leading-[1.6];
+  }
+
+  .prose h1 {
+    @apply font-display font-bold text-2xl leading-[1.2] mt-8 mb-4;
+  }
+
+  .prose h2 {
+    @apply font-display font-medium text-xl leading-[1.3] mt-6 mb-3;
+  }
+
+  .prose h3 {
+    @apply font-display font-medium text-lg leading-[1.4] mt-4 mb-2;
+  }
+
+  .prose h4 {
+    @apply font-display font-regular text-base leading-[1.4] mt-4 mb-2;
+  }
+
+  .prose p {
+    @apply mb-4;
+  }
+
+  .prose strong {
+    @apply font-bold;
+  }
+
+  .prose em {
+    @apply font-medium;
+  }
+
+  .prose ul {
+    @apply list-disc pl-6 mb-4;
+  }
+
+  .prose ol {
+    @apply list-decimal pl-6 mb-4;
+  }
+
+  .prose li {
+    @apply mb-1;
+  }
+
+  .prose blockquote {
+    @apply pl-4 border-l-4 border-gray-300 dark:border-dark-border-primary italic;
+  }
+
+  .prose code {
+    @apply font-mono text-sm bg-gray-100 dark:bg-dark-bg-secondary px-1 rounded;
+  }
+
+  .prose pre {
+    @apply bg-gray-100 dark:bg-dark-bg-secondary p-4 rounded-lg mb-4 overflow-x-auto;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+
+  .prose a {
+    @apply text-blue-600 dark:text-blue-400 hover:underline;
+  }
+
+  /* Task List Styling */
+  .prose ul[data-type="taskList"] {
+    @apply list-none pl-0;
+  }
+
+  .prose ul[data-type="taskList"] li {
+    @apply flex items-start gap-2;
+  }
+
+  .prose ul[data-type="taskList"] input[type="checkbox"] {
+    @apply mt-1;
+  }
+} 

@@ -67,16 +67,51 @@ Accent Kleuren:
    - Pas schaduw intensiteit aan voor dark mode
 
 **Typografie**
-*Handgeschreven Lettertypen*
-- Primair (Architects Daughter): Gebruikt voor app-titels, labels en primaire elementen
-- Secundair (Caveat): Voor koppen (h1-h4) en belangrijke accenten
-- Casual (Indie Flower): Voor informele notities en vriendelijke elementen
-- Netjes (Patrick Hand): Voor UI-labels, navigatie-items en goed leesbare handgeschreven tekst
-- Modern (Kalam): Voor de editor-inhoud en moderne interface-elementen
-- Licht (Shadows Into Light): Voor subtiele labels, placeholders en secundaire tekst
+*Primaire Lettertypen*
 
-*Regulier Lettertype*
-Inter: Gebruikt voor lange tekst en waar hoge leesbaarheid essentieel is
+1. Space Grotesk
+   - Bold (700): App-titel, belangrijke koppen en call-to-actions
+   - Medium (500): Sectietitels, navigatie-items
+   - Regular (400): Subtitels, knoppen
+   Gebruik: Voor alle elementen die aandacht moeten trekken en de visuele hiërarchie moeten leiden.
+
+2. Inter
+   - Bold (700): Belangrijke punten in notities, benadrukte UI-elementen
+   - Medium (500): Labels, categorieën, subkoppen in notities
+   - Regular (400): Notitie-inhoud, standaard UI-tekst, formulieren
+   - Light (300): Metadata, secundaire informatie
+   Gebruik: Voor alle content en interface elementen waar leesbaarheid en efficiëntie voorop staan.
+
+*Typografische Hiërarchie*
+
+Koppen en Titels (Space Grotesk)
+- App-titel: Bold, 28px/1.2
+- H1: Bold, 24px/1.2 - Paginatitels
+- H2: Medium, 20px/1.3 - Sectietitels
+- H3: Medium, 18px/1.4 - Subsectietitels
+- H4: Regular, 16px/1.4 - Kleine sectietitels
+
+Content en Interface (Inter)
+- Notitie hoofdtekst: Regular, 16px/1.6
+- Notitie benadrukte tekst: Medium, 16px/1.6
+- Notitie belangrijke punten: Bold, 16px/1.6
+- UI-tekst: Regular, 14px/1.5
+- Labels: Medium, 12px/1.4
+- Metadata: Light, 12px/1.4
+- Formulier input: Regular, 14px/1.5
+
+*Lettertype Combinaties en Best Practices*
+- Headers + Content: Space Grotesk voor koppen, Inter Regular voor content
+- Navigatie: Space Grotesk Medium voor primaire navigatie, Inter Regular voor submenu's
+- Knoppen: Space Grotesk Regular voor primaire acties, Inter Medium voor secundaire acties
+- Formulieren: Inter Medium voor labels, Inter Regular voor input velden
+- Metadata: Inter Light voor timestamps, versie-info en technische details
+
+*Performance Optimalisatie*
+- Laad alleen de benodigde font weights
+- Gebruik font-display: swap voor optimale laadtijd
+- Implementeer lokale font-hosting voor snellere laadtijden
+- Gebruik system-ui als fallback voor beide lettertypen
 
 Componenten
 Editor Panel
