@@ -1,5 +1,21 @@
 {
   "devDependencies": {
     "@types/ws": "^8.5.14"
-  }
+  },
+  "dependencies": {
+    "@deepgram/sdk": "^3.11.2"
+  },
+  "name": "flownote",
+  "version": "1.0.0",
+  "description": "Flownote - Note taking app",
+  "scripts": {
+    "dev": "cd frontend-web && npm run dev:all",
+    "dev:frontend": "cd frontend-web && npm run dev",
+    "dev:api": "cd frontend-web && npm run dev:api",
+    "build": "cd frontend-web && npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
