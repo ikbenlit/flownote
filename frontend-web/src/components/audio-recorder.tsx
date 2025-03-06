@@ -111,7 +111,11 @@ export const AudioRecorder: React.FC<AudioRecorderProps> = ({
       console.log('Starting recording...');
       
       // Initialize WebSocket connection first
-      socket.current = new WebSocket('ws://localhost:3000');
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsHost = process.env.NODE_ENV === 'production' 
+        ? window.location.host
+        : 'localhost:3000';
+      socket.current = new WebSocket(`${wsProtocol}//${wsHost}`);
       
       socket.current.onopen = () => {
         console.log('WebSocket connected to server');
