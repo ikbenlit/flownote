@@ -1,31 +1,181 @@
-/* Google Fonts Import */
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Caveat:wght@400;700&family=Indie+Flower&family=Patrick+Hand&family=Kalam:wght@300;400;700&family=Shadows+Into+Light&family=Inter:wght@400;500;600;700&display=swap');
-
-/* Font Classes */
-.font-architects-daughter {
-  font-family: 'Architects Daughter', cursive;
+/* Space Grotesk */
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../assets/fonts/Space_Grotesk/SpaceGrotesk-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-.font-caveat {
-  font-family: 'Caveat', cursive;
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../assets/fonts/Space_Grotesk/SpaceGrotesk-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
 }
 
-.font-indie-flower {
-  font-family: 'Indie Flower', cursive;
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../assets/fonts/Space_Grotesk/SpaceGrotesk-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
-.font-patrick-hand {
-  font-family: 'Patrick Hand', cursive;
+/* Inter */
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter/Inter18pt-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
 }
 
-.font-kalam {
-  font-family: 'Kalam', cursive;
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter/Inter18pt-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
 }
 
-.font-shadows-into-light {
-  font-family: 'Shadows Into Light', cursive;
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter/Inter18pt-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
 }
 
-.font-inter {
-  font-family: 'Inter', sans-serif;
+@font-face {
+  font-family: 'Inter';
+  src: url('../assets/fonts/Inter/Inter18pt-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Typography Utilities */
+.font-display {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+}
+
+.font-body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.font-light {
+  font-weight: 300;
+}
+
+.font-regular {
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Typography Components */
+.text-app-title {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.2;
+}
+
+.text-h1 {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.text-h2 {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.text-h3 {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+.text-h4 {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.text-body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.text-body-emphasis {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.text-body-strong {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.text-ui {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.text-label {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.text-meta {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 300;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.text-input {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.text-button-primary {
+  font-family: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.text-button-secondary {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-weight: 500;
+  font-size: 0.875rem;
+  line-height: 1.4;
 } 
