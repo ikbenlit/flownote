@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NoteEditor } from '../components/NoteEditor';
 import { useNotes } from '../context/NoteContext';
+import { TaskMarking } from '../context/NoteContext';
 import { FaArrowLeft } from 'react-icons/fa';
 
 export const NewNoteFromTranscriptionPage: React.FC = () => {
@@ -19,15 +20,17 @@ export const NewNoteFromTranscriptionPage: React.FC = () => {
     }
   }, [location.state]);
 
-  const handleSave = async (noteData: { title: string; content: string; tags: string[] }) => {
+  const handleSave = async (noteData: { title: string; content: string; tags: string[]; taskMarkings: TaskMarking[] }): Promise<string> => {
     try {
       setIsLoading(true);
       const noteId = await addNote(noteData);
       if (noteId) {
-        navigate(`/notes/${noteId}`);
+        return noteId;
       }
+      throw new Error('Failed to create note');
     } catch (error) {
       console.error('Error saving note:', error);
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -62,6 +65,7 @@ export const NewNoteFromTranscriptionPage: React.FC = () => {
               title: '',
               content: initialContent,
               tags: [],
+              taskMarkings: []
             }}
             onSave={handleSave}
             onCancel={handleCancel}
