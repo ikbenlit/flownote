@@ -4,6 +4,7 @@ import { I18nProvider } from '@/context/I18nContext'
 import { AuthProvider } from '@/context/AuthContext'
 import { NoteProvider } from '@/context/NoteContext'
 import AuthGuard from '@/components/auth/AuthGuard'
+import RootAppLayout from './layout-app'
 import '@/styles/globals.css'
 
 const architectsDaughter = Architects_Daughter({
@@ -67,7 +68,7 @@ export default function RootLayout({
           <AuthProvider>
             <AuthGuard>
               <NoteProvider>
-                {children}
+                <RootAppLayout>{children}</RootAppLayout>
               </NoteProvider>
             </AuthGuard>
           </AuthProvider>
