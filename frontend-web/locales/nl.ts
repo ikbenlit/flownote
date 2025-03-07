@@ -88,8 +88,14 @@ const translations = {
     result: 'Transcriptie resultaat',
     save: 'Opslaan',
     edit_save: 'Bewerken & opslaan',
+    live_preview: 'Live voorvertoning',
+    create_note: 'Maak notitie',
+    start: 'Start opname',
+    recording: 'Opname bezig...',
+    processing: 'Verwerken...',
     status: {
       connected: 'Verbonden met Deepgram',
+      connecting: 'Verbinding maken...',
       recording: 'Opname bezig...',
       processing: 'Verwerken...',
       idle: 'Klaar om op te nemen'
