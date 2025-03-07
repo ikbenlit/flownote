@@ -1,10 +1,9 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Architects_Daughter, Patrick_Hand, Kalam } from 'next/font/google'
 import { I18nProvider } from '@/context/I18nContext'
 import { AuthProvider } from '@/context/AuthContext'
 import { NoteProvider } from '@/context/NoteContext'
 import AuthGuard from '@/components/auth/AuthGuard'
-import RootAppLayout from './layout-app'
 import '@/styles/globals.css'
 
 const architectsDaughter = Architects_Daughter({
@@ -24,6 +23,11 @@ const kalam = Kalam({
   subsets: ['latin'],
   variable: '--font-kalam',
 })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1
+}
 
 export const metadata: Metadata = {
   title: 'FlowNote - Verhoog je Productiviteit met AI',
@@ -46,14 +50,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-  },
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
-  },
+  }
 }
 
 export default function RootLayout({
@@ -68,7 +68,7 @@ export default function RootLayout({
           <AuthProvider>
             <AuthGuard>
               <NoteProvider>
-                <RootAppLayout>{children}</RootAppLayout>
+                {children}
               </NoteProvider>
             </AuthGuard>
           </AuthProvider>

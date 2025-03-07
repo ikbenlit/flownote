@@ -1,6 +1,43 @@
 # FlowNote Pagina Flow
 
-## 1. Route Structuur
+## 1. Layout Structuur
+### 1.1 Root Layout (`/app/layout.tsx`)
+- **Doel**: Basis HTML structuur en globale providers
+- **Componenten**:
+  - HTML/Body structuur
+  - Font configuratie (Architects Daughter, Patrick Hand, Kalam)
+  - Globale providers:
+    - I18nProvider
+    - AuthProvider
+    - AuthGuard
+    - NoteProvider
+  - Globale metadata/viewport
+  - Globale styling
+
+### 1.2 Route Group Layouts
+#### Public Layout (`/app/(public)/layout.tsx`)
+- **Doel**: Layout voor publieke pagina's
+- **Features**:
+  - SEO-geoptimaliseerde metadata
+  - Publieke navigatie
+  - Marketing-gerichte styling
+
+#### Auth Layout (`/app/(auth)/layout.tsx`)
+- **Doel**: Layout voor authenticatie pagina's
+- **Features**:
+  - Auth-specifieke metadata
+  - Minimale interface
+  - Geen indexering door zoekmachines
+
+#### App Layout (`/app/(app)/layout.tsx`)
+- **Doel**: Layout voor beveiligde app routes
+- **Features**:
+  - Sidebar navigatie
+  - App-specifieke metadata
+  - Beveiligde route controle
+  - Geen indexering door zoekmachines
+
+## 2. Route Structuur
 - **(public)/** - Publiek toegankelijke routes
   - `/` - Marketing landingspagina
   - `/privacy` - Privacy policy
@@ -15,7 +52,7 @@
   - `/tasks` - Taken
   - `/ai-generator` - AI Generator
 
-## 2. Root Route (/)
+## 3. Root Route (/)
 - **Doel**: Doorverwijzen naar juiste route op basis van authenticatie
 - **Flow**:
   1. Loading state tonen
@@ -24,7 +61,7 @@
      - `/dashboard` voor ingelogde gebruikers
      - `/(public)` voor niet-ingelogde gebruikers
 
-## 3. Publieke Landingspagina (/(public))
+## 4. Publieke Landingspagina (/(public))
 - **Doel**: Bezoekers informeren en converteren naar gebruikers
 - **Componenten**:
   - Hero sectie met value proposition
@@ -43,8 +80,8 @@
     - Structured data
     - Performance optimalisatie
 
-## 4. Authenticatie Flow
-### 4.1 Registratie (/auth/register)
+## 5. Authenticatie Flow
+### 5.1 Registratie (/auth/register)
 - **Doel**: Nieuwe gebruikers registreren
 - **Flow**:
   1. Basis informatie invullen
@@ -55,6 +92,7 @@
   3. Welkomstscherm met korte tour
   4. Doorverwijzing naar dashboard
 
+### 5.2 Inloggen (/auth/login)
 ### 4.2 Inloggen (/auth/login)
 - **Doel**: Bestaande gebruikers toegang geven
 - **Opties**:

@@ -3,17 +3,6 @@
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
-import { Metadata, Viewport } from 'next'
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1
-}
-
-export const metadata: Metadata = {
-  title: 'FlowNote',
-  description: 'Welkom bij FlowNote - Jouw persoonlijke notitie en productiviteits app.'
-}
 
 export default function RootPage() {
   const router = useRouter()

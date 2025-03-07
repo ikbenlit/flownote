@@ -1,5 +1,18 @@
 # FlowNote Routes & Features
 
+## Layout Structuur
+
+### Root Layout (`/app/layout.tsx`)
+- Globale HTML structuur
+- Font configuratie
+- Provider wrappers
+- Globale metadata/viewport
+
+### Route Group Layouts
+- **(public)/layout.tsx** - Publieke routes layout
+- **(auth)/layout.tsx** - Authenticatie routes layout
+- **(app)/layout.tsx** - Beveiligde app routes layout met sidebar
+
 ## Route Groepen
 
 ### Publieke Routes (`(public)`)
@@ -42,17 +55,51 @@ Alle onderstaande routes vereisen authenticatie.
 
 ## Metadata & Viewport
 
-Alle pagina's gebruiken de nieuwe Next.js 14+ metadata en viewport configuratie:
+### Root Layout
+```typescript
+export const metadata: Metadata = {
+  title: 'FlowNote - Verhoog je Productiviteit met AI',
+  description: '...',
+  openGraph: { ... },
+  twitter: { ... },
+  robots: { index: true, follow: true }
+}
+```
 
+### Route Group Metadata
+#### Public Routes
+```typescript
+export const metadata: Metadata = {
+  title: 'FlowNote - Verhoog je Productiviteit met AI',
+  description: '...',
+  robots: { index: true, follow: true }
+}
+```
+
+#### Auth Routes
+```typescript
+export const metadata: Metadata = {
+  title: 'Inloggen - FlowNote',
+  description: '...',
+  robots: { index: false, follow: false }
+}
+```
+
+#### App Routes
+```typescript
+export const metadata: Metadata = {
+  title: 'Dashboard - FlowNote',
+  description: '...',
+  robots: { index: false, follow: false }
+}
+```
+
+### Viewport Configuratie
+Alle layouts gebruiken dezelfde viewport configuratie:
 ```typescript
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1
-}
-
-export const metadata: Metadata = {
-  title: 'Paginatitel - FlowNote',
-  description: 'Pagina beschrijving'
 }
 ```
 
@@ -65,12 +112,6 @@ export const metadata: Metadata = {
 - GET: Genereren van tijdelijke Deepgram tokens
 
 ## Features per Component
-
-### MainLayout
-- Responsive sidebar
-- Navigatie menu
-- Thema ondersteuning
-- Gebruikersmenu
 
 ### Sidebar
 - Inklapbare navigatie
@@ -95,12 +136,6 @@ export const metadata: Metadata = {
 - Template systeem
 - Context behoud
 - Geschiedenis
-
-### Audio Transcriptie
-- Real-time opname
-- Deepgram integratie
-- WebSocket verbinding
-- Transcriptie opslag
 
 ### Internationalisatie
 - Meertalige ondersteuning

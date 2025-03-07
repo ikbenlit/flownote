@@ -1,20 +1,9 @@
 'use client'
 
-import { Metadata, Viewport } from 'next'
 import Link from 'next/link'
 import { FaMicrophone, FaStickyNote, FaRobot, FaTasks, FaClock, FaChartLine } from 'react-icons/fa'
 import { useI18n } from '@/context/I18nContext'
 import { useAuth } from '@/context/AuthContext'
-
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1
-}
-
-export const metadata: Metadata = {
-  title: 'Dashboard - FlowNote',
-  description: 'Bekijk je notities, taken en activiteiten in één overzicht.'
-}
 
 export default function DashboardPage() {
   const { t } = useI18n()
