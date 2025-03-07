@@ -52,7 +52,7 @@ const NotesGrid: React.FC<NotesGridProps> = ({ notes }) => {
               <Calendar className="w-4 h-4" />
               {new Date(note.updatedAt).toLocaleDateString('nl-NL')}
             </span>
-            {note.taskMarkings.length > 0 && (
+            {note.taskMarkings && note.taskMarkings.length > 0 && (
               <span className="flex items-center gap-1">
                 {note.taskMarkings.filter(t => t.completed).length}/{note.taskMarkings.length} taken
               </span>

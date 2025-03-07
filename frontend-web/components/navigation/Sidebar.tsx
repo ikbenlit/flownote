@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
 import { 
   HomeIcon, 
   DocumentTextIcon, 
@@ -21,29 +22,40 @@ interface NavItemProps {
   icon: React.ElementType;
   label: string;
   isActive: boolean;
-  onClick?: () => void;
+  onClick?: (() => void) | (() => Promise<void>);
 }
 
-const NavItem = ({ href, icon: Icon, label, isActive, onClick }: NavItemProps) => (
-  <Link
-    href={href}
-    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-      isActive 
-        ? 'bg-primary-100 text-primary-900 dark:bg-primary-900 dark:text-primary-100' 
-        : 'hover:bg-gray-100 dark:hover:bg-gray-800'
-    }`}
-    onClick={onClick}
-  >
-    <Icon className="w-6 h-6" />
-    <span className="font-medium">{label}</span>
-  </Link>
-);
+const NavItem = ({ href, icon: Icon, label, isActive, onClick }: NavItemProps) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
+  return (
+    <Link
+      href={href}
+      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+        isActive 
+          ? 'bg-primary-100 text-primary-900 dark:bg-primary-900 dark:text-primary-100' 
+          : 'hover:bg-gray-100 dark:hover:bg-gray-800'
+      }`}
+      onClick={handleClick}
+    >
+      <Icon className="w-6 h-6" />
+      <span className="font-medium">{label}</span>
+    </Link>
+  );
+};
 
 export default function Sidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const { signOut } = useAuth();
 
   useEffect(() => {
     const checkMobile = () => {
@@ -54,6 +66,15 @@ export default function Sidebar() {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      router.push('/login');
+    } catch (error) {
+      console.error('Uitloggen mislukt:', error);
+    }
+  };
 
   const navigationItems = [
     { href: '/', icon: HomeIcon, label: 'Dashboard' },
@@ -66,7 +87,7 @@ export default function Sidebar() {
   const settingsItems = [
     { href: '/settings', icon: Cog6ToothIcon, label: 'Instellingen' },
     { href: '/profile', icon: UserCircleIcon, label: 'Profiel' },
-    { href: '/auth/logout', icon: ArrowLeftOnRectangleIcon, label: 'Uitloggen' },
+    { onClick: handleLogout, href: '#', icon: ArrowLeftOnRectangleIcon, label: 'Uitloggen' },
   ];
 
   const toggleSidebar = () => {
@@ -131,7 +152,10 @@ export default function Sidebar() {
                 key={item.href}
                 {...item}
                 isActive={pathname === item.href}
-                onClick={() => isMobile && setIsOpen(false)}
+                onClick={() => {
+                  if (isMobile) setIsOpen(false);
+                  if (item.onClick) item.onClick();
+                }}
               />
             ))}
           </div>

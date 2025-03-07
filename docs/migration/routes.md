@@ -1,68 +1,60 @@
 # FlowNote Routes & Features
 
-## Publieke Routes
+## Route Groepen
 
-### Landing Page (`/`)
-- Hoofdpagina voor niet-ingelogde gebruikers
-- Features showcase
-- Call-to-action knoppen
-- Taal selector
-- Thema schakelaar
+### Publieke Routes (`(public)`)
+- Landing Page (`/`)
+- Privacy Policy (`/privacy`)
+- Terms of Service (`/terms`)
 
-### Login Page (`/login`)
-- Google authenticatie
-- Redirect naar laatst bezochte pagina
-- Thema schakelaar
+### Authenticatie Routes (`(auth)`)
+- Login (`/login`)
+- Registratie (`/register`)
+- Wachtwoord Reset (`/reset-password`)
 
-## Beveiligde Routes
-Alle onderstaande routes vereisen authenticatie en zijn gewikkeld in `PrivateRoute` component.
+### App Routes (`(app)`)
+Alle onderstaande routes vereisen authenticatie.
 
-### Dashboard (`/app`)
+#### Dashboard (`/dashboard`)
 - Overzicht van recente activiteiten
 - Snelkoppelingen naar hoofdfuncties
 - Persoonlijke statistieken
 
-### Transcriptie (`/transcribe`)
-- Audio opname functionaliteit
-- Real-time transcriptie via Deepgram
-- Opslag van transcripties
-
-### Notities
-
-#### Notities Overzicht (`/notes`)
+#### Notities (`/notes`)
 - Grid/lijst weergave van notities
 - Zoek- en filterfunctionaliteit
 - Sorteermogelijkheden
+- Detail pagina's:
+  - `/notes/:id` - Notitie bekijken
+  - `/notes/edit/:id` - Notitie bewerken
+  - `/notes/new` - Nieuwe notitie
+  - `/notes/new-from-transcription` - Van transcriptie
 
-#### Notitie Detail (`/notes/:id`)
-- Volledige notitie weergave
-- Verwijder functionaliteit
-- Navigatie terug naar overzicht
-
-#### Notitie Bewerken (`/notes/edit/:id`)
-- Notitie editor
-- Tags beheer
-- Opslaan/annuleren acties
-
-#### Nieuwe Notitie (`/notes/new`)
-- Lege notitie editor
-- Tags toevoegen
-- Template selectie
-
-#### Nieuwe Notitie van Transcriptie (`/notes/new-from-transcription`)
-- Transcriptie naar notitie conversie
-- Bewerkingsmogelijkheden
-- Tags toevoegen
-
-### AI Generator (`/ai-generator`)
+#### AI Generator (`/ai-generator`)
 - AI tekst generatie interface
 - Template selectie
 - OpenAI integratie
 
-### Taken (`/tasks`)
+#### Taken (`/tasks`)
 - Takenlijst weergave
 - Taak management
 - Prioriteiten instelling
+
+## Metadata & Viewport
+
+Alle pagina's gebruiken de nieuwe Next.js 14+ metadata en viewport configuratie:
+
+```typescript
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1
+}
+
+export const metadata: Metadata = {
+  title: 'Paginatitel - FlowNote',
+  description: 'Pagina beschrijving'
+}
+```
 
 ## API Routes
 

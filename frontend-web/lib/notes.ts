@@ -13,8 +13,8 @@ const convertFirestoreNote = (doc: DocumentData): Note => {
     id: doc.id,
     title: data.title,
     content: data.content,
-    tags: data.tags,
-    taskMarkings: data.taskMarkings,
+    tags: data.tags || [],
+    taskMarkings: data.taskMarkings || [],
     createdAt: data.createdAt.toDate(),
     updatedAt: data.updatedAt.toDate(),
     userId: data.userId,
@@ -57,6 +57,8 @@ export const createNote = async (userId: string, noteInput: NoteInput): Promise<
     const noteData = {
       ...noteInput,
       userId,
+      tags: noteInput.tags || [],
+      taskMarkings: noteInput.taskMarkings || [],
       createdAt: now,
       updatedAt: now,
     };
