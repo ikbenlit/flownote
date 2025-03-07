@@ -55,7 +55,19 @@
   - "Wachtwoord vergeten" functionaliteit
   - Link naar registratie
 
-### 3.3 Wachtwoord Reset (/auth/reset-password)
+### 3.3 Uitloggen (/auth/logout)
+- **Doel**: Veilig uitloggen van gebruikers
+- **Flow**:
+  1. Uitlog-actie triggeren via gebruikersmenu
+  2. Bevestigingsdialoog tonen (optioneel voor belangrijke wijzigingen)
+  3. Bij bevestiging:
+     - Alle actieve sessies beëindigen
+     - Local storage en cookies opschonen
+     - JWT tokens verwijderen
+  4. Redirect naar landingspagina (/) met bevestigingsmelding
+  5. Mogelijkheid om opnieuw in te loggen
+
+### 3.4 Wachtwoord Reset (/auth/reset-password)
 - Email invoeren
 - Reset link versturen
 - Nieuw wachtwoord instellen
@@ -105,10 +117,57 @@
   - Login/Registreer knoppen
 
 - **App navigatie**:
-  - Sidebar met hoofdfuncties
-  - Top bar met gebruiker menu
-  - Breadcrumbs voor locatie
-  - Mobile-responsive menu
+  ### 6.1 Sidebar
+  - **Mobile (< 768px)**:
+    - Verborgen by default
+    - Hamburger menu voor toggle
+    - Full-screen overlay bij opening
+    - Swipe gesture ondersteuning
+    - Automatisch sluiten na selectie
+
+  - **Desktop (≥ 768px)**:
+    - Permanent zichtbaar
+    - Collapsible voor meer ruimte
+    - Hover states voor interactie
+
+  - **Structuur (top-to-bottom)**:
+    1. Logo/App naam (met link naar dashboard)
+    2. Hoofdfuncties:
+       - Dashboard
+       - Notities
+       - Taken
+       - AI Generator
+       - Transcriptie
+    3. Divider
+    4. Instellingen sectie:
+       - Thema toggle (dark/light)
+       - Gebruikersvoorkeuren
+       - Taalinstellingen
+    5. Gebruikerssectie (onderaan):
+       - Profielafbeelding
+       - Gebruikersnaam
+       - Uitlog optie
+
+  - **Visuele Hierarchie**:
+    - Duidelijke iconen met labels
+    - Actieve staat highlighting
+    - Subtiele hover effecten
+    - Consistente padding/spacing
+
+  ### 6.2 Top bar
+  - Alleen zichtbaar op mobile
+  - Hamburger menu
+  - App titel/logo
+  - Quick actions
+
+  ### 6.3 Breadcrumbs
+  - Locatie indicator
+  - Navigatie geschiedenis
+
+  ### 6.4 Responsive gedrag
+  - Vloeiende transities
+  - Gesture support op mobile
+  - Keyboard navigatie op desktop
 
 ## 7. Error Pages
 - 404 Not Found
