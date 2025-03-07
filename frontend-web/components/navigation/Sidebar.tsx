@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import ThemeToggle from '@/components/navigation/ThemeToggle';
 import { 
   HomeIcon, 
   DocumentTextIcon, 
@@ -158,6 +159,9 @@ export default function Sidebar() {
 
           {/* Settings Navigation */}
           <div className="p-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+            {/* Theme Toggle */}
+            {!isCollapsed && <ThemeToggle />}
+            
             {settingsItems.map((item) => (
               <NavItem
                 key={item.href}

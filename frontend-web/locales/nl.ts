@@ -141,6 +141,19 @@ const translations = {
       batch_creation_failed: 'Sommige taken konden niet worden aangemaakt'
     }
   },
+  settings: {
+    title: 'Instellingen',
+    appearance: 'Weergave',
+    dark_mode: 'Dark Mode',
+    light_mode: 'Light Mode',
+    language: 'Taal',
+    notifications: 'Notificaties',
+    push_notifications: 'Push Notificaties',
+    theme_toggle_aria_label: {
+      to_light: 'Schakel naar light mode',
+      to_dark: 'Schakel naar dark mode'
+    }
+  },
   formatting: {
     bold: 'Vet',
     italic: 'Cursief',
