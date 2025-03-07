@@ -28,50 +28,9 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  try {
-    // Haal de session cookie op
-    const sessionCookie = request.cookies.get('session')?.value
-
-    if (!sessionCookie && !isPublicPath) {
-      // Geen sessie en geen publieke route: redirect naar login
-      const loginUrl = new URL('/login', request.url)
-      loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
-      return NextResponse.redirect(loginUrl)
-    }
-
-    if (sessionCookie && !isPublicPath) {
-      try {
-        // Verifieer de sessie via de API route
-        const response = await fetch(new URL('/api/auth/verify', request.url), {
-          headers: {
-            Cookie: `session=${sessionCookie}`
-          }
-        })
-
-        if (!response.ok) {
-          // Ongeldige sessie: redirect naar login met redirect URL
-          const loginUrl = new URL('/login', request.url)
-          loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
-          return NextResponse.redirect(loginUrl)
-        }
-
-        return NextResponse.next()
-      } catch (error) {
-        // API error: redirect naar login met redirect URL
-        const loginUrl = new URL('/login', request.url)
-        loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
-        return NextResponse.redirect(loginUrl)
-      }
-    }
-
-    // Publieke routes zijn altijd toegankelijk
-    return NextResponse.next()
-  } catch (error) {
-    console.error('Middleware error:', error)
-    const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
-    return NextResponse.redirect(loginUrl)
-  }
+  // Voor niet-publieke routes, laat de client-side auth check dit afhandelen
+  // De Firebase Auth context in de app zorgt voor redirects indien nodig
+  return NextResponse.next()
 }
 
 export const config = {
