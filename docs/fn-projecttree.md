@@ -18,63 +18,78 @@ FlowNote/
 │   │   ├── package.json         # Dependencies & scripts
 │   │   ├── README.md            # Backend documentation
 │   │   ├── nodemon.json         # Hot-reloading config
-│   ├── frontend-web/            # Web frontend (React + Vite + TypeScript)
-│   │   ├── src/
-│   │   │   ├── components/      # Reusable UI components
-│   │   │   │   ├── AuthButton.tsx   # Firebase authentication button (Login/Logout)
-│   │   │   │   ├── PrivateRoute.tsx # Route protection for authenticated users
-│   │   │   │   ├── audio-recorder.tsx # Audio recording and transcription component
-│   │   │   │   ├── NotesList.tsx    # Component for displaying notes in a grid
-│   │   │   │   ├── NoteEditor.tsx   # Component for creating and editing notes
-│   │   │   │   ├── NoteDetail.tsx   # Component for viewing a single note
-│   │   │   │   ├── AIAssistant.tsx  # AI text generation assistant component
-│   │   │   │   ├── OpenAIGenerator.tsx # Standalone OpenAI text generation component
-│   │   │   │   └── tiptap/          # TipTap editor extensies
-│   │   │   │       └── extensions/
-│   │   │   │           └── TaskMarkExtension.tsx # Aangepaste extensie voor taakmarkeringen
-│   │   │   ├── pages/           # Page components
-│   │   │   │   ├── Home.tsx         # Homepage with login functionality
-│   │   │   │   ├── LoginPage.tsx    # Dedicated login page with Google authentication
-│   │   │   │   ├── transcription-page.tsx # Page for audio transcription
-│   │   │   │   ├── NotesPage.tsx    # Page for viewing and searching notes
-│   │   │   │   ├── NoteDetailPage.tsx # Page for viewing a single note
-│   │   │   │   ├── NoteEditPage.tsx # Page for editing an existing note
-│   │   │   │   ├── NewNotePage.tsx  # Page for creating a new note
-│   │   │   │   ├── NewNoteFromTranscriptionPage.tsx # Page for creating a note from transcription
-│   │   │   │   └── AIGeneratorPage.tsx # Page for standalone AI text generation
-│   │   │   ├── hooks/           # Custom React hooks
-│   │   │   │   ├── useOpenAI.ts     # Hook for OpenAI text generation
-│   │   │   ├── context/         # State management (React Context API)
-│   │   │   │   ├── AuthContext.tsx  # Context provider for authentication
-│   │   │   │   ├── NoteContext.tsx  # Context provider for notes functionality
-│   │   │   │   ├── AIContext.tsx    # Context provider for AI functionality
-│   │   │   │   ├── TaskContext.tsx  # Context provider for tasks
-│   │   │   │   └── I18nContext.tsx  # Context provider for translations
-│   │   │   ├── services/        # API requests and services
-│   │   │   │   ├── firebase.ts      # Firebase configuration file
-│   │   │   │   └── openai-service.ts # OpenAI API service
-│   │   │   ├── styles/          # Styling files
-│   │   │   │   └── globals.css      # Global CSS for Tailwind
-│   │   │   ├── App.tsx          # Main React component with routes and providers
-│   │   │   └── main.tsx         # Entry file for Vite
-│   │   ├── public/            # Static files
-│   │   │   └── fonts/         # Custom fonts
-│   │   ├── index.html         # HTML template
-│   │   ├── package.json       # Dependencies & scripts
-│   │   ├── tailwind.config.js # Tailwind configuration
-│   │   └── vite.config.ts     # Vite configuration
 │   │   └── tsconfig.json      # TypeScript configuration
-│   ├── docs/                # Project documentation
-│   │   ├── API_endpoints.md         # API routes documentation
-│   │   ├── Architecture.md          # Architecture overview
-│   │   ├── UserFlow.md              # User flow and UX design
-│   │   ├── fn-projecttree.md        # Project structure documentation
-│   │   ├── fn-techstack.md          # Technology stack documentation
-│   │   ├── fn-description.md        # Project description
-│   │   ├── fn-designsystem.md       # Design system documentation
-│   │   ├── implementation-markering-tasks.md # Task implementation
-│   │   └── note-task.md           # Note-task integration
-│   └── README.md                  # Main project documentation
+│   ├── frontend-web/            # Next.js 14 full-stack applicatie
+│   │   ├── app/                # Next.js App Router
+│   │   │   ├── (auth)/        # Authenticatie routes (niet in URL)
+│   │   │   │   ├── login/     # Login pagina
+│   │   │   │   └── register/  # Registratie pagina
+│   │   │   ├── (public)/      # Publieke routes (niet in URL)
+│   │   │   │   ├── page.tsx   # Landing page
+│   │   │   │   └── features/  # Features overzicht
+│   │   │   ├── api/          # API endpoints
+│   │   │   │   ├── auth/     # Authenticatie endpoints
+│   │   │   │   │   ├── session/ # Sessie management
+│   │   │   │   │   └── verify/ # Sessie verificatie
+│   │   │   │   ├── deepgram/ # Deepgram API integratie
+│   │   │   │   └── openai/   # OpenAI API integratie
+│   │   │   ├── notes/        # Notities feature
+│   │   │   │   ├── page.tsx   # Notities overzicht
+│   │   │   │   └── [id]/     # Individuele notitie
+│   │   │   ├── transcribe/   # Transcriptie feature
+│   │   │   │   └── page.tsx  # Transcriptie pagina
+│   │   │   ├── ai-generator/ # AI generatie feature
+│   │   │   │   └── page.tsx  # AI generator pagina
+│   │   │   ├── tasks/       # Taken feature
+│   │   │   │   └── page.tsx  # Taken overzicht
+│   │   │   ├── layout.tsx    # Root layout met providers
+│   │   │   └── page.tsx     # Dashboard (na login)
+│   │   ├── components/     # React componenten
+│   │   │   ├── ui/         # Atomic/UI componenten
+│   │   │   │   ├── Button.tsx # Herbruikbare button component
+│   │   │   │   └── Input.tsx # Herbruikbare input component
+│   │   │   ├── layout/     # Layout componenten
+│   │   │   │   ├── Header.tsx # Header component
+│   │   │   │   └── Sidebar.tsx # Sidebar component
+│   │   │   └── features/   # Feature-specifieke componenten
+│   │   │       ├── notes/  # Notitie-gerelateerde componenten
+│   │   │       │   ├── NoteEditor.tsx # TipTap editor component
+│   │   │       │   └── NotesList.tsx # Notities overzicht component
+│   │   │       ├── tasks/  # Taak-gerelateerde componenten
+│   │   │       │   └── TaskList.tsx # Taken overzicht component
+│   │   │       └── transcribe/ # Transcriptie-gerelateerde componenten
+│   │   │           └── AudioRecorder.tsx # Audio opname component
+│   │   ├── context/        # React Context providers
+│   │   │   ├── AuthContext.tsx # Authenticatie context
+│   │   │   ├── NoteContext.tsx # Notities context
+│   │   │   ├── TaskContext.tsx # Taken context
+│   │   │   └── I18nContext.tsx # Vertalingen context
+│   │   ├── lib/            # Gedeelde logica en utilities
+│   │   │   ├── firebase.ts # Firebase configuratie
+│   │   │   ├── firebase-admin.ts # Firebase Admin SDK configuratie
+│   │   │   └── utils/      # Helper functies
+│   │   ├── locales/        # Vertalingen
+│   │   │   └── nl/         # Nederlandse vertalingen
+│   │   ├── styles/         # Styling
+│   │   │   └── globals.css # Globale CSS met Tailwind
+│   │   ├── types/          # TypeScript types
+│   │   │   ├── note.ts    # Notitie types
+│   │   │   └── task.ts    # Taak types
+│   │   ├── public/         # Statische bestanden
+│   │   │   └── fonts/      # Custom fonts
+│   │   ├── middleware.ts   # Next.js middleware voor route bescherming
+│   │   ├── next.config.js  # Next.js configuratie
+│   │   ├── package.json    # Dependencies & scripts
+│   │   └── tailwind.config.js # Tailwind configuratie
+│   ├── docs/                 # Project documentatie
+│   │   ├── API_endpoints.md # API routes documentatie
+│   │   ├── Architecture.md # Architectuur overzicht
+│   │   ├── UserFlow.md     # User flow en UX design
+│   │   ├── fn-projecttree.md # Project structuur documentatie
+│   │   ├── fn-techstack.md # Technology stack documentatie
+│   │   ├── fn-description.md # Project beschrijving
+│   │   └── fn-designsystem.md # Design system documentatie
+│   └── README.md             # Hoofdproject documentatie
 ├── database/                     # SQL scripts and migrations
 │   ├── schema.sql               # Database structure (PostgreSQL)
 │   ├── migrations/              # Database migrations

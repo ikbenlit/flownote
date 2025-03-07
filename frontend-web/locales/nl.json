@@ -1,0 +1,37 @@
+{
+  "app": {
+    "title": "Flownote",
+    "error": {
+      "unexpected": "Er is een onverwachte fout opgetreden"
+    }
+  },
+  "auth": {
+    "login_title": "Inloggen",
+    "email": "E-mailadres",
+    "password": "Wachtwoord",
+    "login": "Inloggen",
+    "logging_in": "Bezig met inloggen...",
+    "or": "of",
+    "login_with_google": "Inloggen met Google",
+    "error": {
+      "invalid_credentials": "Ongeldige inloggegevens",
+      "email_not_verified": "E-mailadres is niet geverifieerd",
+      "google_login_failed": "Inloggen met Google is mislukt",
+      "google_popup_closed": "Google login venster is gesloten",
+      "google_popup_blocked": "Pop-up venster is geblokkeerd. Sta pop-ups toe voor deze website.",
+      "google_popup_cancelled": "Google login is geannuleerd",
+      "network_error": "Netwerkfout. Controleer je internetverbinding."
+    }
+  },
+  "notes": {
+    "title": "Notities",
+    "new_note": "Nieuwe notitie",
+    "edit_note": "Notitie bewerken",
+    "create_new": "Nieuwe notitie",
+    "error": {
+      "title_required": "Titel is verplicht",
+      "content_required": "Inhoud is verplicht",
+      "save_failed": "Opslaan mislukt"
+    }
+  }
+} 

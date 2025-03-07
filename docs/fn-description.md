@@ -1,21 +1,23 @@
 ## Flownote: Technische Leidraad voor een Moderne Notitie- en Taakbeheerapplicatie
 
-Flownote is een webgebaseerde applicatie die notitie- en taakbeheerfunctionaliteit integreert met moderne technologieën zoals AI-gebaseerde tekstgeneratie en (geplande) spraak-naar-tekst transcriptie. Het doel is om gebruikers een naadloze ervaring te bieden voor het vastleggen, bewerken en organiseren van gedachten en taken.
+Flownote is een webgebaseerde applicatie die notitie- en taakbeheerfunctionaliteit integreert met moderne technologieën zoals AI-gebaseerde tekstgeneratie en spraak-naar-tekst transcriptie. Het doel is om gebruikers een naadloze ervaring te bieden voor het vastleggen, bewerken en organiseren van gedachten en taken.
 
 # Technische Architectuur
-De applicatie is gebouwd als een moderne single-page application (SPA) met de volgende componenten:
+De applicatie is gebouwd als een moderne full-stack applicatie met de volgende componenten:
 
-**Frontend:**
-- Framework: React met Vite en TypeScript
-- Styling: Tailwind CSS met custom fonts (Architects Daughter, Patrick Hand, Caveat, Kalam)
+**Frontend & Backend:**
+- Framework: Next.js 14 met App Router en TypeScript
+- Styling: Tailwind CSS met custom fonts (Architects Daughter, Patrick Hand, Kalam)
 - State Management: React Context API voor globale state
 - Editor: TipTap met aangepaste extensies voor taakmarkeringen
-- Routing: React Router v6 met beschermde routes
+- Routing: Next.js App Router met route groups en middleware
+- API Routes: Geïntegreerde serverless endpoints
 
 **Backend Services:**
-- Authentication: Firebase Authentication
+- Authentication: Firebase Authentication & Admin SDK
   - Google login integratie
-  - Token-based beveiliging
+  - Session cookie beveiliging
+  - Middleware voor route bescherming
 - Database: Firebase Firestore
   - Collections: notes, tasks
   - Real-time updates
@@ -23,16 +25,17 @@ De applicatie is gebouwd als een moderne single-page application (SPA) met de vo
   - Beveiligingsregels voor gebruiker-specifieke toegang
 - AI Services:
   - OpenAI API voor tekstgeneratie
-  - Deepgram API voor spraak-naar-tekst (gepland)
+  - Deepgram API voor spraak-naar-tekst
 
 ## Kernfunctionaliteiten
 
 1. Gebruikersauthenticatie
-- Implementatie: Firebase Authentication met Google login
+- Implementatie: Firebase Authentication met session cookies
 - Features:
   - Veilige inlog/uitlog
-  - Persistente sessies
-  - Beschermde routes
+  - Persistente sessies via cookies
+  - Middleware voor route bescherming
+  - API route voor sessie verificatie
   - Gebruiker-specifieke data isolatie
 
 2. Notitiebewerking
@@ -52,34 +55,44 @@ De applicatie is gebouwd als een moderne single-page application (SPA) met de vo
   - Automatische taakextractie
   - Koppeling tussen taken en bronnotities
   - Taakstatus tracking
+  - Responsive takenlijst
 
 4. AI-integratie
-- Implementatie: OpenAI API met contextbewuste prompts
+- Implementatie: OpenAI & Deepgram via API routes
 - Features:
   - Tekstgeneratie
+  - Real-time spraak-naar-tekst
   - Contextbewuste suggesties
   - Verschillende teksttypes (blog, email, verslag)
 
 ## Technische Details
 
 ### Frontend Architectuur
-1. Component Structuur:
-- Pages: Hoofdpagina's (Dashboard, Notes, Edit, etc.)
-- Components: Herbruikbare UI-elementen
-- Context: Globale state providers
-- Services: API integraties
+1. Route Structuur:
+- (auth): Authenticatie routes (login, register)
+- (public): Publieke routes (landing, features)
+- api: API endpoints
+- notes: Notities feature
+- transcribe: Transcriptie feature
+- ai-generator: AI generatie feature
+- tasks: Taken feature
 
-2. State Management:
+2. Component Structuur:
+- components/ui: Atomic design componenten
+- components/layout: Layout componenten
+- components/features: Feature-specifieke componenten
+
+3. State Management:
 - AuthContext: Authenticatie status
 - NoteContext: Notitie CRUD operaties
 - TaskContext: Taakbeheer
 - I18nContext: Vertalingen
 
-3. Data Flow:
-- Unidirectionele data flow
-- Context-based state updates
+4. Data Flow:
+- Server-side rendering waar mogelijk
+- Client-side updates voor interactiviteit
+- API routes voor server-side logica
 - Real-time Firestore synchronisatie
-- Offline-first benadering
 
 ### Database Schema
 1. Notes Collection:
@@ -116,34 +129,37 @@ interface Task {
 ## Ontwikkelingsrichtlijnen
 
 1. Code Organisatie:
-- Modulaire componenten
+- Next.js App Router conventies
+- Route groups voor logische groepering
+- API routes voor server-side logica
 - TypeScript voor type-veiligheid
-- Herbruikbare hooks en utilities
-- Consistente naamgeving
+- Modulaire componenten en hooks
 
 2. State Management:
+- Server Components waar mogelijk
+- Client Components voor interactiviteit
 - Context voor globale state
-- Local state voor component-specifieke data
 - Optimistische UI updates
-- Error handling en recovery
 
 3. Performance:
-- Code-splitting
-- Lazy loading
-- Memoization waar nodig
+- Server-side rendering
+- Route groups voor code-splitting
+- Streaming waar mogelijk
 - Efficiënte Firestore queries
+- Geoptimaliseerde client bundle
 
 4. Security:
-- Firebase Authentication
+- Session cookie authenticatie
+- API route verificatie
+- Middleware bescherming
+- Firebase Admin SDK server-side
 - Firestore Security Rules
-- Input validatie
-- XSS preventie
 
 ## Toekomstige Uitbreidingen
 
 1. Korte Termijn:
-- Spraak-naar-tekst transcriptie
-- Kanban board voor taken
+- Notities systeem migratie
+- Dashboard layout voltooiing
 - Geavanceerde zoekfunctionaliteit
 - Notitie-sjablonen
 

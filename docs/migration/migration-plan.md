@@ -3,180 +3,194 @@
 ## 🎯 Doel
 Dit migratieplan beschrijft de stapsgewijze overgang van onze huidige Vite-gebaseerde frontend setup naar een volledig geïntegreerde Next.js applicatie. De migratie heeft als doel het verenigen van onze frontend (Vite) en API-routes (Next.js) in één coherent framework.
 
-### Huidige Situatie
-- Frontend: Vite + React + TypeScript
-- API Routes: Next.js serverless functies
-- Twee verschillende servers in development
-- Complexe proxy setup voor API communicatie
+## Status Update (Laatst bijgewerkt: 7 maart 2024)
 
-### Gewenste Situatie
-- Unified Next.js applicatie
-- Server-side rendering capabilities
-- Geïntegreerde API routes
-- Verbeterde development workflow
-- Geoptimaliseerde build en deployment
+### Voltooide taken
+- [x] Project structuur opgezet
+- [x] Next.js configuratie
+- [x] Dependencies geïnstalleerd
+- [x] Tailwind CSS configuratie
+- [x] Development tools configuratie (ESLint, PostCSS)
+- [x] Authenticatie systeem geïmplementeerd
+  - Firebase authenticatie geïntegreerd
+  - Session cookie management opgezet
+  - Login pagina gecreëerd met dark mode ondersteuning
+  - Middleware voor route beveiliging toegevoegd
+  - Google Authentication werkend met automatische redirect
+  - Session cookie implementatie voor persistente login
+  - Middleware geoptimaliseerd voor client-side gebruik
+  - API route voor sessie verificatie toegevoegd
+- [x] Context providers opgezet
+  - AuthContext voor gebruikersbeheer
+  - I18nContext voor vertalingen met parameter ondersteuning
+  - TaskContext voor taakbeheer
+  - NoteContext aangepast voor lokale testing zonder Firebase
+- [x] Vertalingen toegevoegd
+  - Nederlandse vertalingen geïmplementeerd
+  - Vertalingen voor authenticatie en basis UI
+  - Dynamische taal ondersteuning
+- [x] Notitie editor component
+  - TipTap editor geïntegreerd
+  - Taakmarkeringen functionaliteit
+  - Opmaak toolbar
+  - Tags systeem
+  - Dark mode ondersteuning
+- [x] Project structuur geconsolideerd
+  - Node modules structuur opgeschoond
+  - Package.json geconsolideerd
+  - Configuratiebestanden samengevoegd
+  - Overbodige Vite bestanden verwijderd
+  - ESLint configuratie gestandaardiseerd
+- [x] Code reorganisatie
+  - [x] Next.js code verplaatst van next-src naar root
+  - [x] Import paths geüpdatet
+  - [x] Vite configuratie verwijderd
+  - [x] API routes geïmplementeerd
+    - Session management
+    - Deepgram token generatie
+    - OpenAI integratie
+  - [x] Oude src directory opgeschoond
+- [x] Landing page
+  - Modern design met hero sectie
+  - Google login integratie
+  - Feature highlights
+  - Dark mode ondersteuning
+- [x] Dashboard implementatie
+  - Feature cards met iconen
+  - Responsive design
+  - Dark mode ondersteuning
+  - Navigatie menu
+  - Route structuur opgezet met route groups
+- [x] Transcriptie functionaliteit
+  - [x] Deepgram API route opgezet voor token generatie
+  - [x] Audio opname component gemigreerd
+    - Real-time transcriptie
+    - Volume visualisatie
+    - Automatische stop na stilte
+    - Verbeterde error handling
+  - [x] Transcriptie verwerking geïmplementeerd
+  - [x] UI voor transcriptie resultaten
+  - [x] Notitie integratie
+    - Directe opslag van transcripties
+    - Bewerken voor opslaan
+    - Real-time preview
+- [x] Route structuur geoptimaliseerd
+  - [x] Route groups geïmplementeerd voor betere organisatie
+  - [x] Middleware geoptimaliseerd voor client-side gebruik
+  - [x] API routes voor authenticatie gescheiden
+  - [x] Publieke en beschermde routes correct geconfigureerd
+- [x] Build optimalisaties
+  - [x] Webpack configuratie aangepast voor Node.js modules
+  - [x] Firebase Admin SDK correct afgehandeld
+  - [x] Polyfills en fallbacks geoptimaliseerd
+  - [x] Client-side bundle size geoptimaliseerd
 
-### Meetbare Doelstellingen
-1. Verwijderen van dubbele server setup
-2. Reduceren van build tijd met 30%
-3. Verbeteren van Lighthouse scores
-4. Verminderen van totale bundle size
-5. Verkorten van Time-to-First-Byte (TTFB)
+### Huidige taken
+- [ ] Notities functionaliteit
+  - [x] Notitie editor component
+  - [ ] Firestore integratie voor notities
+  - [ ] CRUD operaties voor notities
+  - [ ] Notities lijst component
 
-## Migratie Strategie
-### Project Structuur Aanpak
-We kiezen ervoor om binnen de huidige projectmap te blijven werken om de volgende redenen:
+### Volgende stappen (geprioriteerd)
+1. Notities systeem migreren
+2. Dashboard layout voltooien
+3. Overige pagina's migreren
 
-#### Voordelen
-- Behoud van git historie
-- Eenvoudiger vergelijking tussen oude en nieuwe code
-- Geleidelijke migratie mogelijk
-- Behoud van bestaande CI/CD pipelines
-- Geen nieuwe repository setup nodig
+### Risico's en aandachtspunten
+- ✅ Path aliasing geconfigureerd voor @/ imports
+- ✅ API routes geïmplementeerd volgens Next.js conventies
+- ✅ Session management getest en werkend
+- ✅ Deepgram API integratie getest
+- ✅ Firebase authenticatie volledig werkend
+- ✅ Landing page en dashboard geïmplementeerd
+- ✅ Transcriptie systeem volledig werkend
+- ✅ Codebase opgeschoond en consistent
+- ✅ Node.js modules correct afgehandeld in client
+- ⚠️ OpenAI integratie moet nog getest worden
+- ⚠️ Firebase Admin SDK configuratie vereist de juiste environment variables
 
-#### Stappenplan
-1. **Voorbereidende Fase**
-   ```bash
-   frontend-web/
-   ├── src/                  # Huidige Vite structuur
-   └── next-src/             # Nieuwe Next.js structuur
-   ```
+### Tijdlijn update
+- Bestede tijd: ~15-16 uur
+- Geschatte resterende tijd: 2-7 uur
+  - Notities systeem: 2-4 uur
+  - UI/UX afronding: 1-2 uur
 
-2. **Migratie Fase**
-   - Componenten één voor één overzetten
-   - Parallel draaien van beide implementaties
-   - Incrementeel testen van gemigreerde onderdelen
-
-3. **Cleanup Fase**
-   ```bash
-   frontend-web/
-   ├── app/                  # Gemigreerde Next.js structuur
-   ├── components/
-   ├── lib/
-   └── public/
-   ```
-
-#### Voorzorgsmaatregelen
-- Duidelijke naamgeving voor tijdelijke directories
-- Feature flags voor nieuwe/gemigreerde componenten
-- Backup van kritieke configuratiebestanden
-- Gescheiden package.json tijdens migratie
-
-## Waarom Next.js?
-- ✅ Vercel hosting integratie
-- 🔒 Serverless functies voor API routes (Deepgram, OpenAI)
-- 🚀 Ingebouwde optimalisaties
-- 📦 Eenvoudigere deployment
-- 💻 Betere developer experience
-
-## Migratiefases
-
-### Fase 1: Voorbereiding (1-2 uur)
-- [ ] Branch aanmaken: `feature/nextjs-migration`
-- [ ] Backup maken van huidige codebase
-- [ ] Routes en features inventariseren
-- [ ] Environment variables documenteren
-- [ ] Dependencies in kaart brengen
-
-### Fase 2: Project Setup (2-3 uur)
-#### Project Structuur
+### Project structuur
 ```
-frontend-web/
-├── app/              # Next.js App Router
-│   ├── api/         # API routes
-│   └── (routes)/    # Page routes
-├── components/      # React components
-├── lib/            # Utilities
-├── styles/         # CSS/Tailwind
-└── public/         # Static assets
+/
+├── frontend-web/           # Next.js frontend applicatie
+│   ├── app/               # Next.js App Router
+│   │   ├── (auth)/       # Authenticatie routes
+│   │   │   ├── login/    # Login pagina
+│   │   │   └── register/ # Registratie pagina
+│   │   ├── (public)/     # Publieke routes
+│   │   │   ├── page.tsx  # Landing page
+│   │   │   └── features/ # Features overzicht
+│   │   ├── api/          # API endpoints
+│   │   │   ├── auth/     # Authenticatie endpoints
+│   │   │   │   ├── session/ # Sessie management
+│   │   │   │   └── verify/  # Sessie verificatie
+│   │   │   ├── deepgram/ # Deepgram integratie
+│   │   │   └── openai/   # OpenAI integratie
+│   │   ├── notes/        # Notities feature
+│   │   ├── transcribe/   # Transcriptie feature
+│   │   ├── ai-generator/ # AI generatie feature
+│   │   ├── tasks/        # Taken feature
+│   │   ├── layout.tsx    # Root layout
+│   │   └── page.tsx      # Dashboard (na login)
+│   ├── components/       # React componenten
+│   │   ├── ui/          # Atomic/UI componenten
+│   │   ├── layout/      # Layout componenten
+│   │   └── features/    # Feature componenten
+│   ├── context/         # React Context providers
+│   ├── lib/            # Gedeelde logica en utilities
+│   ├── locales/        # Vertalingen
+│   ├── styles/         # Styling en thema's
+│   ├── types/          # TypeScript types
+│   └── public/         # Statische bestanden
+├── backend/            # Backend services
+├── database/          # Database configuratie
+└── docs/             # Projectdocumentatie
 ```
 
-#### Development Tools
-- [ ] TypeScript configuratie
-- [ ] ESLint setup
-- [ ] Tailwind CSS integratie
-- [ ] Environment variables migratie
+### Environment Variables
+```
+# Firebase Web SDK
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
 
-### Fase 3: Component Migratie (4-6 uur)
-#### Volgorde
-1. Atomic/UI components
-2. Form components
-3. Layout components
-4. Feature components
-5. Page components
+# Firebase Admin SDK
+FIREBASE_PROJECT_ID=
+FIREBASE_CLIENT_EMAIL=
+FIREBASE_PRIVATE_KEY=
 
-#### Aandachtspunten
-- [ ] Client vs Server components
-- [ ] State management aanpassingen
-- [ ] Route handling updates
-- [ ] API integraties
+# API Keys
+DEEPGRAM_API_KEY=
+OPENAI_API_KEY=
 
-### Fase 4: API Routes Migratie (2-3 uur)
-- [ ] Deepgram token endpoint
-- [ ] OpenAI endpoints
-- [ ] Error handling implementatie
-- [ ] API documentatie
-- [ ] Testing endpoints
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+```
 
-### Fase 5: Testing & Optimalisatie (3-4 uur)
-- [ ] End-to-end testing
-- [ ] Performance optimalisaties
-- [ ] Loading states
-- [ ] Error boundaries
-- [ ] SEO optimalisatie
-
-### Fase 6: Deployment & Cleanup (2-3 uur)
-- [ ] Vercel deployment configuratie
-- [ ] Staging environment testing
-- [ ] Cleanup:
-  - [ ] Vite configuratie verwijderen
-  - [ ] Build scripts updaten
-  - [ ] Ongebruikte dependencies opruimen
-- [ ] Documentatie bijwerken
-
-## Risico's & Mitigatie
-
-| Risico | Mitigatie |
-|--------|-----------|
-| Data verlies | Backup & feature branches |
-| Downtime | Staging deployment eerst |
-| Performance issues | Incrementeel testen |
-| Caching issues | Cache busting strategieën |
-
-## Timeline
-- **Totale tijd**: 14-21 uur
-- **Spreiding**: 3-4 werkdagen
-- **Ideaal moment**: Sprint start/einde
-
-## Post-Migratie Voordelen
-1. Snellere development cycles
-2. Verbeterde performance
-3. Vereenvoudigde deployment
-4. Betere SEO scores
-5. Minder dependencies
-6. Schonere codebase
-
-## Success Criteria
-- [ ] Alle bestaande functionaliteit werkt
-- [ ] Lighthouse scores zijn verbeterd
-- [ ] Build tijd is verminderd
-- [ ] Development setup is vereenvoudigd
-- [ ] Geen feature regressie
-
-## Monitoring & Rollback
-### Monitoring
-- Error rates via Vercel Analytics
-- Performance metrics tracking
-- User feedback verzamelen
-
-### Rollback Procedure
-1. Backup van pre-migratie staat behouden
-2. Rollback triggers definiëren
-3. Automatische en handmatige rollback procedures
-4. Communicatieplan voor stakeholders
+## Monitoring & Rollback Plan
+- Development server draait op `http://localhost:3000`
+- Git branch `feature/nextjs-migration` voor rollback punt
+- API endpoints gevalideerd en werkend
+- Session management getest en functioneel
+- Path aliasing geconfigureerd en werkend
+- Google Authentication flow getest en werkend
+- Transcriptie systeem volledig functioneel
+- Codebase opgeschoond en consistent met Next.js best practices
+- Node.js modules correct afgehandeld in client-side code
 
 ## Ondersteuning
-- Technische documentatie
-- Handleiding voor ontwikkelaars
-- Troubleshooting guide
-- Contact informatie voor support
+- Technische documentatie bijgewerkt
+- Migratieplan actief onderhouden
+- Volgende update: Na implementatie notities systeem

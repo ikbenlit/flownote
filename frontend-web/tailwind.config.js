@@ -1,14 +1,16 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './components/**/*.{js,ts,jsx,tsx,mdx}',
+    './pages/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        // Light mode colors (existing)
+        // Light mode colors
         primary: {
           blue: '#3B82F6',
           'blue-light': '#93C5FD',
@@ -17,7 +19,7 @@ export default {
           'green-light': '#D1FAE5',
           'green-dark': '#059669',
         },
-        // Dark mode custom colors
+        // Dark mode colors
         dark: {
           bg: {
             primary: '#1A1F2B',
@@ -50,6 +52,10 @@ export default {
         'dark-accent-blue-light': '#228be6',
       },
       fontFamily: {
+        'architects-daughter': ['Architects Daughter', 'cursive'],
+        'patrick-hand': ['Patrick Hand', 'cursive'],
+        'caveat': ['Caveat', 'cursive'],
+        'inter': ['Inter', 'sans-serif'],
         'display': ['Space Grotesk', 'system-ui', '-apple-system', 'sans-serif'],
         'body': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
@@ -62,6 +68,25 @@ export default {
         'body': ['16px', '1.6'],
         'ui': ['14px', '1.5'],
         'label': ['12px', '1.4'],
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: '65ch',
+            color: 'inherit',
+            a: {
+              color: 'inherit',
+              textDecoration: 'underline',
+              fontWeight: '500',
+            },
+            strong: {
+              color: 'inherit',
+            },
+            code: {
+              color: 'inherit',
+            },
+          },
+        },
       },
     },
   },
