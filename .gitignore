@@ -1,3 +1,9 @@
+# Frontend
+frontend-web/dist/
+frontend-web/build/
+frontend-web/node_modules/
+frontend-web/.next/
+
 # Dependencies
 node_modules/
 /.pnp
