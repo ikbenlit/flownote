@@ -28,7 +28,9 @@ interface NavItemProps {
 const NavItem = ({ href, icon: Icon, label, isActive, onClick }: NavItemProps) => {
   const handleClick = (e: React.MouseEvent) => {
     if (onClick) {
-      e.preventDefault();
+      if (href === '#') {
+        e.preventDefault();
+      }
       onClick();
     }
   };
@@ -77,7 +79,7 @@ export default function Sidebar() {
   };
 
   const navigationItems = [
-    { href: '/', icon: HomeIcon, label: 'Dashboard' },
+    { href: '/dashboard', icon: HomeIcon, label: 'Dashboard' },
     { href: '/notes', icon: DocumentTextIcon, label: 'Notities' },
     { href: '/tasks', icon: CheckCircleIcon, label: 'Taken' },
     { href: '/ai-generator', icon: SparklesIcon, label: 'AI Generator' },
@@ -89,6 +91,15 @@ export default function Sidebar() {
     { href: '/profile', icon: UserCircleIcon, label: 'Profiel' },
     { onClick: handleLogout, href: '#', icon: ArrowLeftOnRectangleIcon, label: 'Uitloggen' },
   ];
+
+  // Helper functie om te controleren of een route actief is
+  const isRouteActive = (href: string) => {
+    if (href === '#') return false;
+    // Verwijder eventuele trailing slashes voor de vergelijking
+    const currentPath = pathname?.replace(/\/$/, '');
+    const targetPath = href.replace(/\/$/, '');
+    return currentPath === targetPath;
+  };
 
   const toggleSidebar = () => {
     if (isMobile) {
@@ -139,8 +150,8 @@ export default function Sidebar() {
               <NavItem
                 key={item.href}
                 {...item}
-                isActive={pathname === item.href}
-                onClick={() => isMobile && setIsOpen(false)}
+                isActive={isRouteActive(item.href)}
+                onClick={isMobile ? () => setIsOpen(false) : undefined}
               />
             ))}
           </nav>
@@ -151,11 +162,15 @@ export default function Sidebar() {
               <NavItem
                 key={item.href}
                 {...item}
-                isActive={pathname === item.href}
-                onClick={() => {
-                  if (isMobile) setIsOpen(false);
-                  if (item.onClick) item.onClick();
-                }}
+                isActive={isRouteActive(item.href)}
+                onClick={
+                  item.onClick 
+                    ? () => {
+                        if (isMobile) setIsOpen(false);
+                        item.onClick?.();
+                      }
+                    : isMobile ? () => setIsOpen(false) : undefined
+                }
               />
             ))}
           </div>

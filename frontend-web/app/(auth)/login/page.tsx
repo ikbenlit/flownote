@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/context/AuthContext'
@@ -12,11 +12,19 @@ export default function LoginPage() {
   const { signInWithEmailAndPassword, signInWithGoogle } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const redirectUrl = searchParams.get('redirect') || '/notes'
+  const [redirectUrl, setRedirectUrl] = useState('/notes')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    // Verplaats searchParams logica naar useEffect
+    const redirect = searchParams?.get('redirect')
+    if (redirect) {
+      setRedirectUrl(redirect)
+    }
+  }, [searchParams])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

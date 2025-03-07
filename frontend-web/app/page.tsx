@@ -77,13 +77,13 @@ export default function RootPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/auth/register"
+                href="/register"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
               >
                 Gratis Starten
               </Link>
               <Link
-                href="/auth/login"
+                href="/login"
                 className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 px-8 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
               >
                 Inloggen
