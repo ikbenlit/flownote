@@ -42,8 +42,11 @@ const nextConfig = {
   
   // Build en output configuratie
   distDir: '.next',
-  output: 'standalone',
-  outputFileTracing: true,
+  
+  // Gebruik een normale server build zonder standalone en outputFileTracing
+  // Dit voorkomt problemen met het kopiëren van bestanden in paden met haakjes zoals '(public)'
+  // output: 'standalone',
+  // outputFileTracing: false,
 
   // Webpack configuratie voor node: protocol en polyfills
   webpack: (config, { isServer }) => {
