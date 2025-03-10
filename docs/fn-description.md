@@ -60,10 +60,14 @@ De applicatie is gebouwd als een moderne full-stack applicatie met de volgende c
 4. AI-integratie
 - Implementatie: OpenAI & Deepgram via API routes
 - Features:
-  - Tekstgeneratie
-  - Real-time spraak-naar-tekst
-  - Contextbewuste suggesties
-  - Verschillende teksttypes (blog, email, verslag)
+  - Tekstgeneratie via OpenAI API
+  - Real-time spraak-naar-tekst via Deepgram WebSocket API
+  - Directe WebSocket communicatie voor transcriptie
+  - Nederlandse taalondersteuning
+  - Real-time audio processing
+  - Visuele feedback tijdens opname
+  - Automatische stiltedetectie
+  - Smart formatting van transcripties
 
 ## Technische Details
 

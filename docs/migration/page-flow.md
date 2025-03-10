@@ -9,18 +9,17 @@
   - Globale providers:
     - I18nProvider
     - AuthProvider
-    - AuthGuard
     - NoteProvider
   - Globale metadata/viewport
   - Globale styling
 
 ### 1.2 Route Group Layouts
 #### Public Layout (`/app/(public)/layout.tsx`)
-- **Doel**: Layout voor publieke pagina's
+- **Doel**: Layout voor publieke documentatie pagina's
 - **Features**:
   - SEO-geoptimaliseerde metadata
-  - Publieke navigatie
-  - Marketing-gerichte styling
+  - Eenvoudige content layout
+  - Indexering door zoekmachines toegestaan
 
 #### Auth Layout (`/app/(auth)/layout.tsx`)
 - **Doel**: Layout voor authenticatie pagina's
@@ -34,12 +33,12 @@
 - **Features**:
   - Sidebar navigatie
   - App-specifieke metadata
-  - Beveiligde route controle
+  - Beveiligde route controle via AuthGuard
   - Geen indexering door zoekmachines
 
 ## 2. Route Structuur
-- **(public)/** - Publiek toegankelijke routes
-  - `/` - Marketing landingspagina
+- **/** - Root route met landing page of dashboard redirect
+- **(public)/** - Publieke documentatie routes
   - `/privacy` - Privacy policy
   - `/terms` - Terms of service
 - **(auth)/** - Authenticatie routes
@@ -53,15 +52,19 @@
   - `/ai-generator` - AI Generator
 
 ## 3. Root Route (/)
-- **Doel**: Doorverwijzen naar juiste route op basis van authenticatie
+- **Doel**: Landing page voor niet-ingelogde gebruikers, doorverwijzing voor ingelogde gebruikers
 - **Flow**:
-  1. Loading state tonen
+  1. Loading state tonen tijdens auth check
   2. Authenticatie status controleren
-  3. Doorverwijzen naar:
-     - `/dashboard` voor ingelogde gebruikers
-     - `/(public)` voor niet-ingelogde gebruikers
+  3. Gedrag:
+     - Voor ingelogde gebruikers: redirect naar `/dashboard`
+     - Voor niet-ingelogde gebruikers: tonen marketing landing page
+       - Hero sectie
+       - Features overzicht
+       - Call-to-action knoppen
+       - Testimonials
 
-## 4. Publieke Landingspagina (/(public))
+## 4. Landing Page (/)
 - **Doel**: Bezoekers informeren en converteren naar gebruikers
 - **Componenten**:
   - Hero sectie met value proposition
@@ -210,7 +213,29 @@
   - Keyboard navigatie op desktop
 
 ## 8. Error Pages
-- 404 Not Found
+### 8.1 404 Not Found (`/app/not-found.tsx`)
+- **Doel**: Minimalistische maar vriendelijke foutmelding voor niet-bestaande pagina's
+- **Design**:
+  - Pixel art notitieblok met animaties:
+    - Bounce effect op notitieblok
+    - Druppelende tranen animatie
+    - Responsive SVG implementatie
+  - Typografie volgens design system:
+    - Space Grotesk voor headers
+    - Inter voor UI elementen
+  - Kleurenpalet:
+    - Light mode: Grijstinten met blauwe accenten
+    - Dark mode: Aangepaste donkere tinten (#1A1F2B, #2D3341)
+- **Features**:
+  - Grote, duidelijke 404 indicator
+  - Korte, heldere foutmelding
+  - Enkele 'Ga terug' navigatie optie
+  - Volledig responsive
+  - Dark mode ondersteuning
+  - Animaties voor visuele feedback
+  - Client-side navigatie met window.history
+
+### 8.2 Overige Error Pages (TODO)
 - 403 Forbidden
 - 500 Server Error
 - Onderhoudspagina

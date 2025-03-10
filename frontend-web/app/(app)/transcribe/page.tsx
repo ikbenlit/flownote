@@ -14,11 +14,15 @@ export default function TranscribePage() {
 
   const handleTranscriptionComplete = (text: string) => {
     setTranscription(text);
-    setIsRecording(false);
   };
 
   const handleTranscriptionUpdate = (text: string) => {
     setLiveTranscript(text);
+  };
+
+  const handleRecordingStateChange = (recording: boolean) => {
+    console.log('Recording state changed:', recording);
+    setIsRecording(recording);
   };
 
   return (
@@ -32,6 +36,7 @@ export default function TranscribePage() {
           <AudioRecorder 
             onTranscriptionComplete={handleTranscriptionComplete}
             onTranscriptionUpdate={handleTranscriptionUpdate}
+            onRecordingStateChange={handleRecordingStateChange}
           />
           
           {liveTranscript && isRecording && (

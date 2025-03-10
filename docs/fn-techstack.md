@@ -44,7 +44,12 @@
   - Offline support: Multi-tab persistence
 - **AI Services**:
   - **OpenAI API** → Voor AI-gestuurde tekstgeneratie via API routes
-  - **Deepgram API** → Voor Nederlandse spraak-naar-tekst transcriptie
+  - **Deepgram API** → Voor Nederlandse spraak-naar-tekst transcriptie:
+    - Directe WebSocket verbinding
+    - Real-time audio streaming
+    - Smart formatting & interim resultaten
+    - Automatische stiltedetectie
+    - Volume visualisatie
 
 ## Huidige Features ✅
 - Gebruikersauthenticatie met Google en session cookies
