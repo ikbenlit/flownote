@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next'
+import type { ReactNode } from 'react'
 import { Architects_Daughter, Patrick_Hand, Kalam } from 'next/font/google'
 import { I18nProvider } from '@/context/I18nContext'
 import { AuthProvider } from '@/context/AuthContext'
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <html lang="nl" className={`${architectsDaughter.variable} ${patrickHand.variable} ${kalam.variable}`}>

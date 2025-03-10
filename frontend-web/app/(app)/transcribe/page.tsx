@@ -1,12 +1,13 @@
 'use client';
 
+import type { FC } from 'react'
 import { useState } from 'react';
 import { AudioRecorder } from '@/components/features/audio-recorder';
 import { useI18n } from '@/context/I18nContext';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
-export default function TranscribePage() {
+const TranscribePage: FC = () => {
   const { t } = useI18n();
   const [isRecording, setIsRecording] = useState(false);
   const [transcription, setTranscription] = useState('');
@@ -77,4 +78,6 @@ export default function TranscribePage() {
       )}
     </div>
   );
-} 
+}
+
+export default TranscribePage; 

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react'
+import type { MouseEvent } from 'react'
 import { FaMicrophone, FaStop } from 'react-icons/fa'
 import { useI18n } from '@/context/I18nContext'
 import { AudioService } from '@/services/audio-service'
@@ -39,7 +40,7 @@ export function AudioRecorder({
 
   const handleTranscript = useCallback((text: string, isFinal: boolean) => {
     if (isFinal) {
-      setCurrentTranscript(prev => {
+      setCurrentTranscript((prev: string) => {
         const newTranscript = prev ? `${prev} ${text}` : text
         onTranscriptionUpdate?.(newTranscript)
         return newTranscript
@@ -116,7 +117,7 @@ export function AudioRecorder({
       await deepgramServiceRef.current.connect()
 
       console.log('Setting up audio processing')
-      audioServiceRef.current.onAudioProcess((audioData) => {
+      audioServiceRef.current.onAudioProcess((audioData: Int16Array) => {
         if (!isStoppingRef.current && deepgramServiceRef.current) {
           try {
             deepgramServiceRef.current.sendAudio(audioData)
@@ -179,7 +180,7 @@ export function AudioRecorder({
   }, [cleanupServices, currentTranscript, isRecording, onTranscriptionComplete, updateRecordingState])
   
   // Button click handler - expliciet debug logging
-  const handleButtonClick = useCallback((e: React.MouseEvent) => {
+  const handleButtonClick = useCallback((e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     
@@ -215,8 +216,8 @@ export function AudioRecorder({
         <button
           type="button"
           onClick={handleButtonClick}
-          onMouseDown={(e) => console.log('Mouse down on button')}
-          onMouseUp={(e) => console.log('Mouse up on button')}
+          onMouseDown={(e: MouseEvent) => console.log('Mouse down on button')}
+          onMouseUp={(e: MouseEvent) => console.log('Mouse up on button')}
           disabled={isProcessing}
           className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-200 border-2 ${
             isRecording
