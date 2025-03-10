@@ -40,8 +40,10 @@ const nextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   
-  // Output configuratie
+  // Build en output configuratie
+  distDir: '.next',
   output: 'standalone',
+  outputFileTracing: true,
 
   // Webpack configuratie voor node: protocol en polyfills
   webpack: (config, { isServer }) => {
