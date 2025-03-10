@@ -8,9 +8,6 @@ const nextConfig = {
     ignoreDuringBuilds: true
   },
 
-  // Build output configuratie
-  distDir: '.next',
-
   // CORS configuratie voor API routes
   async headers() {
     return [
@@ -44,7 +41,7 @@ const nextConfig = {
   reactStrictMode: true,
   
   // Output configuratie
-  output: 'export',
+  output: 'standalone',
 
   // Webpack configuratie voor node: protocol en polyfills
   webpack: (config, { isServer }) => {
