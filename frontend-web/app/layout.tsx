@@ -30,6 +30,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || 'https://flownote.nl'),
   title: 'FlowNote - Verhoog je Productiviteit met AI',
   description: 'FlowNote combineert notities, taken en AI om je werk slimmer en efficiënter te maken. Transcriptie, slimme notities en taakbeheer in één app.',
   keywords: 'AI notities, taakbeheer, transcriptie, productiviteit, workflow, notitie app, taken app',

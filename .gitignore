@@ -115,3 +115,5 @@ docker-compose.override.yml
 
 # Generated transcriptions
 transcriptions/ 
+
+t --objects --all ??? findstr*
