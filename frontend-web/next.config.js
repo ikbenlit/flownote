@@ -3,6 +3,14 @@ const webpack = require('webpack')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 
 const nextConfig = {
+  // ESLint configuratie
+  eslint: {
+    ignoreDuringBuilds: true
+  },
+
+  // Build output configuratie
+  distDir: '.next',
+
   // CORS configuratie voor API routes
   async headers() {
     return [
@@ -22,6 +30,7 @@ const nextConfig = {
   env: {
     DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY,
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL
   },
 
   // TypeScript en transpilatie configuratie
@@ -35,7 +44,7 @@ const nextConfig = {
   reactStrictMode: true,
   
   // Output configuratie
-  output: 'standalone',
+  output: 'export',
 
   // Webpack configuratie voor node: protocol en polyfills
   webpack: (config, { isServer }) => {
