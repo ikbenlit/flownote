@@ -1,36 +1,11 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { useAuth } from '@/context/AuthContext'
 import Link from 'next/link'
 import { FaMicrophone, FaStickyNote, FaRobot, FaTasks, FaArrowRight } from 'react-icons/fa'
 import { useI18n } from '@/context/I18nContext'
 
-export default function RootPage() {
-  const router = useRouter()
-  const { currentUser, loading } = useAuth()
+export default function PublicHomePage() {
   const { t } = useI18n()
-
-  useEffect(() => {
-    if (!loading && currentUser) {
-      router.replace('/dashboard')
-    }
-  }, [currentUser, loading, router])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse">
-          <div className="w-12 h-12 bg-blue-500 rounded-full"></div>
-        </div>
-      </div>
-    )
-  }
-
-  if (currentUser) {
-    return null // Voorkom flash van content tijdens redirect
-  }
 
   const features = [
     {
@@ -77,13 +52,13 @@ export default function RootPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/register"
+                href="/auth/register"
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
               >
                 Gratis Starten
               </Link>
               <Link
-                href="/login"
+                href="/auth/login"
                 className="bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-900 dark:text-gray-100 px-8 py-3 rounded-lg text-lg font-semibold transition-colors duration-200"
               >
                 Inloggen
@@ -123,8 +98,52 @@ export default function RootPage() {
         </div>
       </div>
 
-      {/* Rest van de landing page content */}
-      {/* ... */}
+      {/* Social Proof Section */}
+      <div className="py-16 bg-white dark:bg-gray-900">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Vertrouwd door professionals
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                "FlowNote heeft mijn werkproces compleet veranderd. De AI-functionaliteit bespaart me uren werk."
+              </p>
+              <p className="font-semibold">Sarah J. - Content Creator</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                "De transcriptie functie is ongelooflijk nauwkeurig en snel. Perfect voor mijn interviews."
+              </p>
+              <p className="font-semibold">Mark P. - Journalist</p>
+            </div>
+            <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg">
+              <p className="text-gray-600 dark:text-gray-300 mb-4">
+                "Eindelijk een app die notities en taken slim combineert. De AI-suggesties zijn zeer waardevol."
+              </p>
+              <p className="font-semibold">Lisa M. - Project Manager</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA Section */}
+      <div className="py-16 bg-gradient-to-b from-blue-50 to-white dark:from-gray-800 dark:to-gray-900">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">
+            Klaar om productiever te worden?
+          </h2>
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+            Begin vandaag nog met FlowNote en ervaar hoe AI je werk naar een hoger niveau tilt.
+          </p>
+          <Link
+            href="/auth/register"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-lg font-semibold inline-flex items-center transition-colors duration-200"
+          >
+            Start Gratis <FaArrowRight className="ml-2" />
+          </Link>
+        </div>
+      </div>
     </div>
   )
 } 

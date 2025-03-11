@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
   // Lijst van publieke routes die geen authenticatie vereisen
-  const publicPaths = ['/', '/login', '/register', '/features']
+  const publicPaths = ['/', '/auth/login', '/auth/register', '/features'] // Toegevoegd /auth/login en /auth/register
   const isPublicPath = publicPaths.some(path => request.nextUrl.pathname === path)
 
   // API routes overslaan
@@ -44,4 +44,4 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon.ico|public).*)',
   ],
-} 
+}
