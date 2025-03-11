@@ -3,15 +3,5 @@
   "framework": "nextjs",
   "buildCommand": "cd frontend-web && npm install --include=dev && npm run build",
   "installCommand": "cd frontend-web && npm install --include=dev",
-  "outputDirectory": ".next",
-  "builds": [
-    {
-      "src": "frontend-web/next.config.js",
-      "use": "@vercel/next",
-      "config": {
-        "buildCommand": "cd ../frontend-web && npm install --include=dev && npm run build",
-        "outputDirectory": ".next"
-      }
-    }
-  ]
+  "outputDirectory": "frontend-web/.next"
 }
