@@ -4,5 +4,7 @@
   "buildCommand": "cd frontend-web && npm install --include=dev && npm run build",
   "installCommand": "cd frontend-web && npm install --include=dev",
   "outputDirectory": "frontend-web/.next",
-  "rootDirectory": "frontend-web"
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/frontend-web/$1" }
+  ]
 }
