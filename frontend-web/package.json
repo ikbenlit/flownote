@@ -9,6 +9,9 @@
     "start": "next start",
     "lint": "eslint ."
   },
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
