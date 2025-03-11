@@ -1,6 +1,7 @@
 {
-  "framework": "nextjs",
-  "buildCommand": "npm install --include=dev && npm run build",
-  "installCommand": "npm install --include=dev",
-  "outputDirectory": ".next"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "buildCommand": "cd frontend-web && npm install --include=dev && npm run build",
+  "installCommand": "cd frontend-web && npm install --include=dev",
+  "outputDirectory": "frontend-web/.next"
 }
