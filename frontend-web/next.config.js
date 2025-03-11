@@ -19,11 +19,11 @@ const nextConfig = {
     ];
   },
   // Environment variables configuratie
-  env: {
-    DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY,
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
-  },
+  //env: {
+  //  DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY,
+  //  OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+  //  NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+  //},
   // TypeScript configuratie
   typescript: {
     ignoreBuildErrors: true,
