@@ -2,6 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "cleanUrls": true,
   "trailingSlash": false,
+  "framework": "nextjs",
+  "outputDirectory": "frontend-web/.next/standalone",
+  "rootDirectory": "frontend-web",
   "headers": [
     {
       "source": "/(.*)",

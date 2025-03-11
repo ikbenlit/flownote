@@ -44,8 +44,13 @@ const nextConfig = {
   // Build en output configuratie
   distDir: '.next',
   
-  // Switch to 'export' instead of 'standalone' to avoid RSC issues
-  output: 'export',
+  // Gebruik standalone build maar op een manier die compatibel is met dynamische routes
+  output: 'standalone',
+  
+  // Geen expliciete experimentele configuratie die RSC-problemen kan veroorzaken
+  
+  // Specifieke packages van server-side bundling uitsluiten
+  transpilePackages: ['next'],
   
   // Webpack configuratie voor node: protocol en polyfills
   webpack: (config, { isServer }) => {
