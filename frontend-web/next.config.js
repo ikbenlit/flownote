@@ -93,7 +93,7 @@ const nextConfig = {
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       util: require.resolve('util/'),
-      buffer: require.resolve('buffer/'),
+      buffer: require.resolve('buffer'),
       assert: require.resolve('assert/')
     }
 
@@ -104,6 +104,9 @@ const nextConfig = {
         Buffer: ['buffer', 'Buffer']
       })
     )
+
+    // Gebruik NodePolyfillPlugin voor eenvoudigere polyfill configuratie
+    config.plugins.push(new NodePolyfillPlugin())
 
     return config
   }
