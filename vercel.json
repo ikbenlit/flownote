@@ -1,11 +1,5 @@
 {
-  "buildCommand": "cd frontend-web && npm install && npm run build:prod",
-  "outputDirectory": "frontend-web/dist",
-  "framework": "vite",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "buildCommand": "cd frontend-web && npm install && npm run build",
+  "outputDirectory": "frontend-web/.next",
+  "framework": "nextjs"
 } 
