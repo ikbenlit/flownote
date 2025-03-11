@@ -3,7 +3,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "framework": "nextjs",
-  "outputDirectory": "frontend-web/.next/standalone",
+  "outputDirectory": ".next/standalone",
   "rootDirectory": "frontend-web",
   "headers": [
     {
