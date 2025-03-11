@@ -13,6 +13,10 @@ type AudioRecorderProps = {
   onRecordingStateChange?: (isRecording: boolean) => void
 }
 
+interface DeepgramError extends Error {
+  message: string;
+}
+
 export function AudioRecorder({ 
   onTranscriptionComplete, 
   onTranscriptionUpdate,
@@ -94,7 +98,7 @@ export function AudioRecorder({
         process.env.NEXT_PUBLIC_DEEPGRAM_API_KEY || '',
         {
           onTranscript: handleTranscript,
-          onError: (error) => {
+          onError: (error: DeepgramError) => {
             console.error('Deepgram error:', error)
             setError(error.message)
             
