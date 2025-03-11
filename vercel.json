@@ -4,7 +4,6 @@
   "trailingSlash": false,
   "framework": "nextjs",
   "outputDirectory": ".next/standalone",
-  "rootDirectory": "frontend-web",
   "headers": [
     {
       "source": "/(.*)",
