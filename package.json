@@ -1,4 +1,22 @@
 {
+  "name": "flownote",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Flownote - Note taking app",
+  "scripts": {
+    "dev": "cd frontend-web && npm run dev",
+    "build": "cd frontend-web && npm run build",
+    "start": "cd frontend-web && npm run start",
+    "lint": "cd frontend-web && npm run lint",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "@deepgram/sdk": "^3.11.2",
+    "node-polyfill-webpack-plugin": "^4.1.0"
+  },
   "devDependencies": {
     "@types/ws": "^8.5.14",
     "assert": "^2.1.0",
@@ -23,20 +41,12 @@
     "util": "^0.12.5",
     "vm-browserify": "^1.1.2"
   },
-  "dependencies": {
-    "@deepgram/sdk": "^3.11.2"
-  },
-  "name": "flownote",
-  "version": "1.0.0",
-  "description": "Flownote - Note taking app",
-  "scripts": {
-    "dev": "cd frontend-web && npm run dev:all",
-    "dev:frontend": "cd frontend-web && npm run dev",
-    "dev:api": "cd frontend-web && npm run dev:api",
-    "build": "cd frontend-web && npm run build",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
+  "keywords": [
+    "notes",
+    "productivity",
+    "ai",
+    "speech-to-text"
+  ],
   "author": "",
   "license": "ISC"
 }

@@ -3,46 +3,52 @@ description:
 globs: 
 alwaysApply: false
 ---
-Cursor Rules for FlowNote
-1. General Guidelines
-✅ Stick to the MVP – Focus only on the core features: speech-to-text (Deepgram), AI content generation (OpenAI), and user authentication (Firebase). Avoid feature creep.
-✅ Separation of Concerns (SoC) – Keep frontend, backend, and database modular and independent.
-✅ Don't Repeat Yourself (DRY) – Use reusable components, hooks, and services to minimize redundancy.
-✅ Maintain a 'mobile first' approach
-✅ Follow the documentation – The docs (fn-projecttree.md & fn-techstack.md) should guide architectural decisions. Update them when making significant changes.
+# Cursor Rules voor FlowNote
 
-2. Project Structure & Key Files
-📌 Frontend: React + Vite + TypeScript
-📌 Backend: Node.js + Express
-📌 Database: PostgreSQL
-📌 Authentication: Firebase
-📌 AI Integration: Deepgram (speech-to-text) & OpenAI (AI generation)
+## 1. Algemene richtlijnen
+✅ Stick to the MVP – Focus alleen op de kernfuncties: spraak-naar-tekst (Deepgram), AI-contentgeneratie (OpenAI) en gebruikersauthenticatie (Firebase). Vermijd feature creep.
+✅ Scheiding van verantwoordelijkheden (SoC) – Houd frontend en database modulair en onafhankelijk.
+✅ Don't Repeat Yourself (DRY) – Gebruik herbruikbare componenten, hooks en services om redundantie te minimaliseren.
+✅ Behoud een 'mobile first' benadering.
+✅ Volg de documentatie – De docs moeten architectonische beslissingen begeleiden. Update ze bij het maken van significante wijzigingen.
 
-Frontend (Web)
-✅ Components in /src/components/ must be reusable and self-contained.
-✅ State management should be handled via React Context API – Avoid excessive prop-drilling.
-✅ Use custom hooks (/src/hooks/) for shared logic (e.g., API calls, data fetching).
-✅ Use Tailwind CSS for styling – Avoid inline styles and !important.
-✅ Manage Firebase authentication only inside AuthContext.tsx – Do not handle auth logic inside components.
+## 2. Projectstructuur & Sleutelbestanden
+📌 Frontend: Next.js + TypeScript
+📌 Database: Firebase (Firestore)
+📌 Authenticatie: Firebase Auth
+📌 API Routes: Next.js API Routes
+📌 AI-integratie: Deepgram (spraak-naar-tekst) & OpenAI (AI-generatie)
 
-Backend (API Server)
-✅ Keep AI integration services (/services/) separate from controllers.
-✅ Use middlewares (/middlewares/) for authentication and validation.
-✅ Database queries must be inside /models/ – Do not write SQL queries in controllers.
-✅ Keep API routes organized in /routes/ based on functionality.
-✅ Use environment variables (.env) for sensitive data – Never hardcode API keys.
+### Frontend (Next.js)
+✅ Componenten in /frontend-web/components/ moeten herbruikbaar en zelfstandig zijn.
+✅ State management via React Context API – Vermijd overmatige prop-drilling.
+✅ Gebruik custom hooks voor gedeelde logica (API calls, data fetching).
+✅ Gebruik Tailwind CSS voor styling – Vermijd inline styles en !important.
+✅ Beheer Firebase authenticatie alleen in de Auth Context – Behandel geen auth logica in componenten.
 
-Database (PostgreSQL)
-✅ Use migrations for database changes – Do not manually edit schema.sql.
-✅ Seed data (seed.sql) should only be used for testing, not in production.
+### API Routes (Next.js)
+✅ Houd API routes in /frontend-web/app/api/ georganiseerd op basis van functionaliteit.
+✅ Houd AI-integratie services gescheiden in aparte routes of services directory.
+✅ Gebruik middleware.ts voor authenticatie en validatie van verzoeken.
+✅ Gebruik environment variables (.env.local) voor gevoelige data – Nooit API-sleutels hardcoden.
 
-3. Code Style & Best Practices
-✅ Use ESLint and Prettier for consistent formatting (configured in package.json).
-✅ Use clear and descriptive naming for files and functions – Avoid names like tmpFunc().
-✅ Wrap asynchronous functions in try/catch to prevent crashes.
-✅ Optimize React components with useMemo and useCallback to avoid unnecessary re-renders.
+### Database (Firebase/Firestore)
+✅ Gebruik de juiste Firestore regels in firestore.rules voor toegangscontrole.
+✅ Organiseer databasestructuur logisch volgens de functionaliteit.
 
-4. Performance & Optimization
-✅ Use lazy loading (React.lazy()) for components where possible.
-✅ Leverage caching mechanisms (e.g., store AI-generated content in Firestore).
-✅ Minimize API calls – Only fetch data when necessary.
+## 3. Code Stijl & Best Practices
+✅ Gebruik ESLint en Prettier voor consistente opmaak (geconfigureerd in .eslintrc.json).
+✅ Gebruik duidelijke en beschrijvende namen voor bestanden en functies – Vermijd namen als tmpFunc().
+✅ Wrap asynchrone functies in try/catch om crashes te voorkomen.
+✅ Optimaliseer React componenten met useMemo en useCallback om onnodige re-renders te voorkomen.
+
+## 4. Prestaties & Optimalisatie
+✅ Gebruik lazy loading voor componenten waar mogelijk.
+✅ Benut cachingmechanismen (bijv. AI-gegenereerde content opslaan in Firestore).
+✅ Minimaliseer API-aanroepen – Haal alleen data op wanneer nodig.
+✅ Optimaliseer afbeeldingen en assets voor snelle laadtijden.
+
+## 5. Deployment
+✅ Frontend wordt gedeployed via Vercel.
+✅ API Routes worden ook via Vercel gedeployed als onderdeel van de Next.js applicatie.
+✅ Firebase-configuratie moet voor productie worden ingesteld via environment variables.
