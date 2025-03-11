@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const webpack = require('webpack')
-const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
 const path = require('path')
 
 const nextConfig = {
@@ -44,74 +43,71 @@ const nextConfig = {
   // Build en output configuratie
   distDir: '.next',
   
-  // Gebruik standalone build maar op een manier die compatibel is met dynamische routes
+  // Gebruik standalone build voor server-side rendering
   output: 'standalone',
-  
-  // Geen expliciete experimentele configuratie die RSC-problemen kan veroorzaken
   
   // Specifieke packages van server-side bundling uitsluiten
   transpilePackages: ['next'],
   
-  // Webpack configuratie voor node: protocol en polyfills
+  // Minimale webpack configuratie met alleen de essentiële polyfills
   webpack: (config, { isServer }) => {
     // Voeg alias toe voor @ paths
     config.resolve.alias = {
       ...config.resolve.alias,
       '@': path.resolve(__dirname),
-      'node:process': 'process/browser',
-      'node:crypto': 'crypto-browserify',
-      'node:stream': 'stream-browserify',
-      'node:util': 'util/',
-      'node:zlib': 'browserify-zlib',
-      'node:http': 'stream-http',
-      'node:https': 'https-browserify',
-      'node:net': false,
-      'node:tls': false,
-      'node:fs': false,
-      process: 'process/browser',
     }
 
     // Server-side specifieke configuratie
     if (isServer) {
+      // Voorkom dat firebase-admin wordt gebundeld voor de client
+      config.module.rules.push({
+        test: /firebase-admin/,
+        use: 'null-loader'
+      })
+      
       return config
     }
 
-    // Voorkom dat firebase-admin wordt gebundeld voor de client
-    config.module.rules.push({
-      test: /firebase-admin/,
-      use: 'null-loader'
-    })
-
-    // Node.js core modules fallbacks
+    // Client-side specifieke configuratie
+    // Alleen de minimale set van Node.js polyfills die echt nodig zijn
+    // voor de OpenAI client en WebSocket communicatie
     config.resolve.fallback = {
       ...config.resolve.fallback,
+      // Only the essential modules for network requests
+      // OpenAI client en Deepgram WebSocket API gebruiken deze
+      https: require.resolve('https-browserify'),
+      http: require.resolve('stream-http'),
+      
+      // Basis utilities nodig voor OpenAI fetch requests
+      buffer: require.resolve('buffer'),
+      
+      // Overige minimaal benodigde modules
+      process: require.resolve('process/browser'),
+      
+      // Zet alle andere Node.js core modules op 'false'
       fs: false,
+      path: false,
+      crypto: false,
+      stream: false,
+      util: false,
+      assert: false,
       tls: false,
       net: false,
+      zlib: false,
       http2: false,
       dns: false,
       child_process: false,
       perf_hooks: false,
       async_hooks: false,
-      process: require.resolve('process/browser'),
-      path: require.resolve('path-browserify'),
-      crypto: require.resolve('crypto-browserify'),
-      stream: require.resolve('stream-browserify'),
-      util: require.resolve('util/'),
-      buffer: require.resolve('buffer'),
-      assert: require.resolve('assert/')
     }
 
-    // Globale variabelen
+    // Alleen de essentiële globale variabelen
     config.plugins.push(
       new webpack.ProvidePlugin({
         process: 'process/browser',
         Buffer: ['buffer', 'Buffer']
       })
     )
-
-    // Gebruik NodePolyfillPlugin voor eenvoudigere polyfill configuratie
-    config.plugins.push(new NodePolyfillPlugin())
 
     return config
   }
