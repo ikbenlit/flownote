@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const webpack = require('webpack')
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin')
+const path = require('path')
 
 const nextConfig = {
   // ESLint configuratie
@@ -50,14 +51,10 @@ const nextConfig = {
 
   // Webpack configuratie voor node: protocol en polyfills
   webpack: (config, { isServer }) => {
-    // Server-side specifieke configuratie
-    if (isServer) {
-      return config
-    }
-
-    // Client-side configuratie
+    // Voeg alias toe voor @ paths
     config.resolve.alias = {
       ...config.resolve.alias,
+      '@': path.resolve(__dirname),
       'node:process': 'process/browser',
       'node:crypto': 'crypto-browserify',
       'node:stream': 'stream-browserify',
@@ -69,6 +66,11 @@ const nextConfig = {
       'node:tls': false,
       'node:fs': false,
       process: 'process/browser',
+    }
+
+    // Server-side specifieke configuratie
+    if (isServer) {
+      return config
     }
 
     // Voorkom dat firebase-admin wordt gebundeld voor de client
