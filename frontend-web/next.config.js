@@ -44,17 +44,9 @@ const nextConfig = {
   // Build en output configuratie
   distDir: '.next',
   
-  // Gebruik standalone build voor betere compatibility met route grouping
-  output: 'standalone',
-  outputFileTracing: true,
+  // Switch to 'export' instead of 'standalone' to avoid RSC issues
+  output: 'export',
   
-  // Expliciete configuratie voor Next.js app router en route groups
-  experimental: {
-    // Verbeterde compatibility met route groups in haakjes, zoals (auth) en (public)
-    serverComponentsExternalPackages: ['next'],
-    appDir: true,
-  },
-
   // Webpack configuratie voor node: protocol en polyfills
   webpack: (config, { isServer }) => {
     // Voeg alias toe voor @ paths
