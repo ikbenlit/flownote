@@ -19,7 +19,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // Verplaats searchParams logica naar useEffect
     const redirect = searchParams?.get('redirect')
     if (redirect) {
       setRedirectUrl(redirect)
@@ -33,7 +32,6 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(email, password)
-      // Gebruik window.location voor een volledige pagina reload na login
       window.location.href = redirectUrl
     } catch (err) {
       console.error('Login error:', err)
@@ -48,11 +46,9 @@ export default function LoginPage() {
 
     try {
       await signInWithGoogle()
-      // Gebruik window.location voor een volledige pagina reload na login
       window.location.href = redirectUrl
     } catch (err: any) {
       console.error('Google login error:', err)
-      // Specifieke error messages voor verschillende Firebase Auth errors
       if (err.code === 'auth/popup-closed-by-user') {
         setError(t('auth.error.google_popup_closed'))
       } else if (err.code === 'auth/popup-blocked') {
@@ -69,22 +65,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-dark-bg-primary">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white dark:bg-dark-bg-secondary rounded-xl shadow-lg">
-        <div>
-          <h2 className="text-center text-3xl font-bold text-gray-900 dark:text-dark-text-primary font-architects-daughter">
+    <div className="min-h-[calc(100vh-2rem)] flex items-center justify-center py-6 sm:py-8 md:py-12">
+      <div className="w-full max-w-md mx-auto space-y-8 p-6 sm:p-8 bg-white dark:bg-dark-bg-secondary rounded-lg shadow-md border border-gray-200 dark:border-dark-border-primary">
+        <div className="text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-dark-text-primary font-heading">
             {t('auth.login_title')}
           </h2>
+          <p className="mt-2 text-sm text-gray-600 dark:text-dark-text-secondary font-content">
+            Welkom terug bij FlowNote
+          </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+        
+        <form className="mt-6 space-y-6" onSubmit={handleLogin}>
           {error && (
-            <div className="bg-red-50 dark:bg-red-900/20 text-red-500 p-3 rounded-lg text-sm font-patrick-hand">
+            <div className="bg-red-50 dark:bg-red-900/20 text-red-500 p-3 rounded-lg text-sm font-content">
               {error}
             </div>
           )}
+          
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary font-patrick-hand">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary font-content">
                 {t('auth.email')}
               </label>
               <input
@@ -94,11 +95,12 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-dark-border-primary rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg-secondary dark:text-dark-text-primary font-patrick-hand"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-dark-border-primary rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg-tertiary dark:text-dark-text-primary font-content text-base"
+                placeholder="email@voorbeeld.nl"
               />
             </div>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary font-patrick-hand">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-dark-text-secondary font-content">
                 {t('auth.password')}
               </label>
               <input
@@ -108,7 +110,8 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-dark-border-primary rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg-secondary dark:text-dark-text-primary font-patrick-hand"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-dark-border-primary rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-dark-bg-tertiary dark:text-dark-text-primary font-content text-base"
+                placeholder="••••••••"
               />
             </div>
           </div>
@@ -117,7 +120,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-patrick-hand"
+              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-content transition-colors"
             >
               {loading ? t('auth.logging_in') : t('auth.login')}
             </button>
@@ -128,7 +131,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-300 dark:border-dark-border-primary"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white dark:bg-dark-bg-secondary text-gray-500 dark:text-dark-text-secondary font-patrick-hand">
+              <span className="px-2 bg-white dark:bg-dark-bg-secondary text-gray-500 dark:text-dark-text-secondary font-content">
                 {t('auth.or')}
               </span>
             </div>
@@ -139,7 +142,7 @@ export default function LoginPage() {
               type="button"
               onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 dark:border-dark-border-primary rounded-md shadow-sm bg-white dark:bg-dark-bg-secondary text-gray-700 dark:text-dark-text-primary hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-patrick-hand"
+              className="w-full flex items-center justify-center gap-3 py-2 px-4 border border-gray-300 dark:border-dark-border-primary rounded-md shadow-sm bg-white dark:bg-dark-bg-secondary text-gray-700 dark:text-dark-text-primary hover:bg-gray-50 dark:hover:bg-dark-bg-tertiary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed font-content transition-colors"
             >
               <FcGoogle className="w-5 h-5" />
               {t('auth.login_with_google')}
@@ -148,14 +151,14 @@ export default function LoginPage() {
 
           <div className="flex flex-col space-y-2 text-sm text-center">
             <Link
-              href="/register"
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-patrick-hand"
+              href="/auth/register"
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-content transition-colors"
             >
               {t('auth.no_account')}
             </Link>
             <Link
-              href="/reset-password"
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-patrick-hand"
+              href="/auth/reset-password"
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 font-content transition-colors"
             >
               {t('auth.forgot_password')}
             </Link>

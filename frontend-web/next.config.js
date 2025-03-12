@@ -18,6 +18,17 @@ const nextConfig = {
       },
     ];
   },
+  // Images configuratie voor externe bronnen
+  images: {
+    domains: ['lh3.googleusercontent.com', 'lh4.googleusercontent.com', 'lh5.googleusercontent.com', 'lh6.googleusercontent.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.googleusercontent.com',
+        pathname: '**',
+      },
+    ],
+  },
   // Environment variables configuratie
   //env: {
   //  DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY,
