@@ -12,7 +12,7 @@ export default function LoginPage() {
   const { signInWithEmailAndPassword, signInWithGoogle } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [redirectUrl, setRedirectUrl] = useState('/notes')
+  const [redirectUrl, setRedirectUrl] = useState('/app/dashboard')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -33,11 +33,11 @@ export default function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(email, password)
-      router.push(redirectUrl)
+      // Gebruik window.location voor een volledige pagina reload na login
+      window.location.href = redirectUrl
     } catch (err) {
       console.error('Login error:', err)
       setError(t('auth.error.invalid_credentials'))
-    } finally {
       setLoading(false)
     }
   }
@@ -48,7 +48,8 @@ export default function LoginPage() {
 
     try {
       await signInWithGoogle()
-      router.push(redirectUrl)
+      // Gebruik window.location voor een volledige pagina reload na login
+      window.location.href = redirectUrl
     } catch (err: any) {
       console.error('Google login error:', err)
       // Specifieke error messages voor verschillende Firebase Auth errors
@@ -63,7 +64,6 @@ export default function LoginPage() {
       } else {
         setError(t('auth.error.google_login_failed'))
       }
-    } finally {
       setLoading(false)
     }
   }

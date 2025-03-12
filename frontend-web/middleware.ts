@@ -3,8 +3,22 @@ import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
   // Lijst van publieke routes die geen authenticatie vereisen
-  const publicPaths = ['/', '/auth/login', '/auth/register', '/features'] // Toegevoegd /auth/login en /auth/register
+  const publicPaths = [
+    '/', 
+    '/auth/login', 
+    '/auth/register', 
+    '/auth/reset-password',
+    // Voeg hier andere publieke routes toe indien nodig
+  ]
+  
+  // Check of het een publieke route is
   const isPublicPath = publicPaths.some(path => request.nextUrl.pathname === path)
+  
+  // Check of het een app route is
+  const isAppRoute = request.nextUrl.pathname.startsWith('/app/')
+  
+  // Check of het een statische asset is
+  const isStaticAsset = request.nextUrl.pathname.match(/\.(jpg|jpeg|png|gif|svg|ico|css|js)$/)
 
   // API routes overslaan
   if (request.nextUrl.pathname.startsWith('/api')) {

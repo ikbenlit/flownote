@@ -24,7 +24,7 @@ export default function NotePage({ params }: Props) {
     const loadNote = () => {
       const foundNote = getNote(params.id)
       if (!foundNote) {
-        router.push('/notes')
+        router.push('/app/notes')
         return
       }
       setNote(foundNote)
@@ -37,7 +37,7 @@ export default function NotePage({ params }: Props) {
   const handleSave = async (noteData: { title: string; content: string; tags: string[]; taskMarkings: any[] }) => {
     try {
       await updateNote(params.id, noteData)
-      router.push('/notes')
+      router.push('/app/notes')
     } catch (error) {
       console.error('Error updating note:', error)
       // Error wordt al afgehandeld in de NoteEditor component
@@ -45,7 +45,7 @@ export default function NotePage({ params }: Props) {
   }
 
   const handleCancel = () => {
-    router.push('/notes')
+    router.push('/app/notes')
   }
 
   if (loading) {

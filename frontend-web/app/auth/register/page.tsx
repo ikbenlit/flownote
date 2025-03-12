@@ -32,7 +32,7 @@ export default function RegisterPage() {
 
     try {
       await createUserWithEmailAndPassword(auth, email, password)
-      router.push('/notes')
+      window.location.href = '/app/dashboard'
     } catch (err: any) {
       console.error('Registration error:', err)
       if (err.code === 'auth/email-already-in-use') {
@@ -44,7 +44,6 @@ export default function RegisterPage() {
       } else {
         setError(t('auth.error.registration_failed'))
       }
-    } finally {
       setLoading(false)
     }
   }
@@ -55,7 +54,7 @@ export default function RegisterPage() {
 
     try {
       await signInWithGoogle()
-      router.push('/notes')
+      window.location.href = '/app/dashboard'
     } catch (err: any) {
       console.error('Google registration error:', err)
       if (err.code === 'auth/popup-closed-by-user') {
@@ -69,7 +68,6 @@ export default function RegisterPage() {
       } else {
         setError(t('auth.error.google_registration_failed'))
       }
-    } finally {
       setLoading(false)
     }
   }

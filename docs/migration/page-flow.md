@@ -8,27 +8,20 @@
   - Font configuratie (Architects Daughter, Patrick Hand, Kalam)
   - Globale providers:
     - I18nProvider
+    - ThemeProvider
     - AuthProvider
-    - NoteProvider
   - Globale metadata/viewport
   - Globale styling
 
-### 1.2 Route Group Layouts
-#### Public Layout (`/app/(public)/layout.tsx`)
-- **Doel**: Layout voor publieke documentatie pagina's
-- **Features**:
-  - SEO-geoptimaliseerde metadata
-  - Eenvoudige content layout
-  - Indexering door zoekmachines toegestaan
-
-#### Auth Layout (`/app/(auth)/layout.tsx`)
+### 1.2 Route Layouts
+#### Auth Layout (`/app/auth/layout.tsx`)
 - **Doel**: Layout voor authenticatie pagina's
 - **Features**:
   - Auth-specifieke metadata
   - Minimale interface
   - Geen indexering door zoekmachines
 
-#### App Layout (`/app/(app)/layout.tsx`)
+#### App Layout (`/app/app/layout.tsx`)
 - **Doel**: Layout voor beveiligde app routes
 - **Features**:
   - Sidebar navigatie
@@ -38,18 +31,18 @@
 
 ## 2. Route Structuur
 - **/** - Root route met landing page of dashboard redirect
-- **(public)/** - Publieke documentatie routes
-  - `/privacy` - Privacy policy
-  - `/terms` - Terms of service
-- **(auth)/** - Authenticatie routes
-  - `/login` - Inloggen
-  - `/register` - Registratie
-  - `/reset-password` - Wachtwoord reset
-- **(app)/** - App routes (beschermd)
-  - `/dashboard` - Dashboard
-  - `/notes` - Notities
-  - `/tasks` - Taken
-  - `/ai-generator` - AI Generator
+- **/auth** - Authenticatie routes
+  - `/auth/login` - Inloggen
+  - `/auth/register` - Registratie
+  - `/auth/reset-password` - Wachtwoord reset
+- **/app** - App routes (beschermd)
+  - `/app/dashboard` - Dashboard
+  - `/app/notes` - Notities
+  - `/app/tasks` - Taken
+  - `/app/ai-generator` - AI Generator
+  - `/app/transcribe` - Transcriptie
+  - `/app/profile` - Gebruikersprofiel
+  - `/app/settings` - Instellingen
 
 ## 3. Root Route (/)
 - **Doel**: Landing page voor niet-ingelogde gebruikers, doorverwijzing voor ingelogde gebruikers
@@ -57,7 +50,7 @@
   1. Loading state tonen tijdens auth check
   2. Authenticatie status controleren
   3. Gedrag:
-     - Voor ingelogde gebruikers: redirect naar `/dashboard`
+     - Voor ingelogde gebruikers: redirect naar `/app/dashboard`
      - Voor niet-ingelogde gebruikers: tonen marketing landing page
        - Hero sectie
        - Features overzicht
@@ -96,7 +89,6 @@
   4. Doorverwijzing naar dashboard
 
 ### 5.2 Inloggen (/auth/login)
-### 4.2 Inloggen (/auth/login)
 - **Doel**: Bestaande gebruikers toegang geven
 - **Opties**:
   - Email/wachtwoord combinatie
@@ -104,7 +96,7 @@
   - "Wachtwoord vergeten" functionaliteit
   - Link naar registratie
 
-### 4.3 Uitloggen (/auth/logout)
+### 5.3 Uitloggen (actie vanuit gebruikersmenu)
 - **Doel**: Veilig uitloggen van gebruikers
 - **Flow**:
   1. Uitlog-actie triggeren via gebruikersmenu
@@ -116,12 +108,12 @@
   4. Redirect naar landingspagina (/) met bevestigingsmelding
   5. Mogelijkheid om opnieuw in te loggen
 
-### 4.4 Wachtwoord Reset (/auth/reset-password)
+### 5.4 Wachtwoord Reset (/auth/reset-password)
 - Email invoeren
 - Reset link versturen
 - Nieuw wachtwoord instellen
 
-## 5. Dashboard (/dashboard)
+## 6. Dashboard (/app/dashboard)
 - **Doel**: Centrale hub voor alle functionaliteit
 - **Componenten**:
   - Welkom sectie met gebruikersnaam
@@ -137,23 +129,39 @@
     - Aantal transcripties
     - Aantal AI sessies
 
-## 6. Hoofdfuncties
-### 6.1 Notes (/notes)
+## 7. Hoofdfuncties
+### 7.1 Notes (/app/notes)
 - Overzicht van notities
-- Nieuwe notitie maken (/notes/new)
+- Nieuwe notitie maken (/app/notes/new)
 - Zoeken en filteren
 
-### 6.2 Tasks (/tasks)
+### 7.2 Tasks (/app/tasks)
 - Takenlijst overzicht
-- Nieuwe taken toevoegen (/tasks/new)
+- Nieuwe taken toevoegen (/app/tasks/new)
 - Prioriteiten beheren
 
-### 6.3 AI Generator (/ai-generator)
+### 7.3 AI Generator (/app/ai-generator)
 - AI assistentie interface
 - Template selectie
 - Resultaat weergave
 
-## 7. Navigatie Structuur
+### 7.4 Transcribe (/app/transcribe)
+- Audio/video transcriptie interface
+- Bestandsupload
+- Transcriptie resultaten
+- Transcriptie bewerking
+
+### 7.5 Profiel (/app/profile)
+- Gebruikersgegevens
+- Profielfoto aanpassen
+- Account instellingen
+
+### 7.6 Instellingen (/app/settings)
+- App-voorkeuren
+- Notificatie instellingen
+- Privacy instellingen
+
+## 8. Navigatie Structuur
 - **Publieke navigatie**:
   - Logo -> Home
   - Features
@@ -161,7 +169,7 @@
   - Login/Registreer knoppen
 
 - **App navigatie**:
-  ### 7.1 Sidebar
+  ### 8.1 Sidebar
   - **Mobile (< 768px)**:
     - Verborgen by default
     - Hamburger menu voor toggle
@@ -181,6 +189,7 @@
        - Notities
        - Taken
        - AI Generator
+       - Transcriptie
     3. Divider
     4. Instellingen sectie:
        - Thema toggle (dark/light)
@@ -197,23 +206,23 @@
     - Subtiele hover effecten
     - Consistente padding/spacing
 
-  ### 7.2 Top bar
+  ### 8.2 Top bar
   - Alleen zichtbaar op mobile
   - Hamburger menu
   - App titel/logo
   - Quick actions
 
-  ### 7.3 Breadcrumbs
+  ### 8.3 Breadcrumbs
   - Locatie indicator
   - Navigatie geschiedenis
 
-  ### 7.4 Responsive gedrag
+  ### 8.4 Responsive gedrag
   - Vloeiende transities
   - Gesture support op mobile
   - Keyboard navigatie op desktop
 
-## 8. Error Pages
-### 8.1 404 Not Found (`/app/not-found.tsx`)
+## 9. Error Pages
+### 9.1 404 Not Found (`/app/not-found.tsx`)
 - **Doel**: Minimalistische maar vriendelijke foutmelding voor niet-bestaande pagina's
 - **Design**:
   - Pixel art notitieblok met animaties:
@@ -235,18 +244,18 @@
   - Animaties voor visuele feedback
   - Client-side navigatie met window.history
 
-### 8.2 Overige Error Pages (TODO)
+### 9.2 Overige Error Pages (TODO)
 - 403 Forbidden
 - 500 Server Error
 - Onderhoudspagina
 
-## 9. Responsive Design
+## 10. Responsive Design
 - Mobile-first approach
 - Tablet optimalisatie
 - Desktop optimalisatie
 - Progressive Web App (PWA) functionaliteit
 
-## 10. Beveiligingslagen
+## 11. Beveiligingslagen
 1. **Publieke laag**:
    - Marketing pagina's
    - Auth pagina's
@@ -258,7 +267,13 @@
    - Gebruikersinstellingen
    - API endpoints
 
-## 11. Metadata & Viewport
+## 12. Middleware
+- Authenticatie routing controle
+- CORS configuratie voor API routes
+- Publieke routes toegankelijk zonder authenticatie
+- App routes beschermd met client-side AuthGuard component
+
+## 13. Metadata & Viewport
 Alle pagina's implementeren de nieuwe Next.js 14+ metadata en viewport configuratie:
 
 ### Viewport
@@ -283,7 +298,7 @@ export const metadata: Metadata = {
 }
 ```
 
-### Implementatie per Route Groep
-- **(public)/** - SEO geoptimaliseerde metadata
-- **(auth)/** - Basis metadata voor authenticatie flows
-- **(app)/** - Dynamische metadata op basis van content
+### Implementatie per Layout
+- **Root Layout** - Basis metadata voor hele app
+- **Auth Layout** - Basis metadata voor authenticatie flows
+- **App Layout** - Dynamische metadata op basis van content

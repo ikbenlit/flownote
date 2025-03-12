@@ -73,23 +73,23 @@ export default function Sidebar() {
   const handleLogout = async () => {
     try {
       await signOut();
-      router.push('/login');
+      router.push('/auth/login');
     } catch (error) {
       console.error('Uitloggen mislukt:', error);
     }
   };
 
   const navigationItems = [
-    { href: '/dashboard', icon: HomeIcon, label: 'Dashboard' },
-    { href: '/notes', icon: DocumentTextIcon, label: 'Notities' },
-    { href: '/tasks', icon: CheckCircleIcon, label: 'Taken' },
-    { href: '/ai-generator', icon: SparklesIcon, label: 'AI Generator' },
-    { href: '/transcribe', icon: MicrophoneIcon, label: 'Transcriptie' },
+    { href: '/app/dashboard', icon: HomeIcon, label: 'Dashboard' },
+    { href: '/app/notes', icon: DocumentTextIcon, label: 'Notities' },
+    { href: '/app/tasks', icon: CheckCircleIcon, label: 'Taken' },
+    { href: '/app/ai-generator', icon: SparklesIcon, label: 'AI Generator' },
+    { href: '/app/transcribe', icon: MicrophoneIcon, label: 'Transcriptie' },
   ];
 
   const settingsItems = [
-    { href: '/settings', icon: Cog6ToothIcon, label: 'Instellingen' },
-    { href: '/profile', icon: UserCircleIcon, label: 'Profiel' },
+    { href: '/app/settings', icon: Cog6ToothIcon, label: 'Instellingen' },
+    { href: '/app/profile', icon: UserCircleIcon, label: 'Profiel' },
     { onClick: handleLogout, href: '#', icon: ArrowLeftOnRectangleIcon, label: 'Uitloggen' },
   ];
 

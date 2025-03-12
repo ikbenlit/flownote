@@ -1,15 +1,16 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import { useAuth } from '@/context/AuthContext'
 
-const publicPaths = ['/', '/login', '/register', '/reset-password', '/features']
+const publicPaths = ['/', '/auth/login', '/auth/register', '/auth/reset-password']
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { currentUser, loading } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
+  const [authChecked, setAuthChecked] = useState(false)
 
   useEffect(() => {
     if (!loading) {
@@ -17,17 +18,24 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
 
       if (!currentUser && !isPublicPath) {
         // Geen gebruiker en geen publieke route: redirect naar login
-        router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
-      } else if (currentUser && (pathname === '/login' || pathname === '/register')) {
-        // Ingelogde gebruiker op login/register pagina: redirect naar notes
-        router.push('/notes')
+        router.push(`/auth/login?redirect=${encodeURIComponent(pathname)}`)
+      } else if (currentUser && (pathname === '/auth/login' || pathname === '/auth/register')) {
+        // Ingelogde gebruiker op login/register pagina: redirect naar dashboard
+        router.push('/app/dashboard')
+      } else {
+        // Auth check is voltooid en geen redirects nodig
+        setAuthChecked(true)
       }
     }
   }, [currentUser, loading, pathname, router])
 
-  // Toon niets tijdens het laden of redirecten
-  if (loading) {
-    return null
+  // Toon een loading indicator tijdens het laden of redirecten
+  if (loading || !authChecked) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+      </div>
+    )
   }
 
   return <>{children}</>

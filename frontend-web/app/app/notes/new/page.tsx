@@ -14,7 +14,7 @@ export default function NewNotePage() {
   const handleSave = async (noteData: { title: string; content: string; tags: string[]; taskMarkings: any[] }) => {
     try {
       const noteId = await addNote(noteData)
-      router.push(`/notes/${noteId}`)
+      router.push(`/app/notes/${noteId}`)
     } catch (error) {
       console.error('Error creating note:', error)
       // Error wordt al afgehandeld in de NoteEditor component
@@ -22,7 +22,7 @@ export default function NewNotePage() {
   }
 
   const handleCancel = () => {
-    router.push('/notes')
+    router.push('/app/notes')
   }
 
   return (
