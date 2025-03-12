@@ -3,7 +3,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "framework": "nextjs",
- // "outputDirectory": ".next/standalone",
+
   "headers": [
     {
       "source": "/(.*)",
