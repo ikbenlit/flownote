@@ -170,7 +170,7 @@ export default function Sidebar() {
   const { currentUser, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const { locale, setLocale, availableLocales } = useI18n();
-  
+
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
