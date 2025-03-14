@@ -265,7 +265,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       // Verzamel eerst alle markeringen
       const freshMarkings = editor ? extractTaskMarkingsFromEditor(editor) : []
       
-      // Sla de notitie op
+      // Sla eerst de notitie op en wacht op het resultaat
       const noteData = {
         title: title.trim(),
         content: editor?.getHTML() || '',
@@ -273,23 +273,57 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
         taskMarkings: freshMarkings,
       }
       
-      // Sla de notitie op en wacht op het ID
-      const savedNoteId = await onSave(noteData)
+      try {
+        await onSave(noteData)
+        
+        // Sluit het venster na het opslaan
+        onCancel() // Dit zorgt ervoor dat het venster wordt gesloten
+      } catch (error) {
+        console.error('Fout bij het opslaan van de notitie:', error)
+        alert(t('notes.error.save_failed'))
+        return
+      }
       
-      // Als er taken zijn gemarkeerd, maak deze aan
-      if (freshMarkings.length > 0) {
-        try {
-          // Hier kunnen we de taken aanmaken met het savedNoteId
-          // Dit wordt later geïmplementeerd
-        } catch (taskError) {
-          console.error('Fout bij het maken van taken:', taskError)
-          // De notitie is wel opgeslagen, dus we tonen alleen een waarschuwing
-          alert(t('tasks.error.creation_failed'))
+      // De rest van de code voor het maken van taken wordt nu pas uitgevoerd als
+      // onCancel() de huidige component niet heeft verwijderd
+      if (editor) {
+        // Filter taken die nog gemaakt moeten worden
+        const tasksToCreate = freshMarkings.filter(mark => !mark.id)
+        
+        // Maak taken aan met de opgeslagen noteId
+        if (tasksToCreate.length > 0) {
+          try {
+            const creationPromises = tasksToCreate.map(mark => 
+              addTask({
+                title: mark.text,
+                status: 'todo',
+                priority: 'medium',
+                sourceNoteId: '', // We hebben geen noteId meer nodig omdat de component al is afgesloten
+                sourceNoteTitle: title.trim(),
+                extractedText: mark.text,
+                position: 0,
+                userId: ''
+              }).catch(error => {
+                console.error(`Fout bij het maken van taak voor markering ${mark.id}:`, error)
+                return null
+              })
+            )
+            
+            const results = await Promise.all(creationPromises)
+            const successfulTasks = results.filter(Boolean).length
+            
+            if (successfulTasks > 0) {
+              // Meldingen zijn niet meer nodig omdat de component al is afgesloten
+              console.log(`${successfulTasks} taken succesvol aangemaakt`)
+            }
+          } catch (error) {
+            console.error('Fout bij het maken van taken:', error)
+          }
         }
       }
     } catch (error) {
-      console.error('Fout bij het opslaan van de notitie:', error)
-      alert(t('notes.error.save_failed'))
+      console.error('Onverwachte fout:', error)
+      alert(t('app.error.unexpected'))
     }
   }
 

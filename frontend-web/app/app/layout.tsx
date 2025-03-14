@@ -1,12 +1,7 @@
-import type { Metadata, Viewport } from 'next'
+import type { Metadata } from 'next'
+import AppLayoutClient from './AppLayoutClient'
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1.5,
-  userScalable: true
-}
-
+// Metadata (server-side)
 export const metadata: Metadata = {
   title: 'Dashboard - FlowNote',
   description: 'Bekijk je notities, taken en activiteiten in één overzicht.',
@@ -16,8 +11,7 @@ export const metadata: Metadata = {
   }
 }
 
-import AppLayoutClient from './AppLayoutClient'
-
+// Server Layout Component
 export default function AppLayout({
   children,
 }: {
