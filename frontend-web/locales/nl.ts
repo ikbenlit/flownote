@@ -3,6 +3,10 @@ const translations = {
     title: 'FlowNote',
     error: {
       unexpected: 'Er is een onverwachte fout opgetreden'
+    },
+    navigation: {
+      collapse: 'Menu inklappen',
+      expand: 'Menu uitklappen'
     }
   },
   auth: {
@@ -46,6 +50,7 @@ const translations = {
     reset_password_success: 'Er is een wachtwoord reset link verstuurd naar je e-mailadres.'
   },
   dashboard: {
+    title: 'Dashboard',
     welcome: 'Welkom',
     subtitle: 'Wat wil je vandaag doen?',
     quick_actions: 'Snelle acties',
@@ -60,6 +65,7 @@ const translations = {
     title: 'Notities',
     subtitle: 'Beheer al je notities',
     create: 'Nieuwe notitie',
+    edit: 'Notitie bewerken',
     search_placeholder: 'Zoek in notities...',
     updated: 'Bijgewerkt:',
     delete: {
@@ -68,6 +74,7 @@ const translations = {
     },
     cancel: 'Annuleren',
     no_notes: 'Je hebt nog geen notities',
+    no_title: 'Geen titel',
     title_label: 'Titel',
     title_placeholder: 'Voer een titel in...',
     content_label: 'Inhoud',
@@ -90,6 +97,7 @@ const translations = {
     edit_save: 'Bewerken & opslaan',
     live_preview: 'Live voorvertoning',
     create_note: 'Maak notitie',
+    clear: 'Wissen', // Toegevoegd!
     start: 'Start opname',
     recording: 'Opname bezig...',
     processing: 'Verwerken...',
@@ -98,7 +106,7 @@ const translations = {
       connecting: 'Verbinding maken...',
       recording: 'Opname bezig...',
       processing: 'Verwerken...',
-      idle: 'Klaar om op te nemen'
+      idle: 'Klaar om op te nemen',
     },
     error: {
       token_failed: 'Kon geen toegangstoken verkrijgen',
@@ -108,16 +116,16 @@ const translations = {
       no_speech: 'Geen spraak gedetecteerd',
       permission_denied: 'Toegang tot microfoon geweigerd',
       microphone: 'Kon geen toegang krijgen tot de microfoon',
-      processing: 'Er is een fout opgetreden bij het verwerken van de audio'
+      processing: 'Er is een fout opgetreden bij het verwerken van de audio',
     },
     actions: {
       start: 'Start opname',
-      stop: 'Stop opname'
+      stop: 'Stop opname',
     },
     info: {
       silence_timer: 'Stilte: {0} seconden',
-      processing_hint: 'Transcriptie wordt verwerkt...'
-    }
+      processing_hint: 'Transcriptie wordt verwerkt...',
+    },
   },
   ai_generator: {
     title: 'AI Generator',
@@ -150,14 +158,16 @@ const translations = {
   settings: {
     title: 'Instellingen',
     appearance: 'Weergave',
-    dark_mode: 'Dark Mode',
-    light_mode: 'Light Mode',
+    dark_mode: 'Donkere modus',
+    light_mode: 'Lichte modus',
     language: 'Taal',
+    language_nl: 'Nederlands',
+    language_en: 'Engels',
     notifications: 'Notificaties',
     push_notifications: 'Push Notificaties',
     theme_toggle_aria_label: {
-      to_light: 'Schakel naar light mode',
-      to_dark: 'Schakel naar dark mode'
+      to_light: 'Schakel naar lichte modus',
+      to_dark: 'Schakel naar donkere modus'
     }
   },
   formatting: {

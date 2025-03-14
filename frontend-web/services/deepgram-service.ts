@@ -1,126 +1,126 @@
 type DeepgramCallbacks = {
-  onTranscript: (text: string, isFinal: boolean) => void
-  onError?: (error: Error) => void
-}
+  onLiveTranscript: (text: string) => void; // Voor tussentijdse updates
+  onFinalTranscript: (text: string) => void; // Voor definitieve tekst
+  onError?: (error: Error) => void; // Optionele error callback
+};
 
 export class DeepgramService {
-  private ws: WebSocket | null = null
-  private callbacks: DeepgramCallbacks
-  private apiKey: string
+  private ws: WebSocket | null = null;
+  private callbacks: DeepgramCallbacks;
+  private apiKey: string;
+  private isConnected: boolean = false;
 
   constructor(apiKey: string, callbacks: DeepgramCallbacks) {
-    this.apiKey = apiKey
-    this.callbacks = callbacks
+    if (!apiKey) throw new Error('Deepgram API key is vereist');
+    this.apiKey = apiKey;
+    this.callbacks = callbacks;
   }
 
   connect(sampleRate: number = 48000): Promise<void> {
     return new Promise((resolve, reject) => {
+      if (this.isConnected) {
+        console.warn('Deepgram is al verbonden, negeer nieuwe connect-aanroep');
+        resolve();
+        return;
+      }
+
       try {
         this.ws = new WebSocket(
-          `wss://api.deepgram.com/v1/listen?encoding=linear16&sample_rate=${sampleRate}&language=nl&model=nova-2&smart_format=true`,
+          `wss://api.deepgram.com/v1/listen?encoding=linear16&sample_rate=${sampleRate}&language=nl&model=nova-2&smart_format=true&interim_results=true&punctuate=true`,
           ['token', this.apiKey]
-        )
+        );
 
         this.ws.onopen = () => {
-          // Eerst basis configuratie
-          const baseConfig = {
-            type: 'Configure',
-            features: {
-              language: 'nl',
-              model: 'nova-2',
-              smart_format: true,     // Zorg dat deze aan staat
-              punctuate: true         // En deze ook
-            }
-          };
-          
-          console.log('Verzenden basis Deepgram configuratie:', baseConfig);
-          this.ws?.send(JSON.stringify(baseConfig));
-
-          // Dan extra features
-          const extraConfig = {
-            type: 'Configure',
-            features: {
-              interim_results: true,
-              language_detection: false,
-              tier: 'enhanced',
-              diarize: false,
-              utterances: false,
-              numerals: true,
-              smart_format: true,     // Herhaal deze ook hier
-              punctuate: true         // En deze
-            }
-          };
-          
-          console.log('Verzenden extra Deepgram configuratie:', extraConfig);
-          this.ws?.send(JSON.stringify(extraConfig));
-          
+          console.log('Deepgram WebSocket verbinding geopend');
+          this.isConnected = true;
           resolve();
-        }
+        };
 
         this.ws.onmessage = (event) => {
           try {
-            const data = JSON.parse(event.data)
-            
-            // Log alleen als er een transcript is
+            const data = JSON.parse(event.data);
+
             if (data.type === 'Results' && data.channel?.alternatives?.[0]?.transcript) {
-              console.log('Ontvangen transcriptie:', {
-                type: data.type,
-                language: data.language,
-                model: data.model,
-                transcript: data.channel?.alternatives?.[0]?.transcript,
-                confidence: data.channel?.alternatives?.[0]?.confidence
+              const transcript = data.channel.alternatives[0].transcript.trim();
+              if (!transcript) return; // Skip lege transcripties
+
+              console.log('Transcript ontvangen:', {
+                transcript,
+                isFinal: data.is_final,
+                confidence: data.channel.alternatives[0].confidence,
               });
-            }
-            
-            if (data.type === 'Results') {
-              const transcript = data.channel?.alternatives?.[0]?.transcript || ''
-              if (transcript.trim()) {
-                this.callbacks.onTranscript(transcript, data.is_final)
+
+              if (data.is_final) {
+                this.callbacks.onFinalTranscript(transcript);
+              } else {
+                this.callbacks.onLiveTranscript(transcript);
               }
             }
           } catch (err) {
-            console.error('Fout bij verwerken transcript:', err)
-            this.callbacks.onError?.(err instanceof Error ? err : new Error('Transcript verwerking mislukt'))
+            const error = err instanceof Error ? err : new Error('Fout bij verwerken transcript');
+            console.error('Fout bij verwerken Deepgram bericht:', error);
+            this.callbacks.onError?.(error);
           }
-        }
+        };
 
-        this.ws.onerror = (error) => {
-          console.error('WebSocket error:', error)
-          this.callbacks.onError?.(new Error('WebSocket verbinding mislukt'))
-          reject(error)
-        }
+        this.ws.onerror = (event) => {
+          const error = new Error('Deepgram WebSocket verbinding mislukt');
+          console.error('WebSocket error:', event);
+          this.callbacks.onError?.(error);
+          this.isConnected = false;
+          reject(error);
+        };
 
+        this.ws.onclose = () => {
+          console.log('Deepgram WebSocket verbinding gesloten');
+          this.isConnected = false;
+        };
       } catch (error) {
-        console.error('Connection error:', error)
-        reject(error)
+        const err = error instanceof Error ? error : new Error('Verbinding met Deepgram mislukt');
+        console.error('Fout bij opzetten Deepgram verbinding:', err);
+        this.callbacks.onError?.(err);
+        reject(err);
       }
-    })
+    });
   }
 
   sendAudio(audioData: Int16Array): void {
-    if (this.ws?.readyState === WebSocket.OPEN) {
-      this.ws.send(audioData.buffer)
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      console.warn('WebSocket niet open, audio niet verzonden');
+      return;
+    }
+    try {
+      this.ws.send(audioData.buffer);
+    } catch (err) {
+      console.error('Fout bij verzenden audio:', err);
+      this.callbacks.onError?.(err instanceof Error ? err : new Error('Audio verzenden mislukt'));
     }
   }
 
   async disconnect(): Promise<void> {
-    console.log('DeepgramService.disconnect aangeroepen')
-    
-    if (this.ws?.readyState === WebSocket.OPEN) {
-      console.log('WebSocket is open, sending CloseStream')
-      this.ws.send(JSON.stringify({ type: 'CloseStream' }))
-      this.ws.close()
-      console.log('WebSocket closed')
-    } else if (this.ws) {
-      console.log(`WebSocket in status: ${this.ws.readyState}, closing...`)
-      try {
-        this.ws.close()
-      } catch (err) {
-        console.error('Error closing WebSocket:', err)
-      }
+    if (!this.ws) {
+      console.log('Geen WebSocket om te sluiten');
+      return;
     }
-    
-    this.ws = null
-    console.log('DeepgramService.disconnect voltooid')
+
+    try {
+      if (this.ws.readyState === WebSocket.OPEN) {
+        console.log('Deepgram WebSocket wordt gesloten');
+        this.ws.send(JSON.stringify({ type: 'CloseStream' }));
+        this.ws.close();
+      } else {
+        console.log(`WebSocket reeds in status: ${this.ws.readyState}, geen actie nodig`);
+      }
+    } catch (err) {
+      console.error('Fout bij sluiten WebSocket:', err);
+    } finally {
+      this.ws = null;
+      this.isConnected = false;
+      console.log('DeepgramService disconnect voltooid');
+    }
   }
-} 
+
+  isActive(): boolean {
+    return this.isConnected && this.ws?.readyState === WebSocket.OPEN;
+  }
+}

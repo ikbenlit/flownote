@@ -59,7 +59,7 @@ export default function NotePage({ params }: Props) {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
-        {t('notes.edit_note')}
+        {t('notes.edit')}
       </h1>
       {note && (
         <NoteEditor

@@ -3,6 +3,10 @@ const translations = {
     title: 'FlowNote',
     error: {
       unexpected: 'An unexpected error occurred'
+    },
+    navigation: {
+      collapse: 'Collapse menu',
+      expand: 'Expand menu'
     }
   },
   auth: {
@@ -46,6 +50,7 @@ const translations = {
     reset_password_success: 'A password reset link has been sent to your email address.'
   },
   dashboard: {
+    title: 'Dashboard',
     welcome: 'Welcome',
     subtitle: 'What would you like to do today?',
     quick_actions: 'Quick actions',
@@ -83,13 +88,20 @@ const translations = {
     }
   },
   transcription: {
-    title: 'Audio transcription',
+    title: 'Audio Transcription',
     subtitle: 'Record audio or upload a file to transcribe',
-    result: 'Transcription result',
+    result: 'Transcription Result',
     save: 'Save',
-    edit_save: 'Edit & save',
+    edit_save: 'Edit & Save',
+    live_preview: 'Live Preview', // Toegevoegd
+    create_note: 'Create Note', // Al aanwezig
+    clear: 'Clear', // Al aanwezig
+    start: 'Start Recording',
+    recording: 'Recording...',
+    processing: 'Processing...',
     status: {
       connected: 'Connected to Deepgram',
+      connecting: 'Connecting...',
       recording: 'Recording in progress...',
       processing: 'Processing...',
       idle: 'Ready to record'
@@ -105,8 +117,8 @@ const translations = {
       processing: 'An error occurred while processing the audio'
     },
     actions: {
-      start: 'Start recording',
-      stop: 'Stop recording'
+      start: 'Start Recording',
+      stop: 'Stop Recording'
     },
     info: {
       silence_timer: 'Silence: {0} seconds',
@@ -147,6 +159,8 @@ const translations = {
     dark_mode: 'Dark Mode',
     light_mode: 'Light Mode',
     language: 'Language',
+    language_nl: 'Dutch',
+    language_en: 'English',
     notifications: 'Notifications',
     push_notifications: 'Push Notifications',
     theme_toggle_aria_label: {
@@ -166,8 +180,8 @@ const translations = {
     insert_link: 'Insert link',
     enter_url: 'Enter the URL'
   }
-} as const
+} as const;
 
-export type TranslationKey = keyof typeof translations
+export type TranslationKey = keyof typeof translations;
 
-export default translations 
+export default translations;

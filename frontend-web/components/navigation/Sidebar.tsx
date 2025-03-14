@@ -169,7 +169,7 @@ export default function Sidebar() {
   const router = useRouter();
   const { currentUser, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { locale, setLocale, availableLocales } = useI18n();
+  const { t, locale, setLocale, availableLocales } = useI18n();
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -269,11 +269,11 @@ export default function Sidebar() {
   };
 
   const navigationItems = [
-    { href: '/app/dashboard', icon: SimpleHomeIcon, label: 'Dashboard' },
-    { href: '/app/notes', icon: SimpleNoteIcon, label: 'Notities' },
-    { href: '/app/tasks', icon: SimpleTaskIcon, label: 'Taken' },
-    { href: '/app/ai-generator', icon: SimpleAiIcon, label: 'AI Generator' },
-    { href: '/app/transcribe', icon: SimpleMicIcon, label: 'Transcriptie' },
+    { href: '/app/dashboard', icon: SimpleHomeIcon, label: t('dashboard.title') },
+    { href: '/app/notes', icon: SimpleNoteIcon, label: t('notes.title') },
+    { href: '/app/tasks', icon: SimpleTaskIcon, label: t('tasks.title') },
+    { href: '/app/ai-generator', icon: SimpleAiIcon, label: t('ai_generator.title') },
+    { href: '/app/transcribe', icon: SimpleMicIcon, label: t('transcription.title') },
   ];
 
   // Helper functie om te controleren of een route actief is
@@ -313,7 +313,7 @@ export default function Sidebar() {
         <div className="flex flex-col h-full py-4">
           {/* Header met logo en collapse button */}
           <div className="flex items-center justify-between px-3 mb-4">
-            {!isCollapsed && <h1 className="text-lg font-bold font-heading truncate">FlowNote</h1>}
+            {!isCollapsed && <h1 className="text-lg font-bold font-heading truncate">{t('app.title')}</h1>}
             <button
               onClick={toggleSidebar}
               className="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary"
@@ -377,12 +377,12 @@ export default function Sidebar() {
                       {theme === 'dark' ? (
                         <>
                           <SunIcon className="w-5 h-5 mr-2" />
-                          <span>Lichte modus</span>
+                          <span>{t('settings.light_mode')}</span>
                         </>
                       ) : (
                         <>
                           <MoonIcon className="w-5 h-5 mr-2" />
-                          <span>Donkere modus</span>
+                          <span>{t('settings.dark_mode')}</span>
                         </>
                       )}
                     </button>
@@ -396,7 +396,7 @@ export default function Sidebar() {
                       className="w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary"
                     >
                       <GlobeAltIcon className="w-5 h-5 mr-2" />
-                      <span>Taal: {locale === 'nl' ? 'Nederlands' : 'Engels'}</span>
+                      <span>{t('settings.language')}: {locale === 'nl' ? 'Nederlands' : 'English'}</span>
                     </button>
                     
                     {/* Uitloggen */}
@@ -405,7 +405,7 @@ export default function Sidebar() {
                       className="w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary text-red-500"
                     >
                       <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-2" />
-                      <span>Uitloggen</span>
+                      <span>{t('auth.login')}</span>
                     </button>
                   </div>
                 </div>

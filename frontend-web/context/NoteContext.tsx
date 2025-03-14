@@ -9,7 +9,7 @@ type NoteContextType = {
   notes: Note[]
   loading: boolean
   error: Error | null
-  addNote: (note: NoteInput) => Promise<void>
+  addNote: (note: NoteInput) => Promise<string>
   updateNote: (id: string, note: Partial<NoteInput>) => Promise<void>
   deleteNote: (id: string) => Promise<void>
   getNote: (id: string) => Note | undefined
@@ -51,7 +51,7 @@ export function NoteProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const addNote = async (noteInput: NoteInput) => {
+  const addNote = async (noteInput: NoteInput): Promise<string> => {
     if (!currentUser) throw new Error('Je moet ingelogd zijn om notities toe te voegen.')
     
     setLoading(true)
@@ -60,6 +60,7 @@ export function NoteProvider({ children }: { children: React.ReactNode }) {
     try {
       const noteId = await NotesService.createNote(currentUser.uid, noteInput)
       await refreshNotes()
+      return noteId
     } catch (err) {
       console.error('Error adding note:', err)
       setError(err instanceof Error ? err : new Error('Er is een fout opgetreden bij het toevoegen van de notitie.'))
