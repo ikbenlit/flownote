@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { AudioRecorder } from '@/components/features/audio-recorder';
@@ -18,9 +18,9 @@ const TranscribePage: FC = () => {
     setTranscription(text);
   };
 
-  const handleTranscriptionUpdate = (text: string) => {
-    setLiveTranscript(text);
-  };
+  const handleTranscriptionUpdate = useCallback((text: string) => {
+    setTranscription(text);
+  }, []);
 
   const handleRecordingStateChange = (recording: boolean) => {
     console.log('Recording state changed:', recording);

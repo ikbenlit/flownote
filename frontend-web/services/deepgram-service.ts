@@ -17,27 +17,61 @@ export class DeepgramService {
     return new Promise((resolve, reject) => {
       try {
         this.ws = new WebSocket(
-          `wss://api.deepgram.com/v1/listen?encoding=linear16&sample_rate=${sampleRate}`,
+          `wss://api.deepgram.com/v1/listen?encoding=linear16&sample_rate=${sampleRate}&language=nl&model=nova-2&smart_format=true`,
           ['token', this.apiKey]
         )
 
         this.ws.onopen = () => {
-          // Configure Deepgram
-          this.ws?.send(JSON.stringify({
+          // Eerst basis configuratie
+          const baseConfig = {
             type: 'Configure',
             features: {
-              model: 'nova-2',
               language: 'nl',
-              smart_format: true,
-              interim_results: true
+              model: 'nova-2',
+              smart_format: true,     // Zorg dat deze aan staat
+              punctuate: true         // En deze ook
             }
-          }))
-          resolve()
+          };
+          
+          console.log('Verzenden basis Deepgram configuratie:', baseConfig);
+          this.ws?.send(JSON.stringify(baseConfig));
+
+          // Dan extra features
+          const extraConfig = {
+            type: 'Configure',
+            features: {
+              interim_results: true,
+              language_detection: false,
+              tier: 'enhanced',
+              diarize: false,
+              utterances: false,
+              numerals: true,
+              smart_format: true,     // Herhaal deze ook hier
+              punctuate: true         // En deze
+            }
+          };
+          
+          console.log('Verzenden extra Deepgram configuratie:', extraConfig);
+          this.ws?.send(JSON.stringify(extraConfig));
+          
+          resolve();
         }
 
         this.ws.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data)
+            
+            // Log alleen als er een transcript is
+            if (data.type === 'Results' && data.channel?.alternatives?.[0]?.transcript) {
+              console.log('Ontvangen transcriptie:', {
+                type: data.type,
+                language: data.language,
+                model: data.model,
+                transcript: data.channel?.alternatives?.[0]?.transcript,
+                confidence: data.channel?.alternatives?.[0]?.confidence
+              });
+            }
+            
             if (data.type === 'Results') {
               const transcript = data.channel?.alternatives?.[0]?.transcript || ''
               if (transcript.trim()) {
