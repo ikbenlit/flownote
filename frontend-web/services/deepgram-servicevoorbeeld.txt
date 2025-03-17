@@ -1,0 +1,87 @@
+type DeepgramCallbacks = {
+  onLiveTranscript: (text: string) => void; // Voor tussentijdse updates
+  onFinalTranscript: (text: string) => void; // Voor definitieve tekst
+  onError?: (error: Error) => void;
+};
+
+export class DeepgramService {
+  private ws: WebSocket | null = null;
+  private callbacks: DeepgramCallbacks;
+  private apiKey: string;
+
+  constructor(apiKey: string, callbacks: DeepgramCallbacks) {
+    this.apiKey = apiKey;
+    this.callbacks = callbacks;
+  }
+
+  connect(sampleRate: number = 48000): Promise<void> {
+    return new Promise((resolve, reject) => {
+      try {
+        this.ws = new WebSocket(
+          `wss://api.deepgram.com/v1/listen?encoding=linear16&sample_rate=${sampleRate}&language=nl&model=nova-2&smart_format=true&interim_results=true&punctuate=true`,
+          ['token', this.apiKey]
+        );
+
+        this.ws.onopen = () => {
+          console.log('WebSocket geopend, configuratie verzonden');
+          resolve();
+        };
+
+        this.ws.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+
+            if (data.type === 'Results' && data.channel?.alternatives?.[0]?.transcript) {
+              const transcript = data.channel.alternatives[0].transcript;
+              console.log('Transcript ontvangen:', {
+                transcript,
+                is_final: data.is_final,
+                confidence: data.channel.alternatives[0].confidence,
+              });
+
+              if (transcript.trim()) {
+                if (data.is_final) {
+                  this.callbacks.onFinalTranscript(transcript); // Definitieve tekst
+                } else {
+                  this.callbacks.onLiveTranscript(transcript); // Tussentijdse tekst
+                }
+              }
+            }
+          } catch (err) {
+            console.error('Fout bij verwerken transcript:', err);
+            this.callbacks.onError?.(err instanceof Error ? err : new Error('Transcript verwerking mislukt'));
+          }
+        };
+
+        this.ws.onerror = (error) => {
+          console.error('WebSocket error:', error);
+          this.callbacks.onError?.(new Error('WebSocket verbinding mislukt'));
+          reject(error);
+        };
+      } catch (error) {
+        console.error('Connection error:', error);
+        reject(error);
+      }
+    });
+  }
+
+  sendAudio(audioData: Int16Array): void {
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(audioData.buffer);
+    }
+  }
+
+  async disconnect(): Promise<void> {
+    console.log('DeepgramService.disconnect aangeroepen');
+    if (this.ws?.readyState === WebSocket.OPEN) {
+      this.ws.send(JSON.stringify({ type: 'CloseStream' }));
+      this.ws.close();
+      console.log('WebSocket gesloten');
+    } else if (this.ws) {
+      console.log(`WebSocket in status: ${this.ws.readyState}, sluiten...`);
+      this.ws.close();
+    }
+    this.ws = null;
+    console.log('DeepgramService.disconnect voltooid');
+  }
+}

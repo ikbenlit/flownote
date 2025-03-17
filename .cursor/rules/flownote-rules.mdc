@@ -52,3 +52,4 @@ alwaysApply: false
 ✅ Frontend wordt gedeployed via Vercel.
 ✅ API Routes worden ook via Vercel gedeployed als onderdeel van de Next.js applicatie.
 ✅ Firebase-configuratie moet voor productie worden ingesteld via environment variables.
+

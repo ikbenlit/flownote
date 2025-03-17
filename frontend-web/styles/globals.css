@@ -38,6 +38,9 @@
   --color-dark-accent-blue-light: #93C5FD;
   --color-dark-accent-green: #34D399;
   --color-dark-accent-green-light: #6EE7B7;
+  
+  --sidebar-width: 9rem; /* 144px (36rem in Tailwind) */
+  --sidebar-collapsed-width: 3.5rem; /* 56px */
 }
 
 /* Dark mode classes */

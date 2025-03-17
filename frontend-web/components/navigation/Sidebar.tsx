@@ -21,9 +21,6 @@ import {
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
-// Type voor verschillende schermformaten
-type ScreenSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
-
 // Iconen voor de sidebar
 const SimpleHomeIcon = () => (
   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -67,6 +64,10 @@ interface NavItemProps {
   isActive: boolean;
   isCollapsed: boolean;
   onClick?: (() => void) | (() => Promise<void>);
+}
+
+interface SidebarProps {
+  onCollapseChange?: (isCollapsed: boolean) => void;
 }
 
 const NavItem = ({ href, icon, label, isActive, isCollapsed, onClick }: NavItemProps) => {
@@ -154,57 +155,51 @@ const UserAvatar = ({ user, onClick, isCollapsed }: { user: any, onClick: () => 
   );
 };
 
-export default function Sidebar() {
-  const [screenSize, setScreenSize] = useState<ScreenSize>('lg');
+export default function Sidebar({ onCollapseChange }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
+  const [isTabletView, setIsTabletView] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false); // Voor het uitklappen op mobiel
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const userButtonRef = useRef<HTMLDivElement>(null);
-  const [menuPosition, setMenuPosition] = useState({ top: '0', left: '0' });
+  const sidebarRef = useRef<HTMLDivElement>(null);
   
   const pathname = usePathname();
   const router = useRouter();
   const { currentUser, signOut } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  const { t, locale, setLocale, availableLocales } = useI18n();
+  const { t, locale, setLocale } = useI18n();
 
+  // Media query voor mobile en tablet view
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
-      if (width < 640) {
-        setScreenSize('xs');
-        setIsMobile(true);
-        setIsTablet(false);
-      } else if (width < 768) {
-        setScreenSize('sm');
-        setIsMobile(true);
-        setIsTablet(false);
-      } else if (width < 1024) {
-        setScreenSize('md');
-        setIsMobile(false);
-        setIsTablet(true);
-      } else if (width < 1280) {
-        setScreenSize('lg');
-        setIsMobile(false);
-        setIsTablet(false);
-      } else if (width < 1536) {
-        setScreenSize('xl');
-        setIsMobile(false);
-        setIsTablet(false);
-      } else {
-        setScreenSize('2xl');
-        setIsMobile(false);
-        setIsTablet(false);
+      setIsMobileView(width < 640);
+      setIsTabletView(width >= 640 && width < 1024);
+      
+      // Reset expanded state op desktop
+      if (width >= 1024) {
+        setIsExpanded(false);
       }
     };
-
+    
+    // Check bij eerste render
     checkScreenSize();
+    
+    // Luister naar resize events
     window.addEventListener('resize', checkScreenSize);
+    
+    // Cleanup
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
+
+  // Sluit de uitgeklapte sidebar bij paginawijziging op mobiel/tablet
+  useEffect(() => {
+    if (isMobileView || isTabletView) {
+      setIsExpanded(false);
+    }
+  }, [pathname, isMobileView, isTabletView]);
 
   // Sluit de gebruikersmenu als er buiten wordt geklikt
   useEffect(() => {
@@ -221,37 +216,25 @@ export default function Sidebar() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isUserMenuOpen]);
-  
-  // Update de menu positie wanneer het menu geopend wordt
-  useEffect(() => {
-    if (isUserMenuOpen && userButtonRef.current) {
-      const buttonRect = userButtonRef.current.getBoundingClientRect();
-      const spaceBelow = window.innerHeight - buttonRect.bottom;
-      const spaceRight = window.innerWidth - buttonRect.left;
-      
-      // Bepaal of het menu naar boven of naar beneden moet openen
-      let top = buttonRect.bottom + 5 + 'px';
-      if (spaceBelow < 250 && buttonRect.top > 250) {
-        top = (buttonRect.top - 250) + 'px';
-      }
-      
-      // Bepaal of het menu naar links of rechts moet openen
-      let left = buttonRect.left + 'px';
-      if (isCollapsed) {
-        left = buttonRect.right + 5 + 'px';
-      } else if (spaceRight < 250) {
-        left = (window.innerWidth - 250) + 'px';
-      }
-      
-      setMenuPosition({ top, left });
-    }
-  }, [isUserMenuOpen, isCollapsed]);
 
-  // Extra debug logging
+  // Sluit de uitgeklapte sidebar als er buiten wordt geklikt op mobiel/tablet
   useEffect(() => {
-    console.log("Menu open:", isUserMenuOpen);
-    console.log("Menu position:", menuPosition);
-  }, [isUserMenuOpen, menuPosition]);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isExpanded && 
+          sidebarRef.current && 
+          !sidebarRef.current.contains(event.target as Node)) {
+        setIsExpanded(false);
+      }
+    };
+
+    if (isExpanded && (isMobileView || isTabletView)) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isExpanded, isMobileView, isTabletView]);
 
   const handleLogout = async () => {
     try {
@@ -285,45 +268,69 @@ export default function Sidebar() {
     return currentPath === targetPath;
   };
 
-  const toggleSidebar = () => {
-    if (isMobile || isTablet) {
-      setIsOpen(!isOpen);
+  const toggleCollapse = () => {
+    if (isMobileView || isTabletView) {
+      setIsExpanded(!isExpanded);
+      onCollapseChange?.(!isExpanded);
     } else {
-      setIsCollapsed(!isCollapsed);
+      const newCollapsedState = !isCollapsed;
+      setIsCollapsed(newCollapsedState);
+      onCollapseChange?.(newCollapsedState);
     }
   };
 
   return (
     <>
-      <div 
-        className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity ${(isMobile || isTablet) && isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`} 
-        onClick={() => setIsOpen(false)} 
-      />
+      {/* Mobile/Tablet Backdrop Overlay wanneer uitgeklapt */}
+      {(isMobileView || isTabletView) && isExpanded && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          onClick={() => setIsExpanded(false)}
+          aria-hidden="true"
+        />
+      )}
+      
+      {/* Sidebar Component */}
       <aside 
+        ref={sidebarRef}
         className={`
-          fixed top-0 left-0 h-full bg-gray-50 dark:bg-dark-bg-secondary
-          transition-all duration-300 ease-in-out z-50
-          ${(isMobile || isTablet) 
-            ? `${isOpen ? 'translate-x-0' : '-translate-x-full'} w-60`
-            : `${isCollapsed ? 'w-14' : 'w-60'}`
-          }
+          fixed top-0 left-0 h-full
+          transition-all duration-300 ease-in-out z-50 
           border-r border-gray-200 dark:border-dark-border-primary
+          ${isMobileView || isTabletView
+            ? `w-16 ${isExpanded ? 'translate-x-0' : 'translate-x-0'}`
+            : isCollapsed ? 'w-16' : 'w-64'
+          }
+          ${isExpanded && (isMobileView || isTabletView) ? 'w-64' : ''}
+          bg-gray-50 dark:bg-dark-bg-secondary
         `}
       >
         <div className="flex flex-col h-full py-4">
           {/* Header met logo en collapse button */}
           <div className="flex items-center justify-between px-3 mb-4">
-            {!isCollapsed && <h1 className="text-lg font-bold font-heading truncate">{t('app.title')}</h1>}
-            <button
-              onClick={toggleSidebar}
-              className="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary"
-            >
-              {isCollapsed ? (
-                <ChevronRightIcon className="w-4 h-4" />
-              ) : (
-                <ChevronLeftIcon className="w-4 h-4" />
-              )}
-            </button>
+            {(!isCollapsed && !isMobileView && !isTabletView) || 
+             ((isMobileView || isTabletView) && isExpanded) ? (
+              <h1 className="text-lg font-bold font-heading truncate">
+                {t('app.title')}
+              </h1>
+            ) : (
+              <span className="text-lg font-bold font-heading">
+                FN
+              </span>
+            )}
+            {!isMobileView && !isTabletView && (
+              <button
+                onClick={toggleCollapse}
+                className="p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary"
+                aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+              >
+                {isCollapsed ? (
+                  <ChevronRightIcon className="w-4 h-4" />
+                ) : (
+                  <ChevronLeftIcon className="w-4 h-4" />
+                )}
+              </button>
+            )}
           </div>
 
           {/* Hoofdnavigatie */}
@@ -335,8 +342,13 @@ export default function Sidebar() {
                 icon={item.icon}
                 label={item.label}
                 isActive={isRouteActive(item.href)}
-                isCollapsed={isCollapsed}
-                onClick={(isMobile || isTablet) ? () => setIsOpen(false) : undefined}
+                isCollapsed={(isCollapsed && !isMobileView && !isTabletView) || 
+                             ((isMobileView || isTabletView) && !isExpanded)}
+                onClick={() => {
+                  if (isMobileView || isTabletView) {
+                    setIsExpanded(false);
+                  }
+                }}
               />
             ))}
           </nav>
@@ -347,18 +359,26 @@ export default function Sidebar() {
               <UserAvatar 
                 user={currentUser} 
                 onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                isCollapsed={isCollapsed}
+                isCollapsed={(isCollapsed && !isMobileView && !isTabletView) || 
+                             ((isMobileView || isTabletView) && !isExpanded)}
               />
 
               {/* User Menu Popover */}
               {isUserMenuOpen && (
                 <div 
                   ref={userMenuRef}
-                  className="fixed z-50 w-64 bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg border border-gray-200 dark:border-dark-border-primary overflow-hidden"
-                  style={{
-                    top: menuPosition.top,
-                    left: menuPosition.left,
-                  }}
+                  className={`
+                    bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg 
+                    border border-gray-200 dark:border-dark-border-primary overflow-hidden
+                    ${(isMobileView || isTabletView) && !isExpanded
+                      ? 'absolute top-0 left-full ml-2 w-56' // Mobiel iconen-modus: menu rechts
+                      : (isMobileView || isTabletView) && isExpanded
+                        ? 'absolute top-full mt-2 right-0 w-56' // Mobiel uitgeklapt: menu onder
+                        : isCollapsed 
+                          ? 'absolute top-0 left-full ml-2 w-56' // Desktop collapsed: menu rechts
+                          : 'absolute top-full mt-2 right-0 w-56' // Desktop expanded: menu onder
+                    }
+                  `}
                 >
                   <div className="p-3 border-b border-gray-200 dark:border-dark-border-primary">
                     <p className="text-sm font-medium">{currentUser?.displayName || currentUser?.email}</p>
@@ -420,8 +440,9 @@ export default function Sidebar() {
         <div 
           className="fixed inset-0 z-40" 
           onClick={() => setIsUserMenuOpen(false)}
+          aria-hidden="true"
         />
       )}
     </>
   );
-} 
+}

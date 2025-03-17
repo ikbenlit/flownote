@@ -29,6 +29,7 @@ const translations = {
     no_account: 'No account yet? Register here',
     forgot_password: 'Forgot password?',
     have_account: 'Already have an account? Login here',
+    logout: 'Logout',
     error: {
       invalid_credentials: 'Invalid login credentials',
       email_not_verified: 'Email address is not verified yet',

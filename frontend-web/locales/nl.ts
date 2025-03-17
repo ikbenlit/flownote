@@ -29,6 +29,7 @@ const translations = {
     no_account: 'Nog geen account? Registreer hier',
     forgot_password: 'Wachtwoord vergeten?',
     have_account: 'Heb je al een account? Log hier in',
+    logout: 'Uitloggen',
     error: {
       invalid_credentials: 'Ongeldige inloggegevens',
       email_not_verified: 'E-mailadres is nog niet geverifieerd',
