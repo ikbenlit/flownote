@@ -17,7 +17,8 @@ import {
   ChevronRightIcon,
   GlobeAltIcon,
   MoonIcon,
-  SunIcon
+  SunIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 
@@ -204,15 +205,21 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
   // Sluit de gebruikersmenu als er buiten wordt geklikt
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isUserMenuOpen &&
-          userMenuRef.current && 
-          !userMenuRef.current.contains(event.target as Node) &&
-          userButtonRef.current &&
-          !userButtonRef.current.contains(event.target as Node)) {
+      // Controleer of het menu open is
+      if (!isUserMenuOpen) return;
+      
+      // Check of de click buiten zowel de menu button als het menu zelf was
+      if (
+        userMenuRef.current && 
+        !userMenuRef.current.contains(event.target as Node) &&
+        userButtonRef.current &&
+        !userButtonRef.current.contains(event.target as Node)
+      ) {
         setIsUserMenuOpen(false);
       }
     };
 
+    // Gebruik mousedown voor click-outside detectie
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [isUserMenuOpen]);
@@ -238,7 +245,6 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
 
   const handleLogout = async () => {
     try {
-      setIsUserMenuOpen(false);
       await signOut();
       router.push('/auth/login');
     } catch (error) {
@@ -295,7 +301,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
         ref={sidebarRef}
         className={`
           fixed top-0 left-0 h-full
-          transition-all duration-300 ease-in-out z-50 
+          transition-all duration-300 ease-in-out z-[60] 
           border-r border-gray-200 dark:border-dark-border-primary
           ${isMobileView || isTabletView
             ? `w-16 ${isExpanded ? 'translate-x-0' : 'translate-x-0'}`
@@ -368,16 +374,10 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                 <div 
                   ref={userMenuRef}
                   className={`
-                    bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg 
+                    absolute bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg 
                     border border-gray-200 dark:border-dark-border-primary overflow-hidden
-                    ${(isMobileView || isTabletView) && !isExpanded
-                      ? 'absolute top-0 left-full ml-2 w-56' // Mobiel iconen-modus: menu rechts
-                      : (isMobileView || isTabletView) && isExpanded
-                        ? 'absolute top-full mt-2 right-0 w-56' // Mobiel uitgeklapt: menu onder
-                        : isCollapsed 
-                          ? 'absolute top-0 left-full ml-2 w-56' // Desktop collapsed: menu rechts
-                          : 'absolute top-full mt-2 right-0 w-56' // Desktop expanded: menu onder
-                    }
+                    bottom-4 left-0 ml-16 w-56
+                    z-[70]
                   `}
                 >
                   <div className="p-3 border-b border-gray-200 dark:border-dark-border-primary">
@@ -386,13 +386,22 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                   </div>
                   
                   <div className="p-2">
+                    {/* Instellingen Link */}
+                    <Link 
+                      href="/app/settings"
+                      className="w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary"
+                    >
+                      <Cog6ToothIcon className="w-5 h-5 mr-2" />
+                      <span>{t('settings.title')}</span>
+                    </Link>
+
                     {/* Thema Toggle */}
                     <button 
-                      onClick={() => {
-                        toggleTheme();
-                        setIsUserMenuOpen(false);
-                      }}
-                      className="w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary"
+                      onClick={toggleTheme}
+                      className={`w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
+                        theme === 'dark' ? 'bg-gray-100 dark:bg-dark-bg-tertiary' : ''
+                      }`}
+                      aria-label={theme === 'dark' ? t('settings.theme_toggle_aria_label.to_light') : t('settings.theme_toggle_aria_label.to_dark')}
                     >
                       {theme === 'dark' ? (
                         <>
@@ -409,11 +418,10 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                     
                     {/* Taal Wissel */}
                     <button 
-                      onClick={() => {
-                        toggleLanguage();
-                        setIsUserMenuOpen(false);
-                      }}
-                      className="w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary"
+                      onClick={toggleLanguage}
+                      className={`w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
+                        locale === 'nl' ? 'bg-gray-100 dark:bg-dark-bg-tertiary' : ''
+                      }`}
                     >
                       <GlobeAltIcon className="w-5 h-5 mr-2" />
                       <span>{t('settings.language')}: {locale === 'nl' ? 'Nederlands' : 'English'}</span>
@@ -425,7 +433,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                       className="w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary text-red-500"
                     >
                       <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-2" />
-                      <span>{t('auth.login')}</span>
+                      <span>{t('auth.logout')}</span>
                     </button>
                   </div>
                 </div>
@@ -438,7 +446,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
       {/* Extra transparent overlay om te zorgen dat het menu sluit bij klikken buiten het menu */}
       {isUserMenuOpen && (
         <div 
-          className="fixed inset-0 z-40" 
+          className="fixed inset-0 z-[65]" 
           onClick={() => setIsUserMenuOpen(false)}
           aria-hidden="true"
         />
