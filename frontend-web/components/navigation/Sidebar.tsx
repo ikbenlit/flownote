@@ -373,12 +373,12 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
               {isUserMenuOpen && (
                 <div 
                   ref={userMenuRef}
-                  className={`
-                    absolute bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg 
-                    border border-gray-200 dark:border-dark-border-primary overflow-hidden
-                    bottom-4 left-0 ml-16 w-56
-                    z-[70]
-                  `}
+                  className="fixed z-50 w-64 bg-white dark:bg-dark-bg-secondary rounded-lg shadow-lg border border-gray-200 dark:border-dark-border-primary overflow-hidden"
+                  style={{
+                    top: 'auto',
+                    bottom: '1rem',
+                    left: '4rem'
+                  }}
                 >
                   <div className="p-3 border-b border-gray-200 dark:border-dark-border-primary">
                     <p className="text-sm font-medium">{currentUser?.displayName || currentUser?.email}</p>
@@ -389,6 +389,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                     {/* Instellingen Link */}
                     <Link 
                       href="/app/settings"
+                      onClick={() => setIsUserMenuOpen(false)}
                       className="w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary"
                     >
                       <Cog6ToothIcon className="w-5 h-5 mr-2" />
@@ -397,7 +398,10 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
 
                     {/* Thema Toggle */}
                     <button 
-                      onClick={toggleTheme}
+                      onClick={() => {
+                        toggleTheme();
+                        setIsUserMenuOpen(false);
+                      }}
                       className={`w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
                         theme === 'dark' ? 'bg-gray-100 dark:bg-dark-bg-tertiary' : ''
                       }`}
@@ -418,7 +422,10 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                     
                     {/* Taal Wissel */}
                     <button 
-                      onClick={toggleLanguage}
+                      onClick={() => {
+                        toggleLanguage();
+                        setIsUserMenuOpen(false);
+                      }}
                       className={`w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary ${
                         locale === 'nl' ? 'bg-gray-100 dark:bg-dark-bg-tertiary' : ''
                       }`}
@@ -429,7 +436,10 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
                     
                     {/* Uitloggen */}
                     <button 
-                      onClick={handleLogout}
+                      onClick={() => {
+                        handleLogout();
+                        setIsUserMenuOpen(false);
+                      }}
                       className="w-full flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 dark:hover:bg-dark-bg-tertiary text-red-500"
                     >
                       <ArrowLeftOnRectangleIcon className="w-5 h-5 mr-2" />
@@ -446,7 +456,7 @@ export default function Sidebar({ onCollapseChange }: SidebarProps) {
       {/* Extra transparent overlay om te zorgen dat het menu sluit bij klikken buiten het menu */}
       {isUserMenuOpen && (
         <div 
-          className="fixed inset-0 z-[65]" 
+          className="fixed inset-0 z-40" 
           onClick={() => setIsUserMenuOpen(false)}
           aria-hidden="true"
         />
