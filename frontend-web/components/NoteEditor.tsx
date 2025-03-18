@@ -387,15 +387,15 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       noValidate
     >
       <div>
-        <label htmlFor="title" className="block font-patrick-hand text-lg text-gray-700 dark:text-dark-text-primary mb-2">
+        <label htmlFor="title" className="editor-label">
           {t('notes.title_label')}
         </label>
         <input
-          type="text"
           id="title"
+          type="text"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="w-full px-4 py-3 font-caveat text-xl border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary placeholder-gray-400 dark:placeholder-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200"
+          className="editor-input"
           placeholder={t('notes.title_placeholder')}
           required
         />
@@ -403,16 +403,14 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       </div>
 
       <div>
-        <div className="flex justify-between items-center mb-1">
-          <label htmlFor="content" className="block font-patrick-hand text-lg text-gray-700 dark:text-dark-text-primary mb-2">
-            {t('notes.content_label')}
-          </label>
-        </div>
+        <label className="editor-label">
+          {t('notes.content_label')}
+        </label>
         
         {/* Informatie over taakmarkeringen */}
         <div className="flex items-center mb-2 text-sm text-gray-600 dark:text-dark-text-secondary">
           <FaTasks className="mr-1" />
-          <span>{t('tasks.marked_count_label', taskMarkings.length)}</span>
+          <span>{t('tasks.marked_count_label').replace('{count}', taskMarkings.length.toString())}</span>
         </div>
         
         {/* Lijst van taakmarkeringen (indien er markeringen zijn) */}
@@ -462,12 +460,14 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           </button>
         </BubbleMenu>
         
-        <EditorContent editor={editor} />
+        <div className="border border-gray-300 dark:border-dark-border-primary rounded-lg overflow-hidden">
+          <EditorContent editor={editor} />
+        </div>
         {errors.content && <p className="mt-1 text-sm text-red-600">{errors.content}</p>}
       </div>
 
       <div>
-        <label htmlFor="tags" className="block font-patrick-hand text-lg text-gray-700 dark:text-dark-text-primary mb-2">
+        <label htmlFor="tags" className="editor-label">
           {t('notes.tags_label')}
         </label>
         <div className="flex gap-2 mb-3">
@@ -494,7 +494,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
             value={tagInput}
             onChange={(e) => setTagInput(e.target.value)}
             onKeyDown={handleTagKeyDown}
-            className="flex-grow px-4 py-2 font-patrick-hand text-lg border border-gray-200 dark:border-dark-border-primary rounded-xl bg-white dark:bg-dark-bg-secondary text-gray-900 dark:text-dark-text-primary placeholder-gray-400 dark:placeholder-dark-text-secondary focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-dark-accent-blue focus:border-blue-500 dark:focus:border-dark-accent-blue transition-all duration-200"
+            className="editor-input"
             placeholder={t('notes.tags_placeholder')}
           />
           <button

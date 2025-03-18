@@ -68,6 +68,8 @@ module.exports = {
         'caveat': ['Caveat', 'cursive'],
         'display': ['Space Grotesk', 'system-ui', '-apple-system', 'sans-serif'],
         'body': ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        'inter': ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+        'space-grotesk': ['Space Grotesk', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
       },
       fontSize: {
         'app-title': ['28px', '1.2'],

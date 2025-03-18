@@ -1,23 +1,23 @@
 'use client'
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { useAuth } from './AuthContext'
-import { Note, NoteInput } from '../types/notes'
-import * as NotesService from '../lib/notes'
+import { useAuth } from '@/hooks/useAuth'
+import { Note, NoteInput } from '@/types/notes'
+import { NotesService } from '@/services/NotesService'
 
-type NoteContextType = {
+interface NoteContextType {
   notes: Note[]
   loading: boolean
   error: Error | null
-  addNote: (note: NoteInput) => Promise<string>
-  updateNote: (id: string, note: Partial<NoteInput>) => Promise<void>
+  addNote: (noteInput: NoteInput) => Promise<string>
+  updateNote: (id: string, noteInput: Partial<NoteInput>) => Promise<void>
   deleteNote: (id: string) => Promise<void>
   getNote: (id: string) => Note | undefined
   searchNotes: (query: string) => Note[]
   refreshNotes: () => Promise<void>
 }
 
-const NoteContext = createContext<NoteContextType | undefined>(undefined)
+export const NoteContext = createContext<NoteContextType | undefined>(undefined)
 
 export function NoteProvider({ children }: { children: React.ReactNode }) {
   const { currentUser } = useAuth()
@@ -59,6 +59,15 @@ export function NoteProvider({ children }: { children: React.ReactNode }) {
     
     try {
       const noteId = await NotesService.createNote(currentUser.uid, noteInput)
+      const newNote: Note = {
+        id: noteId,
+        ...noteInput,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        userId: currentUser.uid,
+        extractedTaskIds: []
+      }
+      setNotes(prev => [...prev, newNote])
       await refreshNotes()
       return noteId
     } catch (err) {

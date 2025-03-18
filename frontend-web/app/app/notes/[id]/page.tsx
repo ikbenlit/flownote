@@ -1,11 +1,11 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { NoteEditor } from '@/components/NoteEditor'
-import { useNotes } from '@/context/NoteContext'
-import { useI18n } from '@/context/I18nContext'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { useNotes } from '@/hooks/useNotes'
+import { useI18n } from '@/hooks/useI18n'
 import { Note } from '@/types/notes'
+import { NoteEditor } from '@/components/NoteEditor'
 
 interface Props {
   params: {
@@ -56,18 +56,20 @@ export default function NotePage({ params }: Props) {
     )
   }
 
+  if (!note) {
+    return null
+  }
+
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
         {t('notes.edit')}
       </h1>
-      {note && (
-        <NoteEditor
-          initialNote={note}
-          onSave={handleSave}
-          onCancel={handleCancel}
-        />
-      )}
+      <NoteEditor
+        initialNote={note}
+        onSave={handleSave}
+        onCancel={handleCancel}
+      />
     </div>
   )
 } 

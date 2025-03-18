@@ -1,12 +1,12 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import nlTranslations, { TranslationKey } from '../locales/nl';
-import enTranslations from '../locales/en';
+import nl from '@/locales/nl';
+import en from '@/locales/en';
 
 // Debug-log om te controleren of de vertalingen correct geladen zijn
-console.log('nlTranslations loaded:', nlTranslations);
-console.log('enTranslations loaded:', enTranslations);
+console.log('nlTranslations loaded:', nl);
+console.log('enTranslations loaded:', en);
 
 type NestedKeyOf<T> = T extends object
   ? {
@@ -18,21 +18,22 @@ type NestedKeyOf<T> = T extends object
     }[keyof T]
   : never;
 
-type TranslationPath = NestedKeyOf<typeof nlTranslations>;
+type TranslationPath = NestedKeyOf<typeof nl>;
+
+type Locale = 'nl' | 'en';
 
 interface I18nContextType {
-  t: (key: TranslationPath, ...args: any[]) => string;
-  locale: string;
-  setLocale: (locale: string) => void;
-  availableLocales: string[];
+  locale: Locale;
+  setLocale: (locale: Locale) => void;
+  t: (key: string) => string;
 }
 
-const I18nContext = createContext<I18nContextType | null>(null);
+export const I18nContext = createContext<I18nContextType | undefined>(undefined);
 
 // Beschikbare vertalingen
-const translations: Record<string, any> = {
-  nl: nlTranslations,
-  en: enTranslations,
+const translations = {
+  nl,
+  en,
 };
 
 // Debug-log om te controleren of translations correct is gevuld
@@ -46,70 +47,47 @@ export const useI18n = () => {
   return context;
 };
 
-export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [locale, setLocaleState] = useState('nl');
-  const availableLocales = Object.keys(translations);
+export function I18nProvider({ children }: { children: React.ReactNode }) {
+  const [locale, setLocale] = useState<Locale>('nl');
 
   useEffect(() => {
     const savedLocale = localStorage.getItem('flownote-locale');
-    if (savedLocale && availableLocales.includes(savedLocale)) {
-      setLocaleState(savedLocale);
+    if (savedLocale && Object.keys(translations).includes(savedLocale)) {
+      setLocale(savedLocale as Locale);
     } else {
       const browserLang = navigator.language.split('-')[0];
-      if (availableLocales.includes(browserLang)) {
-        setLocaleState(browserLang);
+      if (Object.keys(translations).includes(browserLang)) {
+        setLocale(browserLang as Locale);
         localStorage.setItem('flownote-locale', browserLang);
       }
     }
     console.log('Current locale set to:', locale);
     document.documentElement.lang = locale;
-  }, [availableLocales, locale]);
+  }, [Object.keys(translations), locale]);
 
-  const setLocale = (newLocale: string) => {
-    if (availableLocales.includes(newLocale)) {
-      setLocaleState(newLocale);
-      localStorage.setItem('flownote-locale', newLocale);
-      document.documentElement.lang = newLocale;
-      console.log('Locale switched to:', newLocale);
-    }
-  };
+  const t = (key: string): string => {
+    const keys = key.split('.');
+    let value: any = translations[locale];
 
-  const getNestedValue = (obj: any, path: string): string => {
-    const keys = path.split('.');
-    let value: any = obj;
-
-    for (const key of keys) {
-      if (value && typeof value === 'object' && key in value) {
-        value = value[key];
-      } else {
-        console.warn(`Translation not found for key: ${path} in locale: ${locale}`);
-        return path; // Fallback naar de sleutel
+    for (const k of keys) {
+      value = value?.[k];
+      if (value === undefined) {
+        return key;
       }
     }
 
-    return typeof value === 'string' ? value : path;
-  };
-
-  const t = (key: TranslationPath, ...args: any[]): string => {
-    const currentTranslations = translations[locale] || nlTranslations;
-    console.log(`Translating key: ${key} with locale: ${locale}`);
-    console.log('Current translations:', currentTranslations);
-    const translation = getNestedValue(currentTranslations, key);
-    console.log('Translation result:', translation);
-
-    if (args.length === 0) {
-      return translation;
-    }
-
-    return translation.replace(/{(\d+)}/g, (match: string, index: string) => {
-      const argIndex = parseInt(index, 10);
-      return args[argIndex]?.toString() || match;
-    });
+    return value;
   };
 
   return (
-    <I18nContext.Provider value={{ t, locale, setLocale, availableLocales }}>
+    <I18nContext.Provider
+      value={{
+        locale,
+        setLocale,
+        t,
+      }}
+    >
       {children}
     </I18nContext.Provider>
   );
-};
+}

@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import { User, signInWithEmailAndPassword as firebaseSignInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth'
 import { auth } from '@/lib/firebase'
 
-type AuthContextType = {
+interface AuthContextType {
   currentUser: User | null
   loading: boolean
   signInWithEmailAndPassword: (email: string, password: string) => Promise<void>
@@ -12,7 +12,7 @@ type AuthContextType = {
   signOut: () => Promise<void>
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [currentUser, setCurrentUser] = useState<User | null>(null)

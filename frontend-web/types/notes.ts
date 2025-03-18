@@ -15,6 +15,7 @@ export interface Note {
   createdAt: Date
   updatedAt: Date
   userId: string
+  extractedTaskIds: string[]
 }
 
 export interface NoteInput {
