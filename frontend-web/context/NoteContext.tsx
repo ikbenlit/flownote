@@ -42,7 +42,13 @@ export function NoteProvider({ children }: { children: React.ReactNode }) {
     
     try {
       const fetchedNotes = await NotesService.getUserNotes(currentUser.uid)
-      setNotes(fetchedNotes)
+      // Sorteer notities op datum (nieuwste eerst)
+      const sortedNotes = fetchedNotes.sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime()
+        const dateB = new Date(b.createdAt).getTime()
+        return dateB - dateA // Dit zorgt ervoor dat de nieuwste notities eerst komen
+      })
+      setNotes(sortedNotes)
     } catch (err) {
       console.error('Error fetching notes:', err)
       setError(err instanceof Error ? err : new Error('Er is een fout opgetreden bij het ophalen van notities.'))
@@ -67,7 +73,7 @@ export function NoteProvider({ children }: { children: React.ReactNode }) {
         userId: currentUser.uid,
         extractedTaskIds: []
       }
-      setNotes(prev => [...prev, newNote])
+      setNotes(prev => [newNote, ...prev])
       await refreshNotes()
       return noteId
     } catch (err) {
