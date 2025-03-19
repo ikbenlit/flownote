@@ -1,28 +1,42 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Functie om te controleren of de gebruiker is ingelogd
-    function isAuthenticated() {
-      return request.auth != null;
+    // Debug functie voor alle operaties
+    function debug() {
+      return {
+        auth: request.auth != null,
+        uid: request.auth != null ? request.auth.uid : null,
+        path: request.path,
+        method: request.method,
+        resource: request.resource != null ? request.resource.data : null,
+        oldResource: request.resource != null ? request.resource.data : null
+      };
     }
 
-    // Functie om te controleren of het document van de huidige gebruiker is
-    function isOwner(userId) {
-      return request.auth.uid == userId;
-    }
-
-    // Notes collectie regels
+    // Notes collectie
     match /notes/{noteId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
-      allow update, delete: if isAuthenticated() && isOwner(resource.data.userId);
+      allow read: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
     }
 
-    // Tasks collectie regels
+    // Taken collectie
     match /tasks/{taskId} {
-      allow read: if isAuthenticated() && isOwner(resource.data.userId);
-      allow create: if isAuthenticated() && isOwner(request.resource.data.userId);
-      allow update, delete: if isAuthenticated() && isOwner(resource.data.userId);
+      allow read, write: if request.auth != null && request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+    }
+
+    // Taakgroepen collectie - vereenvoudigde regels
+    match /taskGroups/{groupId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if request.auth != null && resource.data.userId == request.auth.uid;
+    }
+
+    // Taken per gebruiker subcollectie
+    match /users/{userId}/tasks/{taskId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
     }
   }
 } 
