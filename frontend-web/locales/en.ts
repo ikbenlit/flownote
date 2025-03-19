@@ -141,6 +141,9 @@ const translations = {
     add: 'Add task',
     placeholder: 'New task...',
     no_tasks: 'No tasks found',
+    task: 'task',
+    tasks: 'tasks',
+    from_note: 'From note',
     delete: {
       title: 'Delete task',
       confirmation: 'Are you sure you want to delete this task?'
@@ -150,6 +153,21 @@ const translations = {
     marked_texts: 'Marked tasks',
     remove_marking: 'Remove marking',
     batch_created_count: '{0} tasks have been created',
+    filter: {
+      all_statuses: 'All statuses',
+      all_priorities: 'All priorities',
+      clear: 'Clear filters'
+    },
+    status: {
+      todo: 'To do',
+      in_progress: 'In progress',
+      done: 'Done'
+    },
+    priority: {
+      low: 'Low',
+      medium: 'Medium',
+      high: 'High'
+    },
     error: {
       batch_creation_failed: 'Some tasks could not be created'
     }

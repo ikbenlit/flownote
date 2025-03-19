@@ -1,0 +1,35 @@
+{
+  "title": "Taken",
+  "add_group": "Groep toevoegen",
+  "group_name_placeholder": "Naam van de groep",
+  "add": "Toevoegen",
+  "completed": "voltooid",
+  "task": "taak",
+  "tasks": "taken",
+  "deadline": "Deadline",
+  "filter": {
+    "all_statuses": "Alle statussen",
+    "all_priorities": "Alle prioriteiten",
+    "all_groups": "Alle groepen",
+    "search": "Zoeken...",
+    "clear": "Filters wissen"
+  },
+  "status": {
+    "todo": "Te doen",
+    "in_progress": "In uitvoering",
+    "done": "Voltooid"
+  },
+  "priority": {
+    "low": "Laag",
+    "medium": "Gemiddeld",
+    "high": "Hoog"
+  },
+  "no_tasks": "Geen taken gevonden",
+  "group": {
+    "add": "Groep toevoegen",
+    "edit": "Groep bewerken",
+    "delete": "Groep verwijderen",
+    "confirm_delete": "Weet je zeker dat je deze groep wilt verwijderen?",
+    "no_groups": "Nog geen groepen aangemaakt"
+  }
+} 

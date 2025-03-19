@@ -112,6 +112,7 @@ EditorToolbar.displayName = 'EditorToolbar'
 
 interface NoteEditorProps {
   initialNote?: {
+    id?: string
     title?: string
     content?: string
     tags?: string[]
@@ -131,7 +132,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
   const [tags, setTags] = useState<string[]>(initialNote?.tags || [])
   const [errors, setErrors] = useState<{ title?: string; content?: string }>({})
   const [taskMarkings, setTaskMarkings] = useState<TaskMarking[]>(initialNote?.taskMarkings || [])
-  const { addTask } = useTask()
+  const { addTask, extractTasksFromNote } = useTask()
   const { t } = useI18n()
 
   const editor = useEditor({
@@ -188,10 +189,11 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
           if (mark.attrs && mark.attrs.id) {
             marks.push({
               id: mark.attrs.id,
-              text: node.text || '',
-              completed: false,
-              startIndex: textOffset,
-              endIndex: textOffset + (node.text?.length || 0)
+              markedText: node.text || '',
+              startOffset: mark.attrs.startOffset || textOffset,
+              endOffset: mark.attrs.endOffset || (textOffset + (node.text?.length || 0)),
+              createdAt: new Date(mark.attrs.createdAt || Date.now()),
+              extractedTaskId: mark.attrs.extractedTaskId
             })
           }
         })
@@ -265,7 +267,30 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
       // Verzamel eerst alle markeringen
       const freshMarkings = editor ? extractTaskMarkingsFromEditor(editor) : []
       
-      // Sla eerst de notitie op en wacht op het resultaat
+      // Extraheer taken uit de markeringen
+      if (freshMarkings.length > 0) {
+        try {
+          const taskIds = await extractTasksFromNote(
+            initialNote?.id || '', // We hebben de note ID nodig
+            title.trim(),
+            freshMarkings
+          )
+          
+          // Update de markeringen met de nieuwe task IDs
+          freshMarkings.forEach((mark, index) => {
+            mark.extractedTaskId = taskIds[index]
+          })
+          
+          // Toon succesbericht
+          alert(t('tasks.success.extracted').replace('{{count}}', freshMarkings.length.toString()))
+        } catch (error) {
+          console.error('Fout bij het extraheren van taken:', error)
+          alert(t('tasks.error.extraction_failed'))
+          return
+        }
+      }
+      
+      // Sla de notitie op met de bijgewerkte markeringen
       const noteData = {
         title: title.trim(),
         content: editor?.getHTML() || '',
@@ -277,49 +302,11 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
         await onSave(noteData)
         
         // Sluit het venster na het opslaan
-        onCancel() // Dit zorgt ervoor dat het venster wordt gesloten
+        onCancel()
       } catch (error) {
         console.error('Fout bij het opslaan van de notitie:', error)
         alert(t('notes.error.save_failed'))
         return
-      }
-      
-      // De rest van de code voor het maken van taken wordt nu pas uitgevoerd als
-      // onCancel() de huidige component niet heeft verwijderd
-      if (editor) {
-        // Filter taken die nog gemaakt moeten worden
-        const tasksToCreate = freshMarkings.filter(mark => !mark.id)
-        
-        // Maak taken aan met de opgeslagen noteId
-        if (tasksToCreate.length > 0) {
-          try {
-            const creationPromises = tasksToCreate.map(mark => 
-              addTask({
-                title: mark.text,
-                status: 'todo',
-                priority: 'medium',
-                sourceNoteId: '', // We hebben geen noteId meer nodig omdat de component al is afgesloten
-                sourceNoteTitle: title.trim(),
-                extractedText: mark.text,
-                position: 0,
-                userId: ''
-              }).catch(error => {
-                console.error(`Fout bij het maken van taak voor markering ${mark.id}:`, error)
-                return null
-              })
-            )
-            
-            const results = await Promise.all(creationPromises)
-            const successfulTasks = results.filter(Boolean).length
-            
-            if (successfulTasks > 0) {
-              // Meldingen zijn niet meer nodig omdat de component al is afgesloten
-              console.log(`${successfulTasks} taken succesvol aangemaakt`)
-            }
-          } catch (error) {
-            console.error('Fout bij het maken van taken:', error)
-          }
-        }
       }
     } catch (error) {
       console.error('Onverwachte fout:', error)
@@ -426,7 +413,7 @@ export const NoteEditor: React.FC<NoteEditorProps> = ({
                   key={mark.id} 
                   className="flex items-center justify-between text-sm p-2 bg-white dark:bg-dark-bg-tertiary rounded border border-yellow-200 dark:border-yellow-800"
                 >
-                  <span className="truncate flex-1 font-medium">{mark.text || '(Geen tekst)'}</span>
+                  <span className="truncate flex-1 font-medium">{mark.markedText || '(Geen tekst)'}</span>
                   <div className="flex space-x-2 ml-2">
                     <button
                       type="button"

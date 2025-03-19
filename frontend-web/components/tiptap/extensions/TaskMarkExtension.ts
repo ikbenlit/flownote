@@ -79,6 +79,19 @@ export const TaskMarkExtension = Mark.create<TaskMarkOptions>({
           }
         },
       },
+      extractedTaskId: {
+        default: null,
+        parseHTML: element => element.getAttribute('data-extracted-task-id'),
+        renderHTML: attributes => {
+          if (!attributes.extractedTaskId) {
+            return {}
+          }
+
+          return {
+            'data-extracted-task-id': attributes.extractedTaskId,
+          }
+        },
+      },
     }
   },
 

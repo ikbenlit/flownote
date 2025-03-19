@@ -143,6 +143,9 @@ const translations = {
     add: 'Taak toevoegen',
     placeholder: 'Nieuwe taak...',
     no_tasks: 'Geen taken gevonden',
+    task: 'taak',
+    tasks: 'taken',
+    from_note: 'Uit notitie',
     delete: {
       title: 'Taak verwijderen',
       confirmation: 'Weet je zeker dat je deze taak wilt verwijderen?'
@@ -152,6 +155,21 @@ const translations = {
     marked_texts: 'Gemarkeerde taken',
     remove_marking: 'Markering verwijderen',
     batch_created_count: '{0} taken zijn aangemaakt',
+    filter: {
+      all_statuses: 'Alle statussen',
+      all_priorities: 'Alle prioriteiten',
+      clear: 'Filters wissen'
+    },
+    status: {
+      todo: 'Te doen',
+      in_progress: 'Bezig',
+      done: 'Afgerond'
+    },
+    priority: {
+      low: 'Laag',
+      medium: 'Gemiddeld',
+      high: 'Hoog'
+    },
     error: {
       batch_creation_failed: 'Sommige taken konden niet worden aangemaakt'
     }

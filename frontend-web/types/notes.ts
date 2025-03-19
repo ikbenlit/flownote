@@ -1,9 +1,10 @@
 export interface TaskMarking {
   id: string
-  text: string
-  completed: boolean
-  startIndex: number
-  endIndex: number
+  markedText: string
+  startOffset: number
+  endOffset: number
+  createdAt: Date
+  extractedTaskId?: string
 }
 
 export interface Note {
